@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Apply for a Handwriting Project | Aaliya Book Publication</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Apply for a handwriting work from home project — submit your details, courier address and bank information to get started.">
+<meta name="theme-color" content="#1B2430">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-64.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aaliya Books">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar"><div class="container">
+  <a href="index.html" class="brand">
+    <img data-company-logo style="display:none" alt="logo">
+    <span class="brand-fallback">AB</span>
+    <span data-company-name>Aaliya Book Publication</span>
+  </a>
+  <div class="nav-links"><a href="dashboard.html">My Dashboard</a></div>
+</div></nav>
+
+<div class="container section">
+  <div class="form-wrap wide">
+    <h2>Project Application</h2>
+    <p class="section-sub mt-0">Logged in as <span id="apply-email-display"></span></p>
+
+    <form id="apply-form">
+      <div class="fieldset-title">Project</div>
+      <div class="field">
+        <label for="apply-project">Select Project</label>
+        <select id="apply-project" name="apply-project" required></select>
+      </div>
+      <div id="apply-project-details"></div>
+
+      <div class="fieldset-title">Personal Details</div>
+      <div class="form-grid">
+        <div class="field"><label>Full Name</label><input type="text" name="full_name" required></div>
+        <div class="field"><label>Mobile Number</label><input type="tel" name="mobile" required></div>
+      </div>
+      <div class="field"><label>Complete Address</label><textarea name="address" rows="2" required></textarea></div>
+      <div class="field"><label>Courier Address (materials delivery ke liye)</label><textarea name="courier_address" rows="2" required></textarea></div>
+
+      <div class="fieldset-title">Bank Details (payment ke liye)</div>
+      <div class="form-grid">
+        <div class="field"><label>Account Holder Name</label><input type="text" name="bank_account_name" required></div>
+        <div class="field"><label>Bank Name</label><input type="text" name="bank_name" required></div>
+        <div class="field"><label>Account Number</label><input type="text" name="bank_account_number" required></div>
+        <div class="field"><label>IFSC Code</label><input type="text" name="bank_ifsc" required></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Application Submit Kariye</button>
+      <div id="apply-msg" class="form-msg"></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/security.js"></script>
+<script src="js/apply.js"></script>
+</body>
+</html>

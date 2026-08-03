@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My Project Dashboard | Aaliya Book Publication</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Track your handwriting project status, courier delivery, deadlines, payments and invoices in one place.">
+<meta name="theme-color" content="#1B2430">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-64.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Aaliya Books">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="has-bottom-nav">
+
+<nav class="navbar"><div class="container">
+  <a href="index.html" class="brand">
+    <img data-company-logo style="display:none" alt="logo">
+    <span class="brand-fallback">AB</span>
+    <span data-company-name>Aaliya Book Publication</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#projects">Apply for New Project</a>
+    <a href="#" id="logout-btn">Logout</a>
+    <div id="lang-switcher"></div>
+  </div>
+  <button class="nav-toggle" aria-label="Open menu">&#9776;</button>
+</div></nav>
+
+<div class="container section" style="padding-top:24px">
+
+  <!-- ========== HOME ========== -->
+  <div class="app-section active" id="app-home">
+    <div class="app-profile">
+      <div class="app-avatar" id="app-avatar">A</div>
+      <div class="app-profile-text">
+        <h2>Namaste, <span id="welcome-name">...</span></h2>
+        <p>Customer ID: <span id="customer-id-display">—</span></p>
+      </div>
+    </div>
+
+    <div id="action-hint-wrap"></div>
+    <div class="app-cards" id="app-status-cards"></div>
+    <div id="onboarding-wrap"></div>
+
+    <div class="card" id="home-notifications-preview"></div>
+  </div>
+
+  <!-- ========== MY PROJECT ========== -->
+  <div class="app-section" id="app-project">
+    <h2 class="section-title" style="font-size:1.6rem">My Project</h2>
+    <div id="feedback-wrap"></div>
+    <div id="registrations-wrap"></div>
+  </div>
+
+  <!-- ========== PAYMENTS ========== -->
+  <div class="app-section" id="app-payments">
+    <h2 class="section-title" style="font-size:1.6rem">Payments</h2>
+    <div id="payments-wrap"></div>
+  </div>
+
+  <!-- ========== NOTIFICATIONS ========== -->
+  <div class="app-section" id="app-notifications">
+    <h2 class="section-title" style="font-size:1.6rem">Notifications</h2>
+    <div style="margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" id="mark-all-read-btn">Mark all as read</button>
+      <button class="btn btn-outline btn-sm" id="enable-notifications-btn">Turn on device alerts</button>
+    </div>
+    <div class="card" id="notifications-wrap"></div>
+  </div>
+
+  <!-- ========== PROFILE ========== -->
+  <div class="app-section" id="app-profile-section">
+    <h2 class="section-title" style="font-size:1.6rem">Profile</h2>
+    <div class="card" id="profile-details"></div>
+
+    <div class="card">
+      <h3>Support &amp; Help</h3>
+      <p class="section-sub mt-0">Kisi bhi query ke liye WhatsApp par turant baat kariye, ya niche form se enquiry bhejiye.</p>
+      <a data-whatsapp-link href="#" target="_blank" class="btn btn-brass" style="margin-bottom:18px">WhatsApp Support</a>
+      <form id="enquiry-form">
+        <div class="field"><label>Aapka sawal / enquiry</label><textarea name="message" rows="3" required></textarea></div>
+        <button type="submit" class="btn btn-outline">Enquiry Bhejiye</button>
+        <div id="enquiry-msg" class="form-msg"></div>
+      </form>
+      <p class="field-hint" style="margin-top:12px">Zyada jaankari ke liye <a href="about.html">About &amp; FAQ</a> page dekhiye.</p>
+    </div>
+
+    <div id="referral-wrap"></div>
+    <div class="card" id="rewards-card"></div>
+
+    <div class="card">
+      <h3>Support Tickets</h3>
+      <p class="section-sub mt-0">Registration, payment, courier ya project se juda koi specific issue hai to ticket banaiye — track karna aasan hoga.</p>
+      <form id="ticket-form">
+        <div class="form-grid">
+          <div class="field">
+            <label>Category</label>
+            <select name="category">
+              <option value="registration_issue">Registration Issue</option>
+              <option value="payment_issue">Payment Issue</option>
+              <option value="courier_issue">Courier Issue</option>
+              <option value="project_issue">Project Issue</option>
+              <option value="account_issue">Account Issue</option>
+              <option value="other" selected>Other Query</option>
+            </select>
+          </div>
+          <div class="field"><label>Subject</label><input type="text" name="subject" required></div>
+        </div>
+        <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <button type="submit" class="btn btn-outline">Create Ticket</button>
+        <div id="ticket-msg" class="form-msg"></div>
+      </form>
+      <div id="tickets-list" style="margin-top:16px"></div>
+    </div>
+
+    <div class="card">
+      <h3>Account</h3>
+      <button class="btn btn-outline" id="logout-all-btn">Logout from all devices</button>
+      <button class="btn btn-outline" id="logout-btn-2">Logout</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ========== BOTTOM NAVIGATION ========== -->
+<nav class="bottom-nav" aria-label="App navigation">
+  <div class="bottom-nav-inner">
+    <a href="#home" class="active" data-app-tab="home">
+      <svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+      <span data-i18n="dash.home">Home</span>
+    </a>
+    <a href="#project" data-app-tab="project">
+      <svg viewBox="0 0 24 24"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/><path d="M8 13h8M8 17h5"/></svg>
+      <span data-i18n="dash.my_project">Project</span>
+    </a>
+    <a href="#payments" data-app-tab="payments">
+      <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>
+      <span data-i18n="dash.payments">Payments</span>
+    </a>
+    <a href="#notifications" data-app-tab="notifications">
+      <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+      Alerts
+      <span class="nav-badge" id="notif-badge" style="display:none">0</span>
+    </a>
+    <a href="#profile" data-app-tab="profile">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg>
+      <span data-i18n="dash.profile">Profile</span>
+    </a>
+  </div>
+</nav>
+
+<a class="wa-float" data-whatsapp-link href="#" target="_blank" rel="noopener" aria-label="WhatsApp support">
+  <svg viewBox="0 0 32 32" fill="#fff" aria-hidden="true"><path d="M16 3C9 3 3.4 8.6 3.4 15.6c0 2.5.7 4.8 1.9 6.8L3 29l6.8-2.2c1.9 1 4 1.6 6.2 1.6 7 0 12.6-5.6 12.6-12.6S23 3 16 3zm0 22.9c-2 0-3.9-.5-5.5-1.5l-.4-.2-4 1.3 1.3-3.9-.3-.4c-1.1-1.7-1.7-3.7-1.7-5.8 0-5.8 4.7-10.5 10.5-10.5 5.8 0 10.5 4.7 10.5 10.5S21.8 25.9 16 25.9zm5.8-7.8c-.3-.2-1.9-.9-2.1-1-.3-.1-.5-.2-.7.2s-.9 1-1 1.2c-.2.2-.4.2-.7.1-.3-.2-1.4-.5-2.6-1.6-1-.9-1.6-2-1.8-2.3-.2-.3 0-.5.1-.6.1-.1.3-.4.5-.6.1-.2.2-.3.3-.5.1-.2 0-.4 0-.6s-.7-1.7-1-2.3c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.4 1.4 3.6c.2.2 2.4 3.6 5.7 5 .8.3 1.4.5 1.9.7.8.2 1.5.2 2.1.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.3.2-1.5-.1-.1-.3-.2-.6-.4z"/></svg>
+</a>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/security.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/chat.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

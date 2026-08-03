@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard.html
+Disallow: /payment.html
+
+Sitemap: https://aaliyabookpublication.com/sitemap.xml

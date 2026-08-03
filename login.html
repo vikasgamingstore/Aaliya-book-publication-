@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Customer Login | Aaliya Book Publication</title>
+<meta name="description" content="Login to your Aaliya Book Publication account to track your handwriting project, courier delivery, payments and invoices.">
+<meta name="theme-color" content="#1B2430">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-64.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aaliya Books">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar"><div class="container">
+  <a href="index.html" class="brand">
+    <img data-company-logo style="display:none" alt="logo">
+    <span class="brand-fallback">AB</span>
+    <span data-company-name>Aaliya Book Publication</span>
+  </a>
+</div></nav>
+
+<div class="form-wrap">
+  <h2>Customer Login</h2>
+  <form id="login-form">
+    <div class="field"><label for="li-email">Mobile Number or Email</label><input type="text" id="li-email" required></div>
+    <div class="field"><label for="li-password">Password</label><input type="password" id="li-password" required></div>
+    <div id="captcha-box" style="margin-bottom:14px"></div>
+    <button type="submit" class="btn btn-primary btn-block">Login</button>
+    <div id="li-msg" class="form-msg"></div>
+  </form>
+  <div class="form-alt"><a href="#" id="forgot-password-link">Password bhool gaye?</a></div>
+  <div class="form-alt">Naya account? <a href="signup.html">Registration kariye</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/security.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
