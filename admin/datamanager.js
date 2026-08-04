@@ -43,7 +43,7 @@ async function runGlobalSearch() {
     return;
   }
   if (!data || data.length === 0) {
-    box.innerHTML = `<div class="search-empty">"${q}" ke liye koi record nahi mila.</div>`;
+    box.innerHTML = `<div class="search-empty">"${q}" — no records found.</div>`;
     return;
   }
 
@@ -395,7 +395,7 @@ function renderDmTable() {
   </tr>`;
 
   if (dmRows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="${cols.length + 2}">Koi record nahi mila. Filter badal kar dekhiye.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${cols.length + 2}">No records found. Try changing the filters.</td></tr>`;
     document.getElementById("dm-pagination").innerHTML = "";
     updateBulkBar();
     return;
@@ -482,7 +482,7 @@ async function runBulkAction() {
   }
 
   if (action === "notify") {
-    const message = prompt("Notification message likhiye:");
+    const message = prompt("Write the notification message:");
     if (!message) return;
     const customerIds = dmModule === "customers" ? ids : selectedRows.map(r => r.customer_id).filter(Boolean);
     const { data, error } = await supabaseClient.rpc("bulk_notify_customers", {
@@ -494,7 +494,7 @@ async function runBulkAction() {
   }
 
   if (action === "status") {
-    if (dmModule === "customers") { alert("Status update sirf projects/payments/courier modules par kaam karta hai."); return; }
+    if (dmModule === "customers") { alert("Status update only works on the projects, payments and courier modules."); return; }
     const field = prompt("Kaunsa field update karna hai?\n\nproject_status / registration_payment_status / advance_status / final_status / courier_out_status / pickup_status / quality_status", "project_status");
     if (!field) return;
     const value = prompt(`"${field}" ki nayi value kya rakhein?`);
@@ -514,14 +514,14 @@ async function runBulkAction() {
   if (action === "assign") {
     const { data: staff } = await supabaseClient
       .from("profiles").select("id, full_name").eq("is_admin", true).eq("staff_status", "active");
-    if (!staff || staff.length === 0) { alert("Koi active staff member nahi hai."); return; }
+    if (!staff || staff.length === 0) { alert("No active staff members."); return; }
 
     const list = staff.map((s, i) => `${i + 1}. ${s.full_name || "Staff"}`).join("\n");
     const pick = prompt(`Kis staff ko assign karein?\n\n${list}\n\nNumber likhiye:`);
     const idx = parseInt(pick, 10) - 1;
     if (isNaN(idx) || !staff[idx]) return;
 
-    const title = prompt("Task ka title likhiye:", "Review selected records");
+    const title = prompt("Enter the task title:", "Review selected records");
     if (!title) return;
 
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -554,7 +554,7 @@ async function showCustomerProfile(id) {
     supabaseClient.from("support_messages").select("*").eq("customer_id", id).order("created_at", { ascending: false }).limit(15),
   ]);
 
-  if (!c) { box.innerHTML = "<p>Customer nahi mila.</p>"; return; }
+  if (!c) { box.innerHTML = "<p>Customer not found.</p>"; return; }
 
   const rows = regs || [];
 
@@ -585,7 +585,7 @@ async function showCustomerProfile(id) {
             <td>${dDate(r.deadline)}</td>
             <td><span class="status-badge status-${r.project_status}">${dTitle(r.project_status)}</span></td>
             <td><button class="btn btn-outline btn-sm" onclick="switchAdminTab('registrations'); openRegDetail('${r.id}')">Manage</button></td>
-          </tr>`).join("") : '<tr><td colspan="6">Koi project nahi</td></tr>'}
+          </tr>`).join("") : '<tr><td colspan="6">No projects</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -601,7 +601,7 @@ async function showCustomerProfile(id) {
             <td><span class="status-badge status-${r.registration_payment_status || "pending"}">${dTitle(r.registration_payment_status || "pending")}</span> ${dMoney(r.projects?.registration_fee)}</td>
             <td><span class="status-badge status-${r.advance_status}">${dTitle(r.advance_status)}</span> ${dMoney(r.projects?.advance_payment)}</td>
             <td><span class="status-badge status-${r.final_status}">${dTitle(r.final_status)}</span> ${dMoney(r.projects?.final_payment)}</td>
-          </tr>`).join("") : '<tr><td colspan="5">Koi payment record nahi</td></tr>'}
+          </tr>`).join("") : '<tr><td colspan="5">No payment records</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -618,7 +618,7 @@ async function showCustomerProfile(id) {
             <td>${dDate(r.dispatch_date)}</td>
             <td><span class="status-badge status-${r.courier_out_status}">${dTitle(r.courier_out_status)}</span></td>
             <td><span class="status-badge status-${r.pickup_status}">${dTitle(r.pickup_status)}</span></td>
-          </tr>`).join("") : '<tr><td colspan="5">Koi courier record nahi</td></tr>'}
+          </tr>`).join("") : '<tr><td colspan="5">No courier records</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -635,7 +635,7 @@ async function showCustomerProfile(id) {
           <option value="in_person">In Person</option>
         </select>
       </div>
-      <div class="field"><label>Note</label><input type="text" id="comm-note" placeholder="Baat cheet ka summary likhiye..."></div>
+      <div class="field"><label>Note</label><input type="text" id="comm-note" placeholder="Write a summary of the conversation..."></div>
     </div>
     <button class="btn btn-outline btn-sm" onclick="addCommunicationLog('${c.id}', null)">Add Log</button>
 
@@ -657,11 +657,12 @@ async function showCustomerProfile(id) {
             <p>${n.message}</p>
           </div>
         </div>`).join("")}
-      ${!(msgs || []).length && !(notifs || []).length ? '<p class="field-hint">Koi communication record nahi.</p>' : ""}
+      ${!(msgs || []).length && !(notifs || []).length ? '<p class="field-hint">No communication records.</p>' : ""}
     </div>
 
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
       <a class="btn btn-brass btn-sm" target="_blank" href="https://wa.me/${(c.mobile || "").replace(/[^0-9]/g, "")}">WhatsApp Customer</a>
+      <button class="btn btn-outline btn-sm" onclick="adminChangePassword('${c.id}', '${(c.full_name||'').replace(/'/g,"")}')">Change Password</button>
       <button class="btn btn-outline btn-sm" onclick="document.getElementById('dm-detail-box').style.display='none'">Close</button>
     </div>`;
 
@@ -712,7 +713,7 @@ async function saveCurrentFilter() {
     filter_json: collectFilters(),
   });
 
-  alert(error ? error.message : "Filter save ho gaya.");
+  alert(error ? error.message : "Filter saved.");
   if (!error) loadSavedFilters();
 }
 
@@ -724,7 +725,7 @@ function dmExport(format) {
 }
 
 function exportRows(rows, format, name) {
-  if (!rows || rows.length === 0) { alert("Export karne ke liye koi data nahi hai."); return; }
+  if (!rows || rows.length === 0) { alert("There is no data to export."); return; }
 
   const cols = MODULE_COLUMNS[dmModule];
   const stamp = new Date().toISOString().slice(0, 10);

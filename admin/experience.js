@@ -28,7 +28,7 @@ async function loadLanguagesAdmin() {
           <button class="btn btn-outline btn-sm" onclick="toggleLanguage('${l.code}', ${!l.is_active})">${l.is_active ? "Hide" : "Show"}</button>
           <button class="btn btn-outline btn-sm" onclick="deleteLanguage('${l.code}')">Delete</button>`}
         </td>
-      </tr>`).join("") : `<tr><td colspan="4">Koi language nahi.</td></tr>`;
+      </tr>`).join("") : `<tr><td colspan="4">No languages.</td></tr>`;
   }
 
   const select = document.getElementById("translation-lang");
@@ -49,7 +49,7 @@ async function handleLanguageCreate(e) {
   });
   msg.textContent = error
     ? (error.code === "23505" ? "Ye language code pehle se hai." : error.message)
-    : "Language add ho gayi — ab iske translations bhariye.";
+    : "Language added — now fill in its translations.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadLanguagesAdmin(); }
 }
@@ -80,7 +80,7 @@ async function loadTranslationsAdmin() {
   if (!tbody) return;
 
   if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4">Is language/category mein koi translation nahi. Neeche se add kariye.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4">No translations for this language/category. Add one below.</td></tr>`;
     return;
   }
 
@@ -102,7 +102,7 @@ async function saveTranslation(id) {
     .update({ value, updated_at: new Date().toISOString() }).eq("id", id);
   if (error) { alert(error.message); return; }
   if (typeof logActivity === "function") logActivity("Translation updated", id);
-  alert("Save ho gaya.");
+  alert("Saved.");
 }
 
 async function deleteTranslation(id) {
@@ -125,7 +125,7 @@ async function handleTranslationCreate(e) {
   });
   msg.textContent = error
     ? (error.code === "23505" ? "Is key ka translation is language mein pehle se hai." : error.message)
-    : "Translation add ho gaya.";
+    : "Translation added.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadTranslationsAdmin(); }
 }
@@ -145,7 +145,7 @@ async function handleChatSettingsSave(e) {
   const { error } = await supabaseClient.from("company_settings")
     .update({ chat_welcome_message: e.target.chat_welcome_message.value.trim(), updated_at: new Date().toISOString() })
     .eq("id", 1);
-  msg.textContent = error ? error.message : "Welcome message save ho gaya.";
+  msg.textContent = error ? error.message : "Welcome message saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -154,7 +154,7 @@ async function loadChatFaqsAdmin() {
   const tbody = document.getElementById("chat-faqs-body");
   if (!tbody) return;
 
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi Q&A nahi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No Q&As yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(f => `
     <tr>
@@ -179,7 +179,7 @@ async function handleChatFaqCreate(e) {
     keywords: f.keywords.value.trim() || null,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Q&A add ho gaya — chat assistant mein dikhega.";
+  msg.textContent = error ? error.message : "Q&A added — it will appear in the chat assistant.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadChatFaqsAdmin(); }
 }
@@ -202,7 +202,7 @@ async function loadHelpArticlesAdmin() {
   const tbody = document.getElementById("help-articles-body");
   if (!tbody) return;
 
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Koi article nahi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No articles yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(a => `
     <tr>
@@ -226,7 +226,7 @@ async function handleHelpArticleCreate(e) {
     content: f.content.value,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Article add ho gaya — Help Center par dikhega.";
+  msg.textContent = error ? error.message : "Article added — it will appear in the Help Center.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadHelpArticlesAdmin(); }
 }
@@ -249,7 +249,7 @@ async function loadOnboardingAdmin() {
   const tbody = document.getElementById("onboarding-body");
   if (!tbody) return;
 
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Koi step nahi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No steps yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(s => `
     <tr>
@@ -269,7 +269,7 @@ async function handleOnboardingCreate(e) {
     title: f.title.value.trim(),
     description: f.description.value.trim(),
   });
-  msg.textContent = error ? error.message : "Step add ho gaya.";
+  msg.textContent = error ? error.message : "Step added.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadOnboardingAdmin(); }
 }
@@ -297,7 +297,7 @@ function renderFeedbackAdmin() {
   if (!tbody) return;
   const list = feedbackFilter === "all" ? feedbackCache : feedbackCache.filter(f => f.status === feedbackFilter);
 
-  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Is filter mein koi feedback nahi.</td></tr>`; return; }
+  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No feedback matches this filter.</td></tr>`; return; }
 
   tbody.innerHTML = list.map(f => `
     <tr>

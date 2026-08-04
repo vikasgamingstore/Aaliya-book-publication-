@@ -42,7 +42,7 @@ async function loadBanners() {
   const { data } = await supabaseClient.from("banners").select("*").order("display_order");
   const tbody = document.getElementById("banners-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi banner nahi bana abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No banners created yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(b => `
     <tr>
@@ -74,7 +74,7 @@ async function handleBannerCreate(e) {
     end_date: f.end_date.value || null,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Banner add ho gaya — homepage par dikhega.";
+  msg.textContent = error ? error.message : "Banner added — it will appear on the homepage.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadBanners(); loadMarketingStats(); if (typeof logActivity === "function") logActivity("Banner added", f.title.value); }
 }
@@ -96,7 +96,7 @@ async function loadCoupons() {
   const { data } = await supabaseClient.from("coupons").select("*").order("created_at", { ascending: false });
   const tbody = document.getElementById("coupons-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="7">Koi coupon nahi bana abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="7">No coupons created yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(c => `
     <tr>
@@ -128,7 +128,7 @@ async function handleCouponCreate(e) {
   });
   msg.textContent = error
     ? (error.code === "23505" ? "Ye coupon code pehle se hai." : error.message)
-    : "Coupon ban gaya.";
+    : "Coupon created.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadCoupons(); loadMarketingStats(); if (typeof logActivity === "function") logActivity("Coupon created", f.code.value); }
 }
@@ -160,7 +160,7 @@ function renderReferrals() {
   if (!tbody) return;
   const list = referralFilter === "all" ? referralsCache : referralsCache.filter(r => r.status === referralFilter);
 
-  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Is filter mein koi referral nahi.</td></tr>`; return; }
+  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No referrals match this filter.</td></tr>`; return; }
 
   tbody.innerHTML = list.map(r => `
     <tr>
@@ -177,7 +177,7 @@ function renderReferrals() {
 }
 
 async function rewardReferral(id) {
-  const amountStr = prompt("Reward amount (₹) daaliye:", "100");
+  const amountStr = prompt("Enter the reward amount (₹):", "100");
   if (amountStr === null) return;
   const amount = parseFloat(amountStr || 0);
 
@@ -218,7 +218,7 @@ async function handleRewardGrant(e) {
     amount: parseFloat(f.amount.value || 0),
     expiry_date: f.expiry_date.value || null,
   });
-  msg.textContent = error ? error.message : "Reward de diya gaya — customer ke dashboard par dikhega.";
+  msg.textContent = error ? error.message : "Reward granted — it appears in the customer's dashboard.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); if (typeof logActivity === "function") logActivity("Reward granted", f.title.value); }
 }
@@ -230,7 +230,7 @@ async function loadCampaigns() {
   const { data } = await supabaseClient.from("campaigns").select("*").order("created_at", { ascending: false });
   const tbody = document.getElementById("campaigns-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi campaign nahi bana abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No campaigns created yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(c => `
     <tr>
@@ -260,7 +260,7 @@ async function handleCampaignCreate(e) {
     end_date: f.end_date.value || null,
     created_by: session?.user?.id,
   });
-  msg.textContent = error ? error.message : "Campaign save ho gaya. 'Send Now' se bhej sakte hain.";
+  msg.textContent = error ? error.message : "Campaign saved. Use 'Send Now' to send it.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadCampaigns(); }
 }
@@ -290,7 +290,7 @@ async function loadSubscribers() {
   subscribersCache = data || [];
   const tbody = document.getElementById("subscribers-body");
   if (!tbody) return;
-  if (subscribersCache.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Koi subscriber nahi abhi.</td></tr>`; return; }
+  if (subscribersCache.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No subscribers yet.</td></tr>`; return; }
 
   tbody.innerHTML = subscribersCache.map(s => `
     <tr>
@@ -302,7 +302,7 @@ async function loadSubscribers() {
 }
 
 function exportSubscribers() {
-  if (subscribersCache.length === 0) { alert("Koi subscriber nahi hai."); return; }
+  if (subscribersCache.length === 0) { alert("There are no subscribers."); return; }
   const csv = ["Email,Name,Subscribed On,Status",
     ...subscribersCache.map(s => `"${s.email}","${s.name || ""}","${mDate(s.created_at)}","${s.is_active ? "Active" : "Unsubscribed"}"`)
   ].join("\n");

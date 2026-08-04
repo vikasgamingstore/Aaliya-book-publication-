@@ -164,7 +164,7 @@ function barChart(containerId, months, values, color, formatter) {
   const gap = (W - pad * 2) / months.length;
 
   if (values.every(v => v === 0)) {
-    container.innerHTML = '<div class="chart-empty">Is period mein koi data nahi.</div>';
+    container.innerHTML = '<div class="chart-empty">No data in this period.</div>';
     return;
   }
 
@@ -192,7 +192,7 @@ function breakdownChart(containerId, items) {
   const total = items.reduce((s, i) => s + i.value, 0);
 
   if (total === 0) {
-    container.innerHTML = '<div class="chart-empty">Is period mein koi data nahi.</div>';
+    container.innerHTML = '<div class="chart-empty">No data in this period.</div>';
     return;
   }
 
@@ -265,7 +265,7 @@ function renderCustomerReport(customers) {
 
   document.getElementById("report-customers-body").innerHTML = rows.length
     ? rows.map(r => `<tr><td>${r["Customer ID"]}</td><td>${r.Name}</td><td>${r.Mobile}</td><td>${r["Registered On"]}</td><td>${r.Projects}</td><td>${r.Status}</td></tr>`).join("")
-    : `<tr><td colspan="6">Is period mein koi customer nahi.</td></tr>`;
+    : `<tr><td colspan="6">No customers in this period.</td></tr>`;
 }
 
 function renderProjectReport(regs) {
@@ -288,7 +288,7 @@ function renderProjectReport(regs) {
         <td>${r.progress_percent || 0}%</td>
         <td><span class="status-badge status-${r.project_status}">${titleCase(r.project_status)}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="6">Is period mein koi project nahi.</td></tr>`;
+    : `<tr><td colspan="6">No projects in this period.</td></tr>`;
 }
 
 function renderPaymentReport(regs) {
@@ -325,7 +325,7 @@ function renderPaymentReport(regs) {
         <td>${rMoney(r.Amount)}</td>
         <td><span class="status-badge status-${r.Status.toLowerCase().replace(/ /g, "_")}">${r.Status}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="6">Is period mein koi payment record nahi.</td></tr>`;
+    : `<tr><td colspan="6">No payment records in this period.</td></tr>`;
 }
 
 function renderCourierReport(regs) {
@@ -347,7 +347,7 @@ function renderCourierReport(regs) {
         <td><span class="status-badge status-${r.courier_out_status}">${titleCase(r.courier_out_status)}</span></td>
         <td><span class="status-badge status-${r.pickup_status}">${titleCase(r.pickup_status)}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="5">Is period mein koi parcel dispatch nahi hua.</td></tr>`;
+    : `<tr><td colspan="5">No parcels dispatched in this period.</td></tr>`;
 }
 
 function renderQualityReport(regs) {
@@ -378,7 +378,7 @@ function renderQualityReport(regs) {
         <td>${r.handwriting_quality || "—"}</td>
         <td><span class="status-badge status-${r.quality_status}">${titleCase(r.quality_status)}</span></td>
       </tr>`).join("")
-    : `<tr><td colspan="5">Is period mein koi quality check nahi hua.</td></tr>`;
+    : `<tr><td colspan="5">No quality checks in this period.</td></tr>`;
 }
 
 // ------------------------------------------------------------
@@ -386,7 +386,7 @@ function renderQualityReport(regs) {
 // ------------------------------------------------------------
 function exportReport(reportName, format) {
   const rows = reportTables[reportName];
-  if (!rows || rows.length === 0) { alert("Is report mein export karne ke liye koi data nahi hai."); return; }
+  if (!rows || rows.length === 0) { alert("There is no data in this report to export."); return; }
 
   const title = `Aaliya Book Publication — ${titleCase(reportName)} Report (${reportRange.label})`;
   const headers = Object.keys(rows[0]);

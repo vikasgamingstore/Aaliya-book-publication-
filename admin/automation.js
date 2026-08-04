@@ -34,7 +34,7 @@ async function handleAutomationSave(e) {
   updates.reminder_days_before = parseInt(f.reminder_days_before.value || 3, 10);
 
   const { error } = await supabaseClient.from("automation_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Automation settings save ho gaye.";
+  msg.textContent = error ? error.message : "Automation settings saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("Automation settings updated", "");
 }
@@ -76,7 +76,7 @@ function renderAutomationLog() {
     : automationLogCache.filter(l => l.category === automationFilter);
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="4">Is category mein koi automated action record nahi hua.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="4">No automated actions recorded in this category.</td></tr>`;
     return;
   }
 

@@ -44,6 +44,7 @@
     <div class="admin-tab" data-tab="customers">Customers</div>
     <div class="admin-tab" data-tab="invoices">Invoices</div>
     <div class="admin-tab" data-tab="settings">Settings</div>
+    <div class="admin-tab" data-tab="popup">Popup Notice</div>
     <div class="admin-tab" data-tab="content">Website Content</div>
     <div class="admin-tab" data-tab="landing">Landing Page</div>
     <div class="admin-tab" data-tab="notifications">Notifications</div>
@@ -178,13 +179,13 @@
 
     <div class="card">
       <h3>Database Snapshot</h3>
-      <p class="field-hint">Har module mein kitne records hain — ek nazar mein.</p>
+      <p class="field-hint">How many records each module holds — at a glance.</p>
       <div class="stats-grid" id="bi-snapshot"></div>
     </div>
 
     <div class="card">
       <h3>Data Integrity Check</h3>
-      <p class="field-hint">Adhoore ya galat linked records — inhe theek karna chahiye.</p>
+      <p class="field-hint">Incomplete or wrongly linked records — these should be fixed.</p>
       <div class="table-wrap">
         <table class="data-table">
           <thead><tr><th>Issue</th><th>Count</th><th>Status</th></tr></thead>
@@ -195,7 +196,7 @@
 
     <div class="card">
       <h3>Bulk Data Import</h3>
-      <p class="field-hint">CSV file upload kariye. Pehli line column headers honi chahiye.</p>
+      <p class="field-hint">Upload a CSV file. The first row must contain the column headers.</p>
       <div class="form-grid">
         <div class="field">
           <label>Import Type</label>
@@ -439,7 +440,7 @@
         </div>
         <div class="field">
           <label>Search Customer</label>
-          <input type="text" id="reg-search" placeholder="Naam se search kariye...">
+          <input type="text" id="reg-search" placeholder="Search by name...">
         </div>
       </div>
       <div class="table-wrap">
@@ -541,7 +542,7 @@
   <section class="admin-panel-section" id="tab-customers">
     <div class="card">
       <h3>All Customers</h3>
-      <div class="field"><input type="text" id="customer-search" placeholder="Naam, mobile ya email se search kariye..."></div>
+      <div class="field"><input type="text" id="customer-search" placeholder="Search by name, mobile or email..."></div>
       <div class="table-wrap">
         <table class="data-table">
           <thead><tr><th>Name</th><th>Mobile</th><th>Address</th><th>Registrations</th><th>Account</th></tr></thead>
@@ -598,23 +599,20 @@
       <form id="settings-form">
         <div class="fieldset-title">UPI</div>
         <div class="form-grid">
-          <div class="field"><label>UPI ID</label><input type="text" name="upi_id"></div>
           <div class="field">
-            <label>UPI QR Code — image upload kariye</label>
-            <input type="file" id="upi-qr-file" accept="image/*">
-            <p class="field-hint">Photo chunte hi apne aap save ho jayegi.</p>
-            <img id="upi-qr-preview" alt="UPI QR" style="display:none;width:150px;height:150px;object-fit:contain;border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#fff;padding:6px">
-            <input type="hidden" name="upi_qr_url">
+            <label>UPI ID</label>
+            <input type="text" name="upi_id" placeholder="jaise abc@ybl">
+            <p class="field-hint">Once this is set, a QR code is generated automatically for each project's fee — no separate QR upload needed.</p>
+          </div>
+          <div class="field">
+            <label>UPI ID</label>
+            <p class="field-hint">Once this UPI ID is set, a QR code is generated automatically for each project's fee — no separate QR upload needed.</p>
           </div>
         </div>
         <div class="fieldset-title">Bank Account (company)</div>
         <div class="form-grid">
-          <div class="field"><label>Account Holder Name</label><input type="text" name="bank_account_name"></div>
-          <div class="field"><label>Bank Name</label><input type="text" name="bank_name"></div>
-          <div class="field"><label>Account Number</label><input type="text" name="bank_account_number"></div>
-          <div class="field"><label>IFSC Code</label><input type="text" name="bank_ifsc"></div>
         </div>
-        <div class="field"><label>Payment Instructions (customers ko dikhega)</label><textarea name="payment_instructions" rows="2"></textarea></div>
+        <div class="field"><label>Payment Instructions (shown to customers)</label><textarea name="payment_instructions" rows="2"></textarea></div>
 
         <div class="fieldset-title">Contact</div>
         <div class="field"><label>Address</label><textarea name="address" rows="2"></textarea></div>
@@ -638,7 +636,7 @@
 
     <div class="card">
       <h3>Change Admin Password</h3>
-      <p class="field-hint">Password reset link aapke admin email par bhejenge (Supabase Auth "forgot password" flow).</p>
+      <p class="field-hint">We will send a password reset link to your admin email (Supabase Auth forgot-password flow).</p>
       <button class="btn btn-outline" id="send-reset-btn">Send Password Reset Email</button>
       <div id="reset-msg" class="form-msg"></div>
     </div>
@@ -646,20 +644,22 @@
 
   <!-- CONTENT (CMS) -->
 
+
+  <section class="admin-panel-section" id="tab-popup">
     <div class="card">
       <h3>Website Popup / Warning Notice</h3>
-      <p class="field-hint">Site khulte hi customer ko ye popup dikhega. Fraud warning, zaroori suchna ya offer — jo likhna ho likhiye. Customer close kar sakta hai.</p>
+      <p class="field-hint">This popup appears as soon as a customer opens the site. Use it for a fraud warning, an important notice or an offer. Customers can close it.</p>
       <form id="popup-form">
         <div class="field">
-          <label class="perm-item"><input type="checkbox" name="popup_enabled"> Popup chalu kariye</label>
+          <label class="perm-item"><input type="checkbox" name="popup_enabled"> Enable popup</label>
         </div>
         <div class="form-grid">
           <div class="field">
             <label>Popup Type</label>
             <select name="popup_type">
-              <option value="warning">⚠️ Warning / Fraud Alert (laal)</option>
-              <option value="info">ℹ️ Zaroori Suchna (neela)</option>
-              <option value="offer">🎉 Offer (neela)</option>
+              <option value="warning">⚠️ Warning / Fraud Alert (red)</option>
+              <option value="info">ℹ️ Important Notice (blue)</option>
+              <option value="offer">🎉 Offer (blue)</option>
             </select>
           </div>
           <div class="field"><label>Badge (upar ka chhota text)</label><input type="text" name="popup_badge" placeholder="IMPORTANT NOTICE"></div>
@@ -677,12 +677,13 @@
           <input type="hidden" name="popup_image_url">
         </div>
         <div class="field">
-          <label class="perm-item"><input type="checkbox" name="popup_show_once" checked> Ek session mein sirf ek baar dikhaiye</label>
+          <label class="perm-item"><input type="checkbox" name="popup_show_once" checked> Show only once per session</label>
         </div>
         <button type="submit" class="btn btn-primary">Save Popup</button>
         <div id="popup-msg" class="form-msg"></div>
       </form>
     </div>
+  </section>
 
   <section class="admin-panel-section" id="tab-content">
     <div class="card">
@@ -708,7 +709,7 @@
     <div class="card">
       <h3>SEO Settings</h3>
       <form id="seo-form">
-        <div class="field"><label>Page Title (search results mein dikhta hai)</label><input type="text" name="seo_title"></div>
+        <div class="field"><label>Page Title (shown in search results)</label><input type="text" name="seo_title"></div>
         <div class="field"><label>Meta Description (150-160 characters best hai)</label><textarea name="seo_description" rows="3"></textarea></div>
         <div class="field"><label>Keywords (comma se separate)</label><textarea name="seo_keywords" rows="2"></textarea></div>
         <button type="submit" class="btn btn-primary">Save SEO Settings</button>
@@ -797,7 +798,7 @@
 
     <div class="card">
       <h3>Backup</h3>
-      <p class="field-hint">Poora data JSON file mein download kariye. Supabase Dashboard → Database → Backups par automatic daily backups bhi milte hain.</p>
+      <p class="field-hint">Download all your data as a JSON file. Automatic daily backups are also available in Supabase Dashboard → Database → Backups.</p>
       <div class="field"><label>Backup note (optional)</label><input type="text" id="backup-note" placeholder="Jaise: monthly backup"></div>
       <button class="btn btn-primary" id="create-backup-btn">Create &amp; Download Backup</button>
       <div id="backup-msg" class="form-msg"></div>
@@ -815,7 +816,7 @@
 
     <div class="card">
       <h3>Session Security</h3>
-      <p class="field-hint">Agar aapko lagta hai kisi aur device par aapka account logged in hai, to sab jagah se logout kar dijiye.</p>
+      <p class="field-hint">If you think your account is logged in on another device, sign out everywhere.</p>
       <button class="btn btn-outline" id="logout-everywhere-btn">Logout From All Devices</button>
       <div id="logout-all-msg" class="form-msg"></div>
     </div>
@@ -828,7 +829,7 @@
       <p class="field-hint">Deadline reminders, pending payment reminders aur overdue submission reminders — jinko aaj bhejni hain, sabko ek saath bhejiye.</p>
       <button class="btn btn-primary" id="send-reminders-btn">Send Due Reminders Now</button>
       <div id="reminders-msg" class="form-msg"></div>
-      <p class="field-hint" style="margin-top:12px">Roz automatic chalane ke liye Supabase Dashboard → Database → Cron Jobs mein <code>select public.send_due_reminders();</code> schedule kariye.</p>
+      <p class="field-hint" style="margin-top:12px">Roz automatic chalane ke liye Supabase Dashboard → Database → Cron Jobs mein <code>select public.send_due_reminders();</code> to schedule it.</p>
     </div>
 
     <div class="card">
@@ -882,7 +883,7 @@
 
     <div class="card">
       <h3>Languages</h3>
-      <p class="field-hint">Website ke liye available languages. Nayi language add karne par uske translations bharna zaroori hai.</p>
+      <p class="field-hint">Languages available on the website. If you add a new language, you must also fill in its translations.</p>
       <form id="language-form" class="form-grid">
         <div class="field"><label>Language Code</label><input type="text" name="code" placeholder="mr" maxlength="5" required></div>
         <div class="field"><label>Language Name</label><input type="text" name="name" placeholder="मराठी" required></div>
@@ -913,7 +914,7 @@
           </select>
         </div>
       </div>
-      <p class="field-hint">Yahan se website ka text badal sakte hain — koi code change nahi chahiye. Save karte hi website par reflect hoga.</p>
+      <p class="field-hint">Change the website text here — no code changes needed. It appears on the site as soon as you save.</p>
       <div class="table-wrap">
         <table class="data-table">
           <thead><tr><th>Key</th><th>Category</th><th>Text</th><th>Action</th></tr></thead>
@@ -1053,7 +1054,7 @@
         </div>
         <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
         <div class="form-grid">
-          <div class="field"><label>Discount (bada dikhega)</label><input type="text" name="discount_text" placeholder="50%"></div>
+          <div class="field"><label>Discount (shown large)</label><input type="text" name="discount_text" placeholder="50%"></div>
           <div class="field"><label>Coupon Code (optional)</label><input type="text" name="coupon_code" placeholder="DIWALI50"></div>
         </div>
         <div class="form-grid">
@@ -1286,7 +1287,7 @@
   <section class="admin-panel-section" id="tab-roles">
     <div class="card">
       <h3>Create Staff Account</h3>
-      <p class="field-hint">Pehle staff member ko normal signup page se account banane ko kahiye, phir yahan unka email daal kar role aur permissions dijiye.</p>
+      <p class="field-hint">First ask the staff member to create an account on the normal signup page, then enter their email here and assign a role and permissions.</p>
       <form id="staff-form">
         <div class="form-grid">
           <div class="field"><label>Staff Email (registered)</label><input type="email" name="email" required placeholder="staff@example.com"></div>
@@ -1314,7 +1315,7 @@
           <label class="perm-item"><input type="checkbox" name="manage_quality"> Manage Quality Check</label>
           <label class="perm-item"><input type="checkbox" name="access_reports"> Access Reports</label>
         </div>
-        <p class="field-hint">Role chunte hi recommended permissions apne aap tick ho jaate hain — aap badal sakte hain.</p>
+        <p class="field-hint">Choosing a role ticks the recommended permissions automatically — you can change them.</p>
 
         <button type="submit" class="btn btn-primary">Create Staff Account</button>
         <div id="staff-msg" class="form-msg"></div>
@@ -1423,7 +1424,7 @@
 
     <div class="card">
       <h3>Automation Settings</h3>
-      <p class="field-hint">Har automation ko yahan se on/off kar sakte hain. Off karne par wo kaam manually karna hoga.</p>
+      <p class="field-hint">Turn each automation on or off here. If you turn one off, that task has to be done manually.</p>
       <form id="automation-form">
         <div class="perm-grid">
           <label class="perm-item"><input type="checkbox" name="auto_customer_alerts"> Customer Alerts (dashboard notifications)</label>
@@ -1441,7 +1442,7 @@
         <button type="button" class="btn btn-outline" id="run-automation-btn">Run Reminders Now</button>
         <div id="automation-msg" class="form-msg"></div>
       </form>
-      <p class="field-hint" style="margin-top:12px">Email notifications ke liye Supabase Edge Function (Resend/SendGrid) setup karna hoga — tab tak ye toggle off rakhiye.</p>
+      <p class="field-hint" style="margin-top:12px">Email notifications need a Supabase Edge Function (Resend/SendGrid). Keep this toggle off until that is set up.</p>
     </div>
 
     <div class="card">
@@ -1455,7 +1456,7 @@
             <tr><td>Admin registration approve karta hai</td><td>Registration ID + Invoice number generate, customer ko notification, project assign</td></tr>
             <tr><td>Admin payment approve karta hai</td><td>Receipt number generate hota hai, customer ko receipt notification</td></tr>
             <tr><td>Admin advance payment approve karta hai</td><td>Payment record update + customer ko notification (transaction ref ke saath)</td></tr>
-            <tr><td>Courier status badalta hai</td><td>Har stage par customer ko notification; "Delivered" par project stage "Materials Sent" ho jaata hai</td></tr>
+            <tr><td>Courier status changes</td><td>Har stage par customer ko notification; "Delivered" par project stage "Materials Sent" ho jaata hai</td></tr>
             <tr><td>Customer project complete submit karta hai</td><td>Pickup request banti hai, staff ko alert, quality check stage shuru</td></tr>
             <tr><td>Parcel office pahunchta hai</td><td>Project "Under Quality Check" ho jaata hai, staff ko alert</td></tr>
             <tr><td>Quality approve hota hai</td><td>Customer ko notification, payment staff ko "final payment pending" alert</td></tr>

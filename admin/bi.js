@@ -31,7 +31,7 @@ async function loadBusinessReport() {
 }
 
 function exportBusinessReport() {
-  if (!biReportRows.length) { alert("Pehle report load hone dijiye."); return; }
+  if (!biReportRows.length) { alert("Please let the report load first."); return; }
   const csv = ["Metric,Value,Detail",
     ...biReportRows.map(r => `"${r.metric}","${r.value}","${r.detail || ""}"`)].join("\n");
   biDownload(csv, `business-report-${biPeriod}-${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8;");
@@ -48,7 +48,7 @@ function biLineChart(containerId, labels, series, formatter) {
   const W = 320, H = 165, pad = 30;
 
   if (!labels.length || allValues.every(v => v === 0)) {
-    container.innerHTML = '<div class="chart-empty">Abhi data nahi hai.</div>';
+    container.innerHTML = '<div class="chart-empty">No data yet.</div>';
     return;
   }
 
@@ -86,7 +86,7 @@ function biBarBreakdown(containerId, items) {
   const container = document.getElementById(containerId);
   if (!container) return;
   const total = items.reduce((s, i) => s + i.value, 0);
-  if (total === 0) { container.innerHTML = '<div class="chart-empty">Abhi data nahi hai.</div>'; return; }
+  if (total === 0) { container.innerHTML = '<div class="chart-empty">No data yet.</div>'; return; }
 
   container.innerHTML = items.slice(0, 8).map(i => `
     <div class="bar-row">
@@ -144,7 +144,7 @@ async function loadBiProjectPerformance() {
   const tbody = document.getElementById("bi-project-body");
   if (!tbody) return;
 
-  if (biProjectRows.length === 0) { tbody.innerHTML = `<tr><td colspan="7">Abhi koi project data nahi.</td></tr>`; return; }
+  if (biProjectRows.length === 0) { tbody.innerHTML = `<tr><td colspan="7">No project data yet.</td></tr>`; return; }
 
   tbody.innerHTML = biProjectRows.map(p => `
     <tr>
@@ -159,7 +159,7 @@ async function loadBiProjectPerformance() {
 }
 
 function exportBiTable() {
-  if (!biProjectRows.length) { alert("Export karne ke liye data nahi hai."); return; }
+  if (!biProjectRows.length) { alert("There is no data to export."); return; }
   const cols = ["project_name","num_pages","total_registrations","completed","in_progress","completion_rate","avg_days_to_complete"];
   const csv = [cols.join(","), ...biProjectRows.map(r => cols.map(c => `"${r[c] ?? ""}"`).join(","))].join("\n");
   biDownload(csv, `project-performance-${new Date().toISOString().slice(0,10)}.csv`, "text/csv;charset=utf-8;");
@@ -189,7 +189,7 @@ async function loadIntegrityCheck() {
       <td>${r.issue}</td>
       <td>${r.count}</td>
       <td><span class="status-badge status-${Number(r.count) === 0 ? "approved" : "pending"}">${Number(r.count) === 0 ? "OK" : "Needs attention"}</span></td>
-    </tr>`).join("") || `<tr><td colspan="3">Check nahi chal paya.</td></tr>`;
+    </tr>`).join("") || `<tr><td colspan="3">The check could not run.</td></tr>`;
 }
 
 // ------------------------------------------------------------
@@ -221,7 +221,7 @@ function handleImportFile(e) {
   reader.onload = () => {
     importRows = parseCsv(reader.result);
     if (importRows.length === 0) {
-      preview.innerHTML = '<p class="form-msg error">CSV padha nahi ja saka ya khaali hai.</p>';
+      preview.innerHTML = '<p class="form-msg error">The CSV could not be read or is empty.</p>';
       btn.disabled = true;
       return;
     }
@@ -281,7 +281,7 @@ async function loadImportHistory() {
   const { data } = await supabaseClient.from("import_log").select("*").order("created_at", { ascending: false }).limit(20);
   const tbody = document.getElementById("import-history-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Abhi koi import nahi hua.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No imports yet.</td></tr>`; return; }
 
   tbody.innerHTML = data.map(l => `
     <tr>
@@ -316,7 +316,7 @@ async function loadBackupSettings() {
   if (info) {
     info.textContent = data.last_backup_at
       ? "Last backup: " + new Date(data.last_backup_at).toLocaleString("en-IN")
-      : "Abhi tak koi backup nahi liya gaya.";
+      : "No backup has been taken yet.";
   }
 }
 
@@ -329,7 +329,7 @@ async function handleBackupSettingsSave(e) {
     backup_frequency: f.backup_frequency.value,
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "Backup settings save ho gaye.";
+  msg.textContent = error ? error.message : "Backup settings saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 

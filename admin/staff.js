@@ -81,7 +81,7 @@ async function handleStaffCreate(e) {
     return;
   }
 
-  msg.textContent = "Staff account ban gaya.";
+  msg.textContent = "Staff account created.";
   msg.className = "form-msg ok";
   f.reset();
   applyRoleDefaultPerms();
@@ -106,7 +106,7 @@ async function loadStaffTable() {
   if (!tbody) return;
 
   if (staffCache.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6">Abhi koi staff member nahi hai.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6">No staff members yet.</td></tr>`;
     return;
   }
 
@@ -179,7 +179,7 @@ async function saveStaffEdit(id) {
   PERM_KEYS.forEach(k => { updates["perm_" + k] = document.getElementById("edit-" + k).checked; });
 
   const { error } = await supabaseClient.from("profiles").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes save ho gaye.";
+  msg.textContent = error ? error.message : "Changes saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) {
     if (typeof logActivity === "function") logActivity("Staff updated", `${id} → ${updates.admin_role}`);
@@ -214,7 +214,7 @@ async function loadStaffPerformance() {
   if (!tbody) return;
 
   if (!data || data.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6">Abhi koi data nahi.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6">No data yet.</td></tr>`;
     return;
   }
 
@@ -274,7 +274,7 @@ async function handleTaskCreate(e) {
     due_date: f.due_date.value || null,
   });
 
-  msg.textContent = error ? error.message : "Task assign ho gaya — staff ko notification chala gaya.";
+  msg.textContent = error ? error.message : "Task assigned — the staff member has been notified.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) {
     f.reset();
@@ -316,7 +316,7 @@ function renderTasks() {
   const list = taskFilter === "all" ? tasksCache : tasksCache.filter(t => t.status === taskFilter);
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7">Koi task nahi mila.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7">No tasks found.</td></tr>`;
     return;
   }
 
@@ -359,7 +359,7 @@ async function updateTaskStatus(id, status) {
 }
 
 async function addTaskComment(id) {
-  const comment = prompt("Task ke baare mein comment likhiye:");
+  const comment = prompt("Write a comment about this task:");
   if (comment === null) return;
   await supabaseClient.from("staff_tasks").update({ staff_comment: comment.trim() || null }).eq("id", id);
   loadTasks();
@@ -381,7 +381,7 @@ async function loadStaffNotifications() {
   if (!box) return;
 
   if (!data || data.length === 0) {
-    box.innerHTML = '<p class="field-hint">Abhi koi notification nahi hai.</p>';
+    box.innerHTML = '<p class="field-hint">No notifications yet.</p>';
     return;
   }
 

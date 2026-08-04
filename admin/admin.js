@@ -21,7 +21,7 @@ async function handleAdminLogin(e) {
   const { data: profile } = await supabaseClient.from("profiles").select("is_admin, is_blocked").eq("id", data.user.id).single();
   if (!profile?.is_admin || profile?.is_blocked) {
     await recordLoginAttempt({ userId: data.user.id, email, success: false, isAdmin: true });
-    msg.textContent = "Ye account admin nahi hai.";
+    msg.textContent = "This account is not an admin account.";
     msg.classList.add("error");
     await supabaseClient.auth.signOut();
     return;
@@ -32,7 +32,7 @@ async function handleAdminLogin(e) {
 }
 
 async function handleForgotPassword() {
-  const email = prompt("Apna admin email likhiye:");
+  const email = prompt("Enter your admin email:");
   if (!email) return;
   const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
   const msg = document.getElementById("ad-msg");
@@ -97,7 +97,7 @@ const ROLE_TABS = {
   project_manager: ["overview", "reports", "bi", "projects", "registrations", "courier", "customers", "tasks", "automation", "datamanager"],
   payment_manager: ["overview", "reports", "bi", "payments", "invoices", "registrations", "customers", "tasks", "datamanager"],
   courier_manager: ["overview", "courier", "registrations", "customers", "tasks", "datamanager"],
-  support_manager: ["overview", "customers", "notifications", "registrations", "tasks", "datamanager", "crm", "marketing", "experience"],
+  support_manager: ["overview", "customers", "notifications", "registrations", "tasks", "datamanager", "crm", "marketing", "experience", "popup"],
   quality_manager: ["overview", "registrations", "customers", "tasks", "datamanager"],
 };
 
@@ -185,10 +185,10 @@ async function handleProfileSave(e) {
   const msg = document.getElementById("profile-msg");
   const fields = ["company_name","logo_url","favicon_url","description","facebook_url","instagram_url","telegram_url","whatsapp_group_url"];
   const updates = { updated_at: new Date().toISOString() };
-  fields.forEach(k => updates[k] = f[k].value.trim());
+  fields.forEach(k => { if (f[k]) updates[k] = f[k].value.trim() || null; });
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Company profile save ho gaya.";
+  msg.textContent = error ? error.message : "Company profile saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -196,47 +196,15 @@ async function handleSettingsSave(e) {
   e.preventDefault();
   const f = e.target;
   const msg = document.getElementById("settings-msg");
-  const fields = ["address","whatsapp_number","phone_number","email","upi_id","logo_url","upi_qr_url",
-    "bank_account_name","bank_account_number","bank_ifsc","bank_name","payment_instructions"];
+  const fields = ["address","whatsapp_number","phone_number","email","upi_id","payment_instructions"];
   const updates = { updated_at: new Date().toISOString() };
-  fields.forEach(k => updates[k] = f[k].value.trim());
+  fields.forEach(k => { if (f[k]) updates[k] = f[k].value.trim() || null; });
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Settings save ho gaye — website par turant reflect hoga.";
+  msg.textContent = error ? error.message : "Settings saved — they appear on the website immediately.";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
-
-// ---------- UPI QR image upload (compress -> data URI -> save) ----------
-async function handleQrUpload(e) {
-  const file = e.target.files[0];
-  const msg = document.getElementById("settings-msg");
-  if (!file) return;
-
-  if (!file.type.startsWith("image/")) {
-    msg.textContent = "Sirf image file chuniye."; msg.className = "form-msg error"; return;
-  }
-  msg.textContent = "QR upload ho raha hai..."; msg.className = "form-msg";
-
-  try {
-    const dataUri = await compressImage(file, 420, 0.82);
-    const { error } = await supabaseClient.from("company_settings")
-      .update({ upi_qr_url: dataUri, updated_at: new Date().toISOString() }).eq("id", 1);
-    if (error) throw error;
-
-    const form = document.getElementById("settings-form");
-    if (form && form.upi_qr_url) form.upi_qr_url.value = dataUri;
-    const prev = document.getElementById("upi-qr-preview");
-    if (prev) { prev.src = dataUri; prev.style.display = "block"; }
-
-    msg.textContent = "QR code save ho gaya — payment page par turant dikhega.";
-    msg.className = "form-msg ok";
-    if (typeof logActivity === "function") logActivity("UPI QR updated", file.name);
-  } catch (err) {
-    msg.textContent = "QR save nahi ho paya: " + err.message;
-    msg.className = "form-msg error";
-  }
-}
 
 // Image ko chhota kar ke data URI banata hai (koi storage/URL ki zaroorat nahi)
 function compressImage(file, maxSize, quality) {
@@ -257,10 +225,10 @@ function compressImage(file, maxSize, quality) {
         ctx.drawImage(img, 0, 0, w, h);
         resolve(canvas.toDataURL("image/webp", quality));
       };
-      img.onerror = () => reject(new Error("Image padhi nahi ja saki"));
+      img.onerror = () => reject(new Error("Could not read the image"));
       img.src = reader.result;
     };
-    reader.onerror = () => reject(new Error("File padhi nahi ja saki"));
+    reader.onerror = () => reject(new Error("Could not read the file"));
     reader.readAsDataURL(file);
   });
 }
@@ -293,7 +261,7 @@ async function handlePopupSave(e) {
   updates.popup_show_once = f.popup_show_once.checked;
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Popup save ho gaya — website par turant dikhega.";
+  msg.textContent = error ? error.message : "Popup saved — it appears on the website immediately.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("Popup updated", updates.popup_title || "");
 }
@@ -309,19 +277,34 @@ async function handlePopupImage(e) {
     if (f && f.popup_image_url) f.popup_image_url.value = uri;
     const prev = document.getElementById("popup-image-preview");
     if (prev) { prev.src = uri; prev.style.display = "block"; }
-    msg.textContent = "Image lag gayi — ab Save Popup dabaiye.";
+    msg.textContent = "Image added — now tap Save Popup.";
     msg.className = "form-msg ok";
   } catch (err) {
-    msg.textContent = "Image load nahi hui: " + err.message;
+    msg.textContent = "Could not load image: " + err.message;
     msg.className = "form-msg error";
   }
+}
+
+
+// ---------- Admin: customer ka password badlein ----------
+async function adminChangePassword(userId, name) {
+  const pw = prompt(`${name || "Customer"} — enter a new password (at least 8 characters):`);
+  if (pw === null) return;
+  if (pw.trim().length < 8) { alert("Password must be at least 8 characters."); return; }
+
+  const { data, error } = await supabaseClient.rpc("admin_set_password", {
+    target_user: userId, new_password: pw.trim(),
+  });
+  if (error) { alert("Password was not changed: " + error.message); return; }
+  alert(`Password has been changed.\nLogin email: ${data}\nNew password: ${pw.trim()}\n\nPlease share these details with the customer.`);
+  if (typeof logActivity === "function") logActivity("Customer password changed", name || userId);
 }
 
 // ---------- Projects ----------
 async function loadProjectsTable() {
   const { data: projects } = await supabaseClient.from("projects").select("*").order("created_at", { ascending: false });
   const tbody = document.getElementById("projects-body");
-  if (!projects || projects.length === 0) { tbody.innerHTML = `<tr><td colspan="7">Koi project nahi bana abhi.</td></tr>`; return; }
+  if (!projects || projects.length === 0) { tbody.innerHTML = `<tr><td colspan="7">No projects created yet.</td></tr>`; return; }
   tbody.innerHTML = projects.map(p => `
     <tr>
       <td>${p.image_url ? `<img src="${p.image_url}" style="width:44px;height:44px;object-fit:cover;border-radius:4px">` : "—"}</td>
@@ -358,7 +341,7 @@ async function handleProjectCreate(e) {
     instructions: f.instructions.value.trim(),
     image_url: f.image_url.value.trim() || null,
   });
-  msg.textContent = error ? error.message : "Project add ho gaya.";
+  msg.textContent = error ? error.message : "Project added.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadProjectsTable(); loadOverviewStats(); logActivity("Project added", f.project_name.value.trim()); }
 }
@@ -388,7 +371,7 @@ async function loadRegistrationsTable() {
 
 function renderRegistrationsTable(regs) {
   const tbody = document.getElementById("registrations-body");
-  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Koi registration match nahi hua.</td></tr>`; return; }
+  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No registrations matched.</td></tr>`; return; }
   tbody.innerHTML = regs.map(r => `
     <tr>
       <td><strong>${r.profiles?.full_name || "—"}</strong><br><small>${r.profiles?.mobile || ""}</small><br><small>${r.registration_number || "No ID yet"}</small></td>
@@ -446,8 +429,8 @@ async function openRegDetail(id) {
       <div><span>Expected Amount</span><strong style="font-size:1.1rem;color:var(--green-ok)">₹${proj.registration_fee ?? "—"}</strong></div>
       <div><span>UTR / Reference</span><strong>${r.registration_utr || "—"}</strong></div>
     </div>
-    <p class="field-hint">Screenshot mein amount <strong>₹${proj.registration_fee ?? "—"}</strong> hi hona chahiye. Kam/zyada ho to reject kar ke remark likh dijiye.</p>
-    ${r.payment_screenshot_url ? `<p><a href="#" onclick="openSecureFile(event, '${r.payment_screenshot_url}')">View Payment Screenshot</a></p>` : `<p class="field-hint">Customer ne abhi screenshot upload nahi kiya.</p>`}
+    <p class="field-hint">Screenshot mein amount <strong>₹${proj.registration_fee ?? "—"}</strong> exactly. If it is more or less, reject it and add a remark.</p>
+    ${r.payment_screenshot_url ? `<p><a href="#" onclick="openSecureFile(event, '${r.payment_screenshot_url}')">View Payment Screenshot</a></p>` : `<p class="field-hint">The customer has not uploaded a screenshot yet.</p>`}
     <div class="form-grid">
       <div class="field">
         <select id="f-payment-status">
@@ -496,7 +479,7 @@ async function openRegDetail(id) {
       </div>
       <div class="field"><input type="text" id="f-courier-out-track" placeholder="Tracking number" value="${r.courier_out_tracking || ''}"></div>
     </div>
-    <p class="field-hint">${r.delivery_confirmed_by_customer ? `Customer ne delivery confirm kar di (${r.delivery_confirmed_at ? new Date(r.delivery_confirmed_at).toLocaleDateString('en-IN') : ''}) — project auto-started.` : "Customer ne abhi delivery confirm nahi ki."}</p>
+    <p class="field-hint">${r.delivery_confirmed_by_customer ? `Customer ne delivery confirm kar di (${r.delivery_confirmed_at ? new Date(r.delivery_confirmed_at).toLocaleDateString('en-IN') : ''}) — project auto-started.` : "The customer has not confirmed delivery yet."}</p>
 
     <div class="fieldset-title">6. Project Status</div>
     <div class="field">
@@ -563,7 +546,7 @@ async function openRegDetail(id) {
         </select>
       </div>
     </div>
-    <div class="field"><label>Missing Pages (agar koi hai)</label><input type="text" id="f-missing-pages" value="${r.missing_pages || ''}"></div>
+    <div class="field"><label>Missing Pages (if any)</label><input type="text" id="f-missing-pages" value="${r.missing_pages || ''}"></div>
     <div class="field">
       <label>Quality Status</label>
       <select id="f-quality">
@@ -573,7 +556,7 @@ async function openRegDetail(id) {
         <option value="rejected" ${r.quality_status==='rejected'?'selected':''}>Rejected</option>
       </select>
     </div>
-    <div class="field"><label>Correction Message / Required Updates (customer ko dikhega)</label><textarea id="f-correction-message" rows="2">${r.correction_message || ''}</textarea></div>
+    <div class="field"><label>Correction Message / Required Updates (shown to customer)</label><textarea id="f-correction-message" rows="2">${r.correction_message || ''}</textarea></div>
     <div class="field"><label>Internal Note</label><input type="text" id="f-quality-note" placeholder="Internal note" value="${r.quality_note || ''}"></div>
 
     <div class="fieldset-title">9. Final Payment (50%) — release after Quality Approved</div>
@@ -585,7 +568,7 @@ async function openRegDetail(id) {
     </div>
 
     <button class="btn btn-primary" onclick="saveRegDetail('${r.id}')">Save Changes</button>
-    <a class="btn btn-outline" href="https://wa.me/?text=${encodeURIComponent('Aapke project ka status update ho gaya hai - Aaliya Book Publication')}" target="_blank">WhatsApp Customer</a>
+    <a class="btn btn-outline" href="https://wa.me/?text=${encodeURIComponent('Your project status has been updated - Aaliya Book Publication')}" target="_blank">WhatsApp Customer</a>
     <div id="reg-save-msg" class="form-msg"></div>
   `;
   box.style.display = "block";
@@ -630,7 +613,7 @@ async function saveRegDetail(id) {
   if (updates.final_status === "approved") updates.final_approved_at = new Date().toISOString();
 
   const { error } = await supabaseClient.from("registrations").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes save ho gaye.";
+  msg.textContent = error ? error.message : "Changes saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { logActivity("Registration updated", `${updates.status} / ${updates.project_status}`); loadRegistrationsTable(); loadOverviewStats(); loadInvoicesTable(); loadPaymentsTab(); loadCourierTab(); loadProjectHistory(); }
 }
@@ -655,7 +638,7 @@ async function loadCourierTab() {
       <td>${r.courier_out_tracking || "—"}</td>
       <td><span class="status-badge status-${r.courier_out_status}">${r.courier_out_status.replace(/_/g," ")}</span></td>
       <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">Manage</button></td>
-    </tr>`).join("") : `<tr><td colspan="7">Koi outgoing parcel nahi.</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="7">No outgoing parcels.</td></tr>`;
 
   // Delivered
   const delivered = all.filter(r => r.courier_out_status === "delivered");
@@ -665,7 +648,7 @@ async function loadCourierTab() {
       <td>${r.projects?.project_name || "—"}</td>
       <td>${r.delivery_confirmed_at ? new Date(r.delivery_confirmed_at).toLocaleDateString("en-IN") : "—"}</td>
       <td>${r.delivery_confirmed_by_customer ? "Yes" : "Awaiting confirmation"}</td>
-    </tr>`).join("") : `<tr><td colspan="4">Koi delivered parcel nahi.</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="4">No delivered parcels.</td></tr>`;
 
   // Pickup requests (active)
   const pickups = all.filter(r => !["not_requested", "received_at_company"].includes(r.pickup_status));
@@ -676,7 +659,7 @@ async function loadCourierTab() {
       <td><span class="status-badge status-${r.pickup_status}">${r.pickup_status.replace(/_/g," ")}</span></td>
       <td>${r.pickup_tracking || "—"}</td>
       <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">Manage</button></td>
-    </tr>`).join("") : `<tr><td colspan="5">Koi active pickup request nahi.</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="5">No active pickup requests.</td></tr>`;
 
   // Returned / received
   const returned = all.filter(r => r.pickup_status === "received_at_company");
@@ -686,7 +669,7 @@ async function loadCourierTab() {
       <td>${r.projects?.project_name || "—"}</td>
       <td>${r.return_courier_name || "—"}</td>
       <td>${r.return_received_date ? new Date(r.return_received_date).toLocaleDateString("en-IN") : "—"}</td>
-    </tr>`).join("") : `<tr><td colspan="4">Abhi koi project return nahi hua.</td></tr>`;
+    </tr>`).join("") : `<tr><td colspan="4">No projects returned yet.</td></tr>`;
 }
 
 // ---------- Payments tab ----------
@@ -725,7 +708,7 @@ async function loadPaymentQueue() {
     .order("created_at", { ascending: false });
 
   const tbody = document.getElementById("payment-queue-body");
-  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="7">Koi payment verification ke liye pending nahi.</td></tr>`; return; }
+  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="7">No payments pending verification.</td></tr>`; return; }
   tbody.innerHTML = regs.map(r => `
     <tr>
       <td>${r.profiles?.full_name || "—"}</td>
@@ -743,7 +726,7 @@ async function loadPaymentQueue() {
 
 async function quickPaymentAction(id, status) {
   let remarks = null;
-  if (status === "rejected") remarks = prompt("Reject karne ka reason likhiye:") || "Payment could not be verified";
+  if (status === "rejected") remarks = prompt("Enter the reason for rejection:") || "Payment could not be verified";
   const updates = { registration_payment_status: status, registration_fee_paid: status === "approved", updated_at: new Date().toISOString() };
   if (status === "approved") updates.registration_payment_date = new Date().toISOString();
   if (remarks) updates.payment_remarks = remarks;
@@ -771,7 +754,7 @@ async function loadProjectPaymentReport() {
 
   const tbody = document.getElementById("project-payment-report-body");
   const rows = Object.entries(byProject);
-  if (rows.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Data nahi hai.</td></tr>`; return; }
+  if (rows.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No data.</td></tr>`; return; }
   tbody.innerHTML = rows.map(([name, d]) => `
     <tr><td>${name}</td><td>${d.count}</td><td>₹${d.reg}</td><td>₹${d.adv}</td><td>₹${d.fin}</td></tr>`).join("");
 }
@@ -783,7 +766,7 @@ async function loadCustomerPaymentHistory() {
     .order("created_at", { ascending: false });
 
   const tbody = document.getElementById("customer-payment-history-body");
-  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Data nahi hai.</td></tr>`; return; }
+  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No data.</td></tr>`; return; }
   tbody.innerHTML = regs.map(r => `
     <tr>
       <td>${r.profiles?.full_name || "—"}</td>
@@ -802,7 +785,7 @@ async function loadProjectHistory() {
     .order("updated_at", { ascending: false });
 
   const tbody = document.getElementById("project-history-body");
-  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Abhi koi project complete nahi hua.</td></tr>`; return; }
+  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No projects completed yet.</td></tr>`; return; }
   tbody.innerHTML = regs.map(r => `
     <tr>
       <td>${r.profiles?.full_name || "—"}</td>
@@ -829,7 +812,7 @@ async function loadCustomersTable() {
 
 function renderCustomersTable(list) {
   const tbody = document.getElementById("customers-body");
-  if (!list || list.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi customer nahi mila.</td></tr>`; return; }
+  if (!list || list.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No customers found.</td></tr>`; return; }
   tbody.innerHTML = list.map(c => `
     <tr>
       <td>${c.full_name || "—"}<br><small>${c.customer_id || ""}</small></td>
@@ -877,7 +860,7 @@ async function viewCustomer(id) {
       <table class="data-table">
         <thead><tr><th>Project</th><th>Registration ID</th><th>Status</th></tr></thead>
         <tbody>
-          ${(regs || []).map(r => `<tr><td>${r.projects?.project_name || "—"}</td><td>${r.registration_number || "—"}</td><td><span class="status-badge status-${r.project_status}">${r.project_status.replace(/_/g," ")}</span></td></tr>`).join("") || '<tr><td colspan="3">Koi registration nahi</td></tr>'}
+          ${(regs || []).map(r => `<tr><td>${r.projects?.project_name || "—"}</td><td>${r.registration_number || "—"}</td><td><span class="status-badge status-${r.project_status}">${r.project_status.replace(/_/g," ")}</span></td></tr>`).join("") || '<tr><td colspan="3">No registrations</td></tr>'}
         </tbody>
       </table>
     </div>
@@ -907,7 +890,7 @@ async function loadActivityLog() {
     .limit(100);
 
   const tbody = document.getElementById("activity-log-body");
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Abhi koi activity record nahi hui.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No activity recorded yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(l => `
     <tr>
       <td>${l.profiles?.full_name || "—"}</td>
@@ -938,7 +921,7 @@ async function handleSeoSave(e) {
     seo_keywords: f.seo_keywords.value.trim(),
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "SEO settings save ho gaye.";
+  msg.textContent = error ? error.message : "SEO settings saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) logActivity("SEO settings updated", f.seo_title.value.trim());
 }
@@ -948,7 +931,7 @@ async function loadTestimonialsTable() {
   const { data } = await supabaseClient.from("testimonials").select("*").order("display_order", { ascending: true });
   const tbody = document.getElementById("testimonials-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi review add nahi hua abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No reviews added yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(t => `
     <tr>
       <td>${t.customer_name}<br><small>${t.location || ""}</small></td>
@@ -974,7 +957,7 @@ async function handleTestimonialCreate(e) {
     rating: parseInt(f.rating.value, 10),
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Review add ho gaya.";
+  msg.textContent = error ? error.message : "Review added.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadTestimonialsTable(); logActivity("Review added", f.customer_name.value); }
 }
@@ -994,7 +977,7 @@ async function loadFaqsTable() {
   const { data } = await supabaseClient.from("faq_items").select("*").order("display_order", { ascending: true });
   const tbody = document.getElementById("faqs-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Koi FAQ add nahi hua abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No FAQs added yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(f => `
     <tr>
       <td>${f.question}</td>
@@ -1016,7 +999,7 @@ async function handleFaqCreate(e) {
     answer: f.answer.value.trim(),
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "FAQ add ho gaya.";
+  msg.textContent = error ? error.message : "FAQ added.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadFaqsTable(); }
 }
@@ -1037,7 +1020,7 @@ async function openSecureFile(event, pathOrUrl) {
   if (pathOrUrl.startsWith("http")) { window.open(pathOrUrl, "_blank"); return; }
   const url = await getSignedUploadUrl(pathOrUrl);
   if (url) window.open(url, "_blank");
-  else alert("File open nahi ho payi.");
+  else alert("Could not open the file.");
 }
 
 // ---------- Security & Backup ----------
@@ -1052,7 +1035,7 @@ async function loadSecurityAlerts() {
     .order("created_at", { ascending: false }).limit(50);
   const tbody = document.getElementById("security-alerts-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Koi security alert nahi — sab theek hai.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No security alerts — everything looks fine.</td></tr>`; return; }
   tbody.innerHTML = data.map(a => `
     <tr style="${a.is_resolved ? "opacity:0.55" : ""}">
       <td>${(a.alert_type || "").replace(/_/g, " ")}</td>
@@ -1074,7 +1057,7 @@ async function loadLoginHistory() {
     .order("created_at", { ascending: false }).limit(100);
   const tbody = document.getElementById("login-history-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Abhi koi login record nahi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No login records yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(l => `
     <tr>
       <td>${l.email_attempted || "—"}</td>
@@ -1131,7 +1114,7 @@ async function loadBackupHistory() {
     .select("*, profiles(full_name)").order("created_at", { ascending: false }).limit(30);
   const tbody = document.getElementById("backup-history-body");
   if (!tbody) return;
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">Abhi koi backup nahi banaya gaya.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">No backups created yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(b => `
     <tr>
       <td>${b.profiles?.full_name || "—"}</td>
@@ -1158,7 +1141,7 @@ async function loadInvoicesTable() {
     .order("created_at", { ascending: false });
 
   const tbody = document.getElementById("invoices-body");
-  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Abhi koi invoice generate nahi hua.</td></tr>`; return; }
+  if (!regs || regs.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No invoices generated yet.</td></tr>`; return; }
   tbody.innerHTML = regs.map(r => {
     const p = r.projects || {};
     const total = Number(p.registration_fee || 0) + Number(p.advance_payment || 0) + Number(p.final_payment || 0);
@@ -1213,7 +1196,7 @@ async function handleContentSave(e) {
   const keys = ["homepage_hero_text", "about_us", "work_process", "faq", "terms_conditions", "privacy_policy", "refund_policy", "contact_page", "data_protection_policy"];
   const rows = keys.map(k => ({ content_key: k, content_value: f[k].value, updated_at: new Date().toISOString() }));
   const { error } = await supabaseClient.from("site_content").upsert(rows);
-  msg.textContent = error ? error.message : "Content save ho gaya — website par turant reflect hoga.";
+  msg.textContent = error ? error.message : "Content saved — it appears on the website immediately.";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -1245,7 +1228,7 @@ async function loadNotificationsTable() {
     .order("created_at", { ascending: false })
     .limit(30);
   const tbody = document.getElementById("notifications-body");
-  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">Koi notification bheja nahi gaya abhi.</td></tr>`; return; }
+  if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="4">No notifications sent yet.</td></tr>`; return; }
   tbody.innerHTML = data.map(n => `
     <tr>
       <td>${n.profiles?.full_name || "—"}</td>
@@ -1283,7 +1266,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("forgot-password-link")?.addEventListener("click", (e) => { e.preventDefault(); handleForgotPassword(); });
   document.getElementById("send-reset-btn")?.addEventListener("click", handleAdminPasswordReset);
   document.getElementById("settings-form")?.addEventListener("submit", handleSettingsSave);
-  document.getElementById("upi-qr-file")?.addEventListener("change", handleQrUpload);
   document.getElementById("popup-form")?.addEventListener("submit", handlePopupSave);
   document.getElementById("popup-image-file")?.addEventListener("change", handlePopupImage);
   document.getElementById("project-form")?.addEventListener("submit", handleProjectCreate);

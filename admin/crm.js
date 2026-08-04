@@ -69,7 +69,7 @@ async function handleWhatsappSettingsSave(e) {
     whatsapp_auto_reply: f.whatsapp_auto_reply.value.trim(),
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "WhatsApp settings save ho gaye.";
+  msg.textContent = error ? error.message : "WhatsApp settings saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("WhatsApp settings updated", "");
 }
@@ -90,7 +90,7 @@ function renderEnquiries() {
   if (!tbody) return;
   const list = enquiryFilter === "all" ? enquiriesCache : enquiriesCache.filter(e => e.status === enquiryFilter);
 
-  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="7">Is filter mein koi enquiry nahi.</td></tr>`; return; }
+  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="7">No enquiries match this filter.</td></tr>`; return; }
 
   tbody.innerHTML = list.map(en => `
     <tr>
@@ -150,7 +150,7 @@ function openEnquiryDetail(id) {
           <option value="in_person">In Person</option>
         </select>
       </div>
-      <div class="field"><label>Note</label><input type="text" id="comm-note" placeholder="Baat cheet ka summary likhiye..."></div>
+      <div class="field"><label>Note</label><input type="text" id="comm-note" placeholder="Write a summary of the conversation..."></div>
     </div>
     <button class="btn btn-outline btn-sm" onclick="addCommunicationLog(null, '${en.id}')">Add Log</button>
 
@@ -190,7 +190,7 @@ async function saveEnquiryDetail(id) {
     updated_at: new Date().toISOString(),
   };
   const { error } = await supabaseClient.from("enquiries").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes save ho gaye.";
+  msg.textContent = error ? error.message : "Changes saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { if (typeof logActivity === "function") logActivity("Enquiry updated", updates.status); loadEnquiries(); loadCrmStats(); }
 }
@@ -206,7 +206,7 @@ async function loadCommunicationLog(customerId, enquiryId) {
   query = customerId ? query.eq("customer_id", customerId) : query.eq("enquiry_id", enquiryId);
 
   const { data } = await query;
-  if (!data || data.length === 0) { box.innerHTML = '<p class="field-hint">Koi communication log nahi.</p>'; return; }
+  if (!data || data.length === 0) { box.innerHTML = '<p class="field-hint">No communication log yet.</p>'; return; }
 
   box.innerHTML = data.map(l => `
     <div style="padding:8px 0;border-bottom:1px dotted var(--line);font-size:0.86rem">
@@ -246,7 +246,7 @@ function renderTicketsAdmin() {
   if (!tbody) return;
   const list = ticketFilterCrm === "all" ? ticketsCache : ticketsCache.filter(t => t.status === ticketFilterCrm);
 
-  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">Is filter mein koi ticket nahi.</td></tr>`; return; }
+  if (list.length === 0) { tbody.innerHTML = `<tr><td colspan="6">No tickets match this filter.</td></tr>`; return; }
 
   tbody.innerHTML = list.map(t => `
     <tr>
@@ -295,7 +295,7 @@ async function openTicketDetail(id) {
     <div class="fieldset-title" style="margin-top:16px">Conversation</div>
     <div id="ticket-thread-admin" style="margin-bottom:10px"></div>
     <div class="form-grid">
-      <div class="field"><label>Reply to customer</label><input type="text" id="ticket-reply-text" placeholder="Reply likhiye..."></div>
+      <div class="field"><label>Reply to customer</label><input type="text" id="ticket-reply-text" placeholder="Write a reply..."></div>
       <div class="field"><label>&nbsp;</label><label class="perm-item"><input type="checkbox" id="ticket-internal-note"> Internal note only</label></div>
     </div>
     <button class="btn btn-outline btn-sm" onclick="sendTicketReplyAdmin('${t.id}')">Send</button>`;
@@ -313,7 +313,7 @@ async function saveTicketDetail(id) {
     assigned_to: document.getElementById("ticket-assignee").value || null,
   };
   const { error } = await supabaseClient.from("support_tickets").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Save ho gaya.";
+  msg.textContent = error ? error.message : "Saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { if (typeof logActivity === "function") logActivity("Ticket updated", updates.status); loadTicketsAdmin(); loadCrmStats(); }
 }
@@ -321,7 +321,7 @@ async function saveTicketDetail(id) {
 async function loadTicketThreadAdmin(ticketId) {
   const box = document.getElementById("ticket-thread-admin");
   const { data } = await supabaseClient.from("ticket_replies").select("*").eq("ticket_id", ticketId).order("created_at", { ascending: true });
-  if (!data || data.length === 0) { box.innerHTML = '<p class="field-hint">Koi message nahi.</p>'; return; }
+  if (!data || data.length === 0) { box.innerHTML = '<p class="field-hint">No messages.</p>'; return; }
   box.innerHTML = data.map(r => `
     <div style="padding:6px 0;border-top:1px dotted var(--line);font-size:0.88rem">
       <span class="status-badge ${r.is_internal_note ? "status-rejected" : "status-approved"}">${r.is_internal_note ? "Internal Note" : (r.sender_type === "staff" ? "Staff Reply" : "Customer")}</span>
@@ -352,7 +352,7 @@ async function loadSegment(segment) {
 
   if (segment === "new_enquiries") {
     const { data } = await supabaseClient.from("enquiries").select("*").in("status", ["pending_followup", "contacted"]).order("created_at", { ascending: false });
-    tbody.innerHTML = (data || []).map(e => `<tr><td>${e.full_name}</td><td>${e.mobile}</td><td>${ENQUIRY_STATUS_LABELS[e.status]}</td></tr>`).join("") || `<tr><td colspan="3">Koi record nahi.</td></tr>`;
+    tbody.innerHTML = (data || []).map(e => `<tr><td>${e.full_name}</td><td>${e.mobile}</td><td>${ENQUIRY_STATUS_LABELS[e.status]}</td></tr>`).join("") || `<tr><td colspan="3">No records.</td></tr>`;
     return;
   }
 
@@ -369,7 +369,7 @@ async function loadSegment(segment) {
 
   tbody.innerHTML = filtered.length
     ? filtered.map(r => `<tr><td>${r.profiles?.full_name || "—"}</td><td>${r.profiles?.mobile || "—"}</td><td>${r.projects?.project_name || "—"} — ${cTitle(r.project_status)}</td></tr>`).join("")
-    : `<tr><td colspan="3">Koi record nahi.</td></tr>`;
+    : `<tr><td colspan="3">No records.</td></tr>`;
 }
 
 // ------------------------------------------------------------
