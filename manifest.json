@@ -1,23 +1,50 @@
 {
   "name": "Aaliya Book Publication",
-  "short_name": "Aaliya Books",
+  "short_name": "Aaliya Book Publication",
   "description": "Handwriting work from home projects across India — track your project, payments and courier delivery.",
   "start_url": "/dashboard.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F3ECD8",
-  "theme_color": "#1B2430",
+  "background_color": "#F8FAFC",
+  "theme_color": "#12284C",
   "lang": "en-IN",
-  "categories": ["business", "productivity"],
+  "categories": [
+    "business",
+    "productivity"
+  ],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "My Project", "url": "/dashboard.html#project" },
-    { "name": "Payments", "url": "/dashboard.html#payments" },
-    { "name": "Notifications", "url": "/dashboard.html#notifications" }
+    {
+      "name": "My Project",
+      "url": "/dashboard.html#project"
+    },
+    {
+      "name": "Payments",
+      "url": "/dashboard.html#payments"
+    },
+    {
+      "name": "Notifications",
+      "url": "/dashboard.html#notifications"
+    }
   ]
 }
