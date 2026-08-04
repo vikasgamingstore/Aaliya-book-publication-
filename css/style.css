@@ -1193,3 +1193,33 @@ input[type="file"] { -webkit-appearance:none; padding:10px; font-size:.88rem }
 @media (max-width: 780px) {
   .nav-links .nav-cta { display: none !important; }
 }
+
+/* ---------- Social buttons: hamesha visible rahein (light ya dark background) ---------- */
+.socials { display: flex !important; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+.social-btn {
+  width: 46px; height: 46px; border-radius: 14px;
+  display: flex !important; align-items: center; justify-content: center;
+  background: var(--brand) !important;
+  border: 1px solid rgba(255,255,255,.22);
+  color: #fff !important;
+  box-shadow: var(--e2);
+}
+.social-btn svg { width: 22px; height: 22px; fill: #fff !important; }
+footer .social-btn { background: rgba(255,255,255,.12) !important; }
+footer .social-btn:hover { border-color: transparent; }
+.social-btn:hover { color: #fff !important; }
+.social-btn:hover svg { fill: #fff !important; }
+
+/* ---------- FINAL FIX: social icons hamesha apne brand colour mein ---------- */
+.social-btn { border: none !important; box-shadow: 0 4px 12px rgba(16,24,40,.18) !important; }
+.social-btn::before { opacity: 1 !important; }
+footer .social-btn { background: transparent !important; }
+
+.social-instagram { background: linear-gradient(45deg,#F58529,#DD2A7B,#8134AF) !important; }
+.social-facebook  { background: #1877F2 !important; }
+.social-telegram  { background: linear-gradient(135deg,#2AABEE,#229ED9) !important; }
+.social-whatsapp  { background: linear-gradient(135deg,#25D366,#128C7E) !important; }
+
+.social-btn svg { fill: #fff !important; position: relative; z-index: 2; }
+.social-btn span { z-index: 2; }
+.social-btn:hover { transform: translateY(-5px) scale(1.07); box-shadow: 0 10px 22px rgba(16,24,40,.28) !important; }
