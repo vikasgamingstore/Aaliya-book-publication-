@@ -1188,3 +1188,8 @@ input[type="file"] { -webkit-appearance:none; padding:10px; font-size:.88rem }
   font-size:.7rem; font-weight:600; padding:3px 10px; border-radius:999px; margin-left:6px;
 }
 .amount-ok { background:#E3F5EE; color: var(--green-ok) }
+
+/* ---------- Mobile menu: Apply Now button hata do (hero me already hai) ---------- */
+@media (max-width: 780px) {
+  .nav-links .nav-cta { display: none !important; }
+}
