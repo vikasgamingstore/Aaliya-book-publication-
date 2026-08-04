@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Customer Registration — Apply for Handwriting Work From Home | Aaliya Book Publication</title>
+<meta name="description" content="Register with Aaliya Book Publication to apply for handwriting work from home projects across India. Quick online registration with secure account setup.">
+<meta name="theme-color" content="#1B2430">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/favicon-64.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Aaliya Books">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<nav class="navbar"><div class="container">
+  <a href="index.html" class="brand">
+    <img data-company-logo style="display:none" alt="logo">
+    <span class="brand-fallback">AB</span>
+    <span data-company-name>Aaliya Book Publication</span>
+  </a>
+</div></nav>
+
+<div class="form-wrap wide">
+  <h2>Customer Registration</h2>
+  <form id="signup-form">
+    <div class="fieldset-title">Account</div>
+    <div class="form-grid">
+      <div class="field"><label for="su-name">Full Name</label><input type="text" id="su-name" required></div>
+      <div class="field"><label for="su-mobile">Mobile Number</label><input type="tel" id="su-mobile" required></div>
+    </div>
+    <div class="form-grid">
+      <div class="field"><label for="su-email">Email</label><input type="email" id="su-email" required></div>
+      <div class="field"><label for="su-password">Password</label><input type="password" id="su-password" minlength="6" required></div>
+    </div>
+
+    <div class="fieldset-title">Address</div>
+    <div class="field"><label for="su-address">Complete Address</label><textarea id="su-address" rows="2"></textarea></div>
+    <div class="field"><label for="su-courier-address">Courier Address (agar alag hai)</label><textarea id="su-courier-address" rows="2"></textarea></div>
+
+    <div class="fieldset-title">Referral (optional)</div>
+    <div class="field">
+      <label for="su-referral">Referral Code</label>
+      <input type="text" id="su-referral" placeholder="Kisi ne aapko refer kiya hai to unka code daaliye">
+      <p class="field-hint" id="referral-hint"></p>
+    </div>
+
+    <div id="captcha-box" style="margin-bottom:14px"></div>
+    <button type="submit" class="btn btn-primary btn-block">Account Banaiye</button>
+    <div id="su-msg" class="form-msg"></div>
+  </form>
+  <div class="form-alt">Pehle se account hai? <a href="login.html">Login kariye</a></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+<script src="js/pwa.js"></script>
+<script src="js/security.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
