@@ -88,15 +88,15 @@ const ALLOWED_UPLOAD_TYPES = ["image/jpeg", "image/png", "image/gif", "applicati
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB
 
 function validateUploadFile(file) {
-  if (!file) return "Koi file select nahi hui.";
+  if (!file) return "No file selected.";
   if (!ALLOWED_UPLOAD_TYPES.includes(file.type)) {
-    return "Sirf JPG, PNG, GIF ya PDF file upload kar sakte hain.";
+    return "Only JPG, PNG, GIF or PDF files can be uploaded.";
   }
   if (file.size > MAX_UPLOAD_BYTES) {
-    return "File 5 MB se badi hai. Chhoti file upload kariye.";
+    return "File is larger than 5 MB. Please upload a smaller file.";
   }
   if (!/^[\w\-. ()]+$/.test(file.name)) {
-    return "File ka naam sirf letters, numbers, dash aur dot ke saath rakhiye.";
+    return "File names may only contain letters, numbers, dashes and dots.";
   }
   return null;
 }
@@ -124,7 +124,7 @@ async function openSecureFile(event, pathOrUrl) {
 
   const signed = await getSignedUploadUrl(pathOrUrl, 300);
   if (signed) window.open(signed, "_blank", "noopener");
-  else alert("File open nahi ho payi — ho sakta hai file hata di gayi ho.");
+  else alert("Could not open the file — it may have been removed.");
 }
 
 // ---------- CAPTCHA ----------

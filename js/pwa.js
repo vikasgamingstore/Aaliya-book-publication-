@@ -30,8 +30,8 @@ function showInstallBanner() {
   banner.innerHTML = `
     <img src="/icons/icon-192.png" alt="" width="40" height="40">
     <div class="install-text">
-      <strong>App install kariye</strong>
-      <span>Apne phone par Aaliya Books app ki tarah use kariye</span>
+      <strong>Install app</strong>
+      <span>Use Aaliya Books like an app on your phone</span>
     </div>
     <button class="btn btn-brass btn-sm" id="install-yes">Install</button>
     <button class="install-close" id="install-no" aria-label="Close">&times;</button>
@@ -59,14 +59,14 @@ window.addEventListener("appinstalled", () => {
 // ---------- Device notifications for new updates ----------
 async function enableDeviceNotifications() {
   if (!("Notification" in window)) {
-    alert("Aapka browser notifications support nahi karta.");
+    alert("Your browser does not support notifications.");
     return false;
   }
   const permission = await Notification.requestPermission();
   if (permission === "granted") {
     localStorage.setItem("abp-notifications", "on");
     new Notification("Aaliya Book Publication", {
-      body: "Notifications on ho gaye — ab project updates yahan milenge.",
+      body: "Notifications on ho gaye — ab project updates orhan milenge.",
       icon: "/icons/icon-192.png",
     });
     return true;

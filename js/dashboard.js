@@ -56,6 +56,7 @@ async function guardAndLoad() {
   loadMyTickets();
   loadReferralSection();
   loadRewards();
+  loadPayoutForm();
   loadOnboarding();
   loadRegistrations();
   loadNotifications();
@@ -77,7 +78,7 @@ function renderProfileDetails() {
       <div><span>Bank</span><strong>${p.bank_name || "—"}</strong></div>
       <div><span>Account</span><strong>${p.bank_account_number ? "••••" + String(p.bank_account_number).slice(-4) : "—"}</strong></div>
     </div>
-    <p class="field-hint" style="margin-top:12px">Details badalne ke liye support se sampark kariye.</p>`;
+    <p class="field-hint" style="margin-top:12px">Contact support to change these details.</p>`;
 }
 
 async function loadRegistrations() {
@@ -95,7 +96,7 @@ async function loadRegistrations() {
   renderPaymentsSection(regs || []);
 
   if (error || !regs || regs.length === 0) {
-    wrap.innerHTML = '<div class="empty-state">Abhi koi project registration nahi hai. <a href="index.html#projects">Project select kariye</a> aur apply kariye.</div>';
+    wrap.innerHTML = '<div class="empty-state">You have no project registration yet. <a href="index.html#projects">Project select kariye</a> and apply.</div>';
     return;
   }
 
@@ -119,7 +120,7 @@ function renderStatusCards(regs) {
 
   const active = regs.find(r => !["completed", "cancelled"].includes(r.project_status)) || regs[0];
   if (!active) {
-    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">Abhi koi active project nahi hai. <a href="index.html#projects">Naya project chuniye</a>.</div>`;
+    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">You have no active project yet. <a href="index.html#projects">Naor project chuniye</a>.</div>`;
     return;
   }
 
@@ -132,7 +133,7 @@ function renderStatusCards(regs) {
   const progress = active.progress_percent || 0;
   const deadlineText = active.deadline
     ? `${fmtDate(active.deadline)} · ${daysRemaining(active.deadline)}`
-    : "Deadline abhi set nahi";
+    : "Deadline not set yet";
 
   box.innerHTML = `
     <div class="app-card card-project">
@@ -150,7 +151,7 @@ function renderStatusCards(regs) {
     <div class="app-card card-courier">
       <div class="card-label">Courier Tracking</div>
       <div class="card-value">${COURIER_OUT_LABELS[active.courier_out_status] || "—"}</div>
-      <div class="card-sub">${active.courier_out_tracking ? "Tracking: " + active.courier_out_tracking : (active.courier_company_name || "Tracking jald update hoga")}</div>
+      <div class="card-sub">${active.courier_out_tracking ? "Tracking: " + active.courier_out_tracking : (active.courier_company_name || "Tracking will update soon")}</div>
     </div>
 
     <div class="app-card">
@@ -166,7 +167,7 @@ function renderPaymentsSection(regs) {
   const box = document.getElementById("payments-wrap");
   if (!box) return;
   if (!regs || regs.length === 0) {
-    box.innerHTML = '<div class="empty-state">Abhi koi payment record nahi hai.</div>';
+    box.innerHTML = '<div class="empty-state">No payment records yet.</div>';
     return;
   }
 
@@ -189,7 +190,7 @@ function renderPaymentsSection(regs) {
         ${r.registration_payment_status === 'under_verification' ? `<li>Registration fee submitted, under verification</li>` : ""}
         ${r.advance_status === 'approved' ? `<li>Advance payment approved ${fmtDate(r.advance_approved_at)}${r.advance_utr ? " — Ref: " + r.advance_utr : ""}</li>` : ""}
         ${r.final_status === 'approved' ? `<li>Final payment approved ${fmtDate(r.final_approved_at)}${r.final_utr ? " — Ref: " + r.final_utr : ""}</li>` : ""}
-        ${(!r.registration_payment_status || r.registration_payment_status === 'pending') && r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>Koi payment abhi record nahi hui</li>` : ""}
+        ${(!r.registration_payment_status || r.registration_payment_status === 'pending') && r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>No payments recorded yet</li>` : ""}
       </ul>
     </div>`;
   }).join("");
@@ -253,8 +254,8 @@ function renderRegistrationCard(r) {
       <div class="field"><label>Note (optional)</label><input type="text" name="note" value="${r.progress_note || ''}"></div>
       <button type="submit" class="btn btn-primary btn-sm" style="grid-column:1/-1">Save Progress</button>
     </form>
-    ${r.quality_status === "need_correction" ? `<div class="form-msg error"><strong>Correction Requested:</strong> ${r.correction_message || r.quality_note || "Kuch pages mein correction chahiye — details ke liye WhatsApp par baat kariye."}</div>` : ""}
-    ${r.quality_status === "rejected" ? `<p class="form-msg error">Quality check mein reject hua: ${r.quality_note || "Admin se WhatsApp par baat kariye."}</p>` : ""}
+    ${r.quality_status === "need_correction" ? `<div class="form-msg error"><strong>Correction Requested:</strong> ${r.correction_message || r.quality_note || "Some pages need correction — contact us on WhatsApp for details."}</div>` : ""}
+    ${r.quality_status === "rejected" ? `<p class="form-msg error">Quality check mein reject hua: ${r.quality_note || "Contact the admin on WhatsApp."}</p>` : ""}
 
     <div class="fieldset-title">Payment</div>
     <div class="info-grid" style="margin-bottom:10px">
@@ -270,7 +271,7 @@ function renderRegistrationCard(r) {
       ${r.registration_payment_status === 'under_verification' ? `<li>Registration fee submitted, under verification — UTR: ${r.registration_utr || "—"}</li>` : ""}
       ${r.advance_status === 'approved' ? `<li>Advance payment approved on ${fmtDateTime(r.advance_approved_at)}${r.advance_utr ? " — Ref: " + r.advance_utr : ""}</li>` : ""}
       ${r.final_status === 'approved' ? `<li>Final payment approved on ${fmtDateTime(r.final_approved_at)}${r.final_utr ? " — Ref: " + r.final_utr : ""}</li>` : ""}
-      ${(!r.registration_payment_status || r.registration_payment_status === 'pending') && r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>Koi payment abhi record nahi hui</li>` : ""}
+      ${(!r.registration_payment_status || r.registration_payment_status === 'pending') && r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>No payments recorded yet</li>` : ""}
     </ul>
     ${r.registration_number ? `<button id="invoice-btn-${r.id}" class="btn btn-outline btn-sm">Download Invoice</button>` : ""}
 
@@ -287,8 +288,8 @@ function renderRegistrationCard(r) {
 
     <div class="fieldset-title">Support</div>
     <form id="support-form-${r.id}" style="display:flex;gap:10px;flex-wrap:wrap">
-      <input type="text" placeholder="Apna sawal likhiye..." required style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--line);border-radius:6px">
-      <button type="submit" class="btn btn-outline btn-sm">Bhejo</button>
+      <input type="text" placeholder="Write your question..." required style="flex:1;min-width:200px;padding:9px 12px;border:1px solid var(--line);border-radius:6px">
+      <button type="submit" class="btn btn-outline btn-sm">Send</button>
     </form>
   </div>`;
 }
@@ -411,7 +412,7 @@ async function loadDocuments(registrationId) {
   const { data } = await supabaseClient.from("documents").select("*").eq("registration_id", registrationId).order("uploaded_at", { ascending: false });
   const box = document.getElementById(`docs-list-${registrationId}`);
   if (!box) return;
-  if (!data || data.length === 0) { box.textContent = "Abhi koi document upload nahi hua."; return; }
+  if (!data || data.length === 0) { box.textContent = "No documents uploaded yet."; return; }
 
   const links = await Promise.all(data.map(async d => {
     const url = d.file_url.startsWith("http") ? d.file_url : await getSignedUploadUrl(d.file_url);
@@ -428,7 +429,7 @@ async function sendSupport(e, registrationId) {
   if (!message) return;
   await supabaseClient.from("support_messages").insert({ registration_id: registrationId, customer_id: currentUser.id, message });
   input.value = "";
-  alert("Message bhej diya, admin jald reply karega.");
+  alert("Message sent — the admin will reply soon.");
 }
 
 // ---------- Notifications ----------
@@ -457,8 +458,8 @@ async function loadNotifications() {
   const badge = document.getElementById("notif-badge");
 
   if (!data || data.length === 0) {
-    if (wrap) wrap.innerHTML = '<div class="empty-state">Abhi koi notification nahi hai.</div>';
-    if (preview) preview.innerHTML = '<h3>Recent Updates</h3><p class="field-hint">Abhi koi update nahi hai.</p>';
+    if (wrap) wrap.innerHTML = '<div class="empty-state">No notifications yet.</div>';
+    if (preview) preview.innerHTML = '<h3>Recent Updates</h3><p class="field-hint">No updates yet.</p>';
     if (badge) badge.style.display = "none";
     return;
   }
@@ -488,7 +489,7 @@ async function loadNotifications() {
     preview.innerHTML = `
       <h3>Recent Updates ${unread.length ? `<span class="status-badge status-pending">${unread.length} new</span>` : ""}</h3>
       ${data.slice(0, 4).map(renderItem).join("")}
-      <a href="#notifications" class="btn btn-outline btn-sm" style="margin-top:12px" onclick="switchAppTab('notifications')">Saare notifications dekhiye</a>`;
+      <a href="#notifications" class="btn btn-outline btn-sm" style="margin-top:12px" onclick="switchAppTab('notifications')">Saare notifications for details</a>`;
   }
 }
 
@@ -548,6 +549,10 @@ document.addEventListener("DOMContentLoaded", () => {
   guardAndLoad();
   initBottomNav();
   document.getElementById("ticket-form")?.addEventListener("submit", handleTicketCreate);
+  document.getElementById("payout-form")?.addEventListener("submit", handlePayoutSave);
+  document.getElementById("payout-method")?.addEventListener("change", togglePayoutFields);
+  document.getElementById("payout-qr-file")?.addEventListener("change", handlePayoutQrUpload);
+  document.getElementById("password-form")?.addEventListener("submit", handlePasswordChange);
   document.getElementById("logout-btn")?.addEventListener("click", handleLogout);
   document.getElementById("logout-btn-2")?.addEventListener("click", handleLogout);
   document.getElementById("logout-all-btn")?.addEventListener("click", handleLogoutAllDevices);
@@ -580,12 +585,12 @@ async function loadReferralSection() {
   wrap.innerHTML = `
     <div class="referral-card">
       <h3>Refer &amp; Earn</h3>
-      <p>Apna code doston ke saath share kariye. Jab wo registration complete karenge, aapko reward milega.</p>
+      <p>Share your code with friends. When they complete their registration, you get a reward.</p>
       <div class="referral-code-box">
         <span class="referral-code">${code}</span>
         <button class="btn btn-brass btn-sm" onclick="copyReferral('${link}')">Copy Link</button>
         <a class="btn btn-outline btn-sm" style="border-color:var(--brass);color:var(--brass)" target="_blank"
-           href="https://wa.me/?text=${encodeURIComponent("Aaliya Book Publication se handwriting work from home projects kar sakte hain. Mera referral code use kariye: " + code + " — " + link)}">Share on WhatsApp</a>
+           href="https://wa.me/?text=${encodeURIComponent("You can do handwriting work-from-home projects with Aaliya Book Publication. Use my referral code: " + code + " — " + link)}">Share on WhatsApp</a>
       </div>
       <div class="referral-stats">
         <div><span>Total Referrals</span><strong>${list.length}</strong></div>
@@ -613,8 +618,8 @@ async function loadReferralSection() {
 
 function copyReferral(link) {
   navigator.clipboard?.writeText(link)
-    .then(() => alert("Referral link copy ho gaya!"))
-    .catch(() => prompt("Ye link copy kariye:", link));
+    .then(() => alert("Referral link copied!"))
+    .catch(() => prompt("Copy this link:", link));
 }
 
 async function loadRewards() {
@@ -642,7 +647,7 @@ async function loadRewards() {
           <span class="status-badge status-${r.status}">${(r.status || "").replace(/_/g," ")}</span>
           ${Number(r.amount) > 0 ? `<div class="reward-amount">${fmtMoney(r.amount)}</div>` : ""}
         </div>
-      </div>`).join("") : '<p class="field-hint">Abhi koi reward nahi hai. Refer karke rewards kamaiye!</p>'}`;
+      </div>`).join("") : '<p class="field-hint">No rewards yet. Refer friends to start earning!</p>'}`;
 }
 
 // ---------- Onboarding guide (first-time customers) ----------
@@ -660,12 +665,12 @@ async function loadOnboarding() {
 
   wrap.innerHTML = `
     <div class="onboarding-card">
-      <h3>Shuruaat kaise kariye</h3>
-      <p class="field-hint">Pehli baar aaye hain? Ye 6 step follow kariye — sab kuch aasaan ho jayega.</p>
+      <h3>How to get started</h3>
+      <p class="field-hint">New here? Follow these 6 steps and everything will be simple.</p>
       <ol class="onboarding-steps">
         ${steps.map(s => `<li><strong>${s.title}</strong><p>${s.description}</p></li>`).join("")}
       </ol>
-      <button class="btn btn-outline btn-sm" style="margin-top:16px" id="dismiss-onboarding">Samajh gaya, chhupa dijiye</button>
+      <button class="btn btn-outline btn-sm" style="margin-top:16px" id="dismiss-onboarding">Got it, hide this</button>
     </div>`;
 
   document.getElementById("dismiss-onboarding")?.addEventListener("click", async () => {
@@ -684,18 +689,18 @@ function renderActionHint(regs) {
   let hint = null;
 
   if (!regs.length) {
-    hint = { title: "Apna pehla project chuniye", text: "Available projects dekhiye aur apni suvidha ke hisaab se apply kariye.", btn: "Projects Dekhiye", link: "index.html#projects" };
+    hint = { title: "Choose your first project", text: "Browse the available projects and apply for whichever suits you.", btn: "Projects Dekhiye", link: "index.html#projects" };
   } else if (active) {
     if (["pending", "rejected"].includes(active.registration_payment_status)) {
-      hint = { title: "Registration fee pending hai", text: "Payment kar ke UTR aur screenshot submit kariye taaki aapka registration aage badhe.", btn: "Pay Now", link: `payment.html?reg=${active.id}` };
+      hint = { title: "Registration fee pending hai", text: "Pay and submit your UTR and screenshot so your registration can move forward.", btn: "Pay Now", link: `payment.html?reg=${active.id}` };
     } else if (active.registration_payment_status === "under_verification") {
-      hint = { title: "Payment verification chal rahi hai", text: "Admin 24 ghante ke andar verify karega. Verification ke baad aapko notification milega." };
+      hint = { title: "Payment verification chal rahi hai", text: "Our admin will verify within 24 hours. You will get a notification once it is done." };
     } else if (active.courier_out_status === "delivered" && !active.delivery_confirmed_by_customer) {
-      hint = { title: "Parcel mil gaya? Confirm kariye", text: 'Project tab par "Confirm Parcel Received" dabaiye — tabhi aapka project aur deadline shuru hoga.' };
+      hint = { title: "Parcel arrived? Confirm it", text: 'Project tab par "Confirm Parcel Received" dabaiye — tabhi aapka project aur deadline shuru hoga.' };
     } else if (active.project_status === "in_progress" && active.deadline) {
       hint = { title: `Deadline: ${fmtDate(active.deadline)}`, text: `${daysRemaining(active.deadline)} — apna progress dashboard par update karte rahiye.` };
     } else if (active.quality_status === "need_correction") {
-      hint = { title: "Correction chahiye", text: active.correction_message || "Admin ne kuch correction maange hain — Project tab par details dekhiye." };
+      hint = { title: "Correction needed", text: active.correction_message || "The admin has requested some corrections — see the Project tab for details." };
     }
   }
 
@@ -724,7 +729,7 @@ async function loadFeedbackSection(regs) {
     const mine = existing || [];
     wrap.innerHTML = mine.length ? `
       <div class="card">
-        <h3>Aapka Feedback</h3>
+        <h3>Your Feedback</h3>
         ${mine.map(f => `<div class="reward-item">
           <div><strong>${"★".repeat(f.rating)}${"☆".repeat(5 - f.rating)}</strong></div>
           <span class="status-badge status-${f.status}">${f.status}</span>
@@ -736,8 +741,8 @@ async function loadFeedbackSection(regs) {
   const r = pending[0];
   wrap.innerHTML = `
     <div class="card">
-      <h3>Aapka experience kaisa raha?</h3>
-      <p class="field-hint">${r.projects?.project_name || "Aapka project"} complete ho gaya. Apna feedback dijiye — approve hone par ye website par dikhega.</p>
+      <h3>How was your experience?</h3>
+      <p class="field-hint">${r.projects?.project_name || "Your project"} is complete. Share your feedback — once approved it appears on our website.</p>
       <form id="feedback-form">
         <div class="field">
           <label>Rating</label>
@@ -745,9 +750,9 @@ async function loadFeedbackSection(regs) {
             ${[1,2,3,4,5].map(n => `<button type="button" data-star="${n}">★</button>`).join("")}
           </div>
         </div>
-        <div class="field"><label>Review</label><textarea name="review" rows="3" placeholder="Apna experience likhiye..." required></textarea></div>
-        <div class="field"><label>Suggestions (optional)</label><textarea name="suggestions" rows="2" placeholder="Hum aur behtar kaise kar sakte hain?"></textarea></div>
-        <button type="submit" class="btn btn-primary">Feedback Bhejiye</button>
+        <div class="field"><label>Review</label><textarea name="review" rows="3" placeholder="Write about your experience..." required></textarea></div>
+        <div class="field"><label>Suggestions (optional)</label><textarea name="suggestions" rows="2" placeholder="How can we do better?"></textarea></div>
+        <button type="submit" class="btn btn-primary">Send Feedback</button>
         <div id="feedback-msg" class="form-msg"></div>
       </form>
     </div>`;
@@ -765,7 +770,7 @@ async function loadFeedbackSection(regs) {
   document.getElementById("feedback-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const msg = document.getElementById("feedback-msg");
-    if (!selectedRating) { msg.textContent = "Pehle rating chuniye."; msg.className = "form-msg error"; return; }
+    if (!selectedRating) { msg.textContent = "Please pick a rating first."; msg.className = "form-msg error"; return; }
 
     const { error } = await supabaseClient.from("feedback").insert({
       customer_id: currentUser.id,
@@ -775,10 +780,109 @@ async function loadFeedbackSection(regs) {
       suggestions: e.target.suggestions.value.trim() || null,
     });
 
-    msg.textContent = error ? error.message : "Dhanyavaad! Aapka feedback mil gaya — admin approve karne ke baad website par dikhega.";
+    msg.textContent = error ? error.message : "Thank you! Your feedback has been received and will appear on the website once approved.";
     msg.className = "form-msg " + (error ? "error" : "ok");
     if (!error) setTimeout(() => loadRegistrations(), 1500);
   });
+}
+
+
+// ---------- Payout method (UPI ID or QR) ----------
+function compressToDataUri(file, maxSize, quality) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let { width: w, height: h } = img;
+        if (w > maxSize || h > maxSize) { const s = maxSize / Math.max(w, h); w = Math.round(w*s); h = Math.round(h*s); }
+        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        const ctx = cv.getContext("2d"); ctx.fillStyle = "#fff"; ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(cv.toDataURL("image/webp", quality));
+      };
+      img.onerror = () => reject(new Error("Could not read the image"));
+      img.src = reader.result;
+    };
+    reader.onerror = () => reject(new Error("Could not read the file"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function togglePayoutFields() {
+  const method = document.getElementById("payout-method")?.value;
+  const idField = document.getElementById("payout-upi-field");
+  const qrField = document.getElementById("payout-qr-field");
+  if (!idField || !qrField) return;
+  idField.style.display = method === "upi_id" ? "block" : "none";
+  qrField.style.display = method === "upi_qr" ? "block" : "none";
+}
+
+function loadPayoutForm() {
+  const f = document.getElementById("payout-form");
+  if (!f || !currentProfile) return;
+  f.payout_method.value = currentProfile.payout_method || "upi_id";
+  f.payout_upi_id.value = currentProfile.payout_upi_id || "";
+  f.payout_qr_url.value = currentProfile.payout_qr_url || "";
+  const prev = document.getElementById("payout-qr-preview");
+  if (prev && currentProfile.payout_qr_url) { prev.src = currentProfile.payout_qr_url; prev.style.display = "block"; }
+  togglePayoutFields();
+}
+
+async function handlePayoutQrUpload(e) {
+  const file = e.target.files[0];
+  const msg = document.getElementById("payout-msg");
+  if (!file) return;
+  msg.textContent = "Preparing image..."; msg.className = "form-msg";
+  try {
+    const uri = await compressToDataUri(file, 420, 0.82);
+    document.getElementById("payout-form").payout_qr_url.value = uri;
+    const prev = document.getElementById("payout-qr-preview");
+    if (prev) { prev.src = uri; prev.style.display = "block"; }
+    msg.textContent = "QR added — now tap Save."; msg.className = "form-msg ok";
+  } catch (err) {
+    msg.textContent = err.message; msg.className = "form-msg error";
+  }
+}
+
+async function handlePayoutSave(e) {
+  e.preventDefault();
+  const f = e.target;
+  const msg = document.getElementById("payout-msg");
+  const method = f.payout_method.value;
+
+  if (method === "upi_id" && !f.payout_upi_id.value.trim()) {
+    msg.textContent = "Please enter your UPI ID."; msg.className = "form-msg error"; return;
+  }
+  if (method === "upi_qr" && !f.payout_qr_url.value) {
+    msg.textContent = "Please upload your QR code."; msg.className = "form-msg error"; return;
+  }
+
+  const updates = {
+    payout_method: method,
+    payout_upi_id: f.payout_upi_id.value.trim() || null,
+    payout_qr_url: f.payout_qr_url.value || null,
+  };
+  const { error } = await supabaseClient.from("profiles").update(updates).eq("id", currentUser.id);
+  msg.textContent = error ? error.message : "Payment details saved.";
+  msg.className = "form-msg " + (error ? "error" : "ok");
+  if (!error) Object.assign(currentProfile, updates);
+}
+
+// ---------- Password change ----------
+async function handlePasswordChange(e) {
+  e.preventDefault();
+  const f = e.target;
+  const msg = document.getElementById("password-msg");
+  const pw1 = f.pw1.value, pw2 = f.pw2.value;
+
+  if (pw1.length < 8) { msg.textContent = "Password must be at least 8 characters."; msg.className = "form-msg error"; return; }
+  if (pw1 !== pw2) { msg.textContent = "The two passwords do not match."; msg.className = "form-msg error"; return; }
+
+  const { error } = await supabaseClient.auth.updateUser({ password: pw1 });
+  msg.textContent = error ? error.message : "Password updated. Use your new password next time you log in.";
+  msg.className = "form-msg " + (error ? "error" : "ok");
+  if (!error) f.reset();
 }
 
 async function handleEnquiry(e) {
@@ -789,7 +893,7 @@ async function handleEnquiry(e) {
     customer_id: currentUser.id,
     message: f.message.value.trim(),
   });
-  msg.textContent = error ? error.message : "Enquiry bhej di gayi, admin jald reply karega.";
+  msg.textContent = error ? error.message : "Enquiry sent — the admin will reply soon.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) f.reset();
 }
@@ -806,7 +910,7 @@ async function handleTicketCreate(e) {
   const f = e.target;
   const msg = document.getElementById("ticket-msg");
   msg.textContent = ""; msg.className = "form-msg";
-  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Ticket ban raha hai...") : () => {};
+  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Creating ticket...") : () => {};
 
   const { error } = await supabaseClient.from("support_tickets").insert({
     customer_id: currentUser.id,
@@ -815,7 +919,7 @@ async function handleTicketCreate(e) {
     description: f.description.value.trim() || null,
   });
 
-  msg.textContent = error ? error.message : "Ticket ban gaya — admin jald response dega.";
+  msg.textContent = error ? error.message : "Ticket created — our team will respond soon.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   restoreBtn();
   if (!error) { f.reset(); loadMyTickets(); }
@@ -831,7 +935,7 @@ async function loadMyTickets() {
     .order("created_at", { ascending: false });
 
   if (!data || data.length === 0) {
-    box.innerHTML = '<p class="field-hint">Abhi koi ticket nahi hai.</p>';
+    box.innerHTML = '<p class="field-hint">You have no tickets yet.</p>';
     return;
   }
 
@@ -845,8 +949,8 @@ async function loadMyTickets() {
       ${t.description ? `<p style="margin:6px 0;font-size:0.9rem">${t.description}</p>` : ""}
       <div id="ticket-thread-${t.id}" style="margin-top:10px"></div>
       <form id="ticket-reply-form-${t.id}" style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
-        <input type="text" placeholder="Reply likhiye..." required style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--line);border-radius:6px">
-        <button type="submit" class="btn btn-outline btn-sm">Bhejo</button>
+        <input type="text" placeholder="Write a reply..." required style="flex:1;min-width:180px;padding:8px 10px;border:1px solid var(--line);border-radius:6px">
+        <button type="submit" class="btn btn-outline btn-sm">Send</button>
       </form>
     </div>`).join("");
 
@@ -867,7 +971,7 @@ async function loadTicketThread(ticketId) {
   if (!data || data.length === 0) { box.innerHTML = ""; return; }
   box.innerHTML = data.map(r => `
     <div style="padding:6px 0;border-top:1px dotted var(--line)">
-      <small style="color:var(--text-muted)">${r.sender_type === "staff" ? "Support Team" : "Aap"} · ${new Date(r.created_at).toLocaleString("en-IN")}</small>
+      <small style="color:var(--text-muted)">${r.sender_type === "staff" ? "Support Team" : "You"} · ${new Date(r.created_at).toLocaleString("en-IN")}</small>
       <p style="margin:2px 0 0">${r.message}</p>
     </div>`).join("");
 }

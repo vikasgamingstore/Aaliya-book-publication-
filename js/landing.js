@@ -10,7 +10,7 @@ async function loadHomeProjects() {
 
   const grid = document.getElementById("projects-grid");
   if (error || !projects || projects.length === 0) {
-    grid.innerHTML = '<div class="empty-state">Abhi koi project available nahi hai. Jaldi update hoga — WhatsApp par sampark kariye.</div>';
+    grid.innerHTML = '<div class="empty-state">No projects are available right now. We will update soon — contact us on WhatsApp.</div>';
     return;
   }
   grid.innerHTML = projects.map(p => `
@@ -36,7 +36,7 @@ async function loadTestimonials() {
 
   const grid = document.getElementById("testimonials-grid");
   if (error || !data || data.length === 0) {
-    grid.innerHTML = '<div class="empty-state">Reviews jald hi yahan add kiye jayenge.</div>';
+    grid.innerHTML = '<div class="empty-state">Reviews jald hi orhan add kiye jayenge.</div>';
     return;
   }
   grid.innerHTML = data.map(t => `
@@ -116,13 +116,13 @@ async function handleEnquirySubmit(e) {
   const f = e.target;
   const msg = document.getElementById("enquiry-form-msg");
   msg.textContent = ""; msg.className = "form-msg";
-  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Bhej rahe hain...") : () => {};
+  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Sending...") : () => {};
 
   if (typeof runValidations === "function") {
     const err = runValidations([
-      [Validate.notEmpty(f.full_name.value), "Apna naam likhiye."],
-      [Validate.mobile(f.mobile.value), "Sahi 10-digit mobile number daaliye."],
-      [!f.email.value || Validate.email(f.email.value), "Email sahi format mein daaliye."],
+      [Validate.notEmpty(f.full_name.value), "Please enter your name."],
+      [Validate.mobile(f.mobile.value), "Please enter a valid 10-digit mobile number."],
+      [!f.email.value || Validate.email(f.email.value), "Please enter a valid email address."],
     ]);
     if (err) { msg.textContent = err; msg.classList.add("error"); restoreBtn(); return; }
   }
@@ -137,13 +137,13 @@ async function handleEnquirySubmit(e) {
   });
 
   if (error) {
-    msg.textContent = "Kuch galat ho gaya, dobara try kariye ya WhatsApp par sampark kariye.";
+    msg.textContent = "Something went wrong. Please try again or contact us on WhatsApp.";
     msg.classList.add("error");
     restoreBtn();
     return;
   }
 
-  msg.textContent = "Dhanyavaad! Aapki enquiry mil gayi hai — hamari team jald sampark karegi.";
+  msg.textContent = "Thank you! We have received your enquiry and our team will contact you soon.";
   msg.classList.add("ok");
   f.reset();
   restoreBtn();
@@ -188,7 +188,7 @@ async function handleNewsletterSubscribe(e) {
 
   const email = f.email.value.trim();
   if (typeof Validate !== "undefined" && !Validate.email(email)) {
-    msg.textContent = "Sahi email address daaliye."; msg.classList.add("error"); return;
+    msg.textContent = "Please enter a valid email address."; msg.classList.add("error"); return;
   }
 
   const { error } = await supabaseClient.from("newsletter_subscribers").insert({
@@ -196,17 +196,17 @@ async function handleNewsletterSubscribe(e) {
   });
 
   if (error && error.code === "23505") {
-    msg.textContent = "Aap pehle se subscribed hain — dhanyavaad!";
+    msg.textContent = "You are already subscribed — thank you!";
     msg.classList.add("ok");
     return;
   }
   if (error) {
-    msg.textContent = "Kuch galat ho gaya, dobara try kariye.";
+    msg.textContent = "Something went wrong. Please try again.";
     msg.classList.add("error");
     return;
   }
 
-  msg.textContent = "Subscribe ho gaye! Naye projects aur offers ki update milegi.";
+  msg.textContent = "Subscribed! You will hear about new projects and offers.";
   msg.classList.add("ok");
   f.reset();
 }

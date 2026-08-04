@@ -4,7 +4,7 @@
 
 let chatFaqs = [];
 let chatOpen = false;
-let chatWelcome = "Namaste! Main aapki madad ke liye hoon. Neeche se koi sawaal chuniye ya apna sawaal type kariye.";
+let chatWelcome = "Hello! I am here to help. Pick a question below or type your own.";
 
 async function loadChatData() {
   const [faqRes, settingsRes] = await Promise.all([
@@ -43,7 +43,7 @@ function buildChatWidget() {
     <div class="chat-body" id="chat-body"></div>
     <div class="chat-suggestions" id="chat-suggestions"></div>
     <form class="chat-input-row" id="chat-form">
-      <input type="text" id="chat-input" placeholder="Apna sawaal likhiye..." autocomplete="off">
+      <input type="text" id="chat-input" placeholder="Write your question..." autocomplete="off">
       <button type="submit" class="btn btn-brass btn-sm">Send</button>
     </form>`;
 
@@ -139,10 +139,10 @@ function handleChatSubmit(e) {
     } else {
       const wa = (window.__chatSettings?.whatsapp_number || "").replace(/[^0-9]/g, "");
       const waLink = wa
-        ? ` <a href="https://wa.me/${wa}?text=${encodeURIComponent(query)}" target="_blank" rel="noopener">WhatsApp par poochhiye</a>`
+        ? ` <a href="https://wa.me/${wa}?text=${encodeURIComponent(query)}" target="_blank" rel="noopener">ask us on WhatsApp</a>`
         : "";
       addChatMessage(
-        `Is sawaal ka jawaab mere paas nahi hai. Aap <a href="help.html">Help Center</a> dekhiye${waLink ? " ya" + waLink : ""}.`,
+        `Is sawaal ka jawaab mere paas nahi hai. You <a href="help.html">Help Center</a> for details${waLink ? " or" + waLink : ""}.`,
         "bot"
       );
     }

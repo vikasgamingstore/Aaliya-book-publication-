@@ -19,17 +19,17 @@ async function handleSignup(e) {
   const referralCode = v("su-referral");
 
   const error = runValidations([
-    [Validate.notEmpty(name), "Apna poora naam likhiye."],
-    [Validate.clean(name), "Naam mein special characters nahi chalenge."],
-    [Validate.mobile(mobile), "Sahi 10-digit mobile number daaliye."],
-    [Validate.email(email), "Sahi email address daaliye."],
-    [Validate.password(password), "Password kam se kam 8 characters ka ho, jisme letters aur numbers dono hon."],
+    [Validate.notEmpty(name), "Please enter your full name."],
+    [Validate.clean(name), "Your name cannot contain special characters."],
+    [Validate.mobile(mobile), "Please enter a valid 10-digit mobile number."],
+    [Validate.email(email), "Please enter a valid email address."],
+    [Validate.password(password), "Your password must be at least 8 characters and include both letters and numbers."],
   ]);
   if (error) { msg.textContent = error; msg.classList.add("error"); enable(); return; }
 
   const captchaToken = getCaptchaToken();
   if (CAPTCHA_SITE_KEY && !captchaToken) {
-    msg.textContent = "Pehle CAPTCHA complete kariye.";
+    msg.textContent = "Please complete the CAPTCHA first.";
     msg.classList.add("error"); enable(); return;
   }
 
@@ -37,7 +37,7 @@ async function handleSignup(e) {
 
   try {
     if (await mobileAlreadyRegistered(mobile)) {
-      msg.textContent = "Is mobile number se pehle se account bana hua hai. Login kariye ya password reset kariye.";
+      msg.textContent = "An account already exists with this mobile number. Please log in instead.";
       msg.classList.add("error"); enable(); return;
     }
 
@@ -70,7 +70,7 @@ async function handleSignup(e) {
     msg.classList.add("ok");
     setTimeout(() => (window.location.href = "dashboard.html"), 1600);
   } catch (err) {
-    msg.textContent = "Kuch galat ho gaya: " + err.message;
+    msg.textContent = "Something went wrong: " + err.message;
     msg.classList.add("error");
     enable();
   }
@@ -85,21 +85,21 @@ async function resolveLoginEmail(identifier) {
 
 async function handleLogin(e) {
   e.preventDefault();
-  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(e.target, "Login ho raha hai...") : () => {};
+  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(e.target, "Logging in...") : () => {};
   const identifier = document.getElementById("li-email").value.trim();
   const password = document.getElementById("li-password").value;
   const msg = document.getElementById("li-msg");
   msg.textContent = ""; msg.className = "form-msg";
 
   if (!Validate.notEmpty(identifier) || !Validate.notEmpty(password)) {
-    msg.textContent = "Mobile/email aur password dono bhariye.";
+    msg.textContent = "Please enter both your mobile/email and password.";
     msg.classList.add("error");
     return;
   }
 
   const captchaToken = getCaptchaToken();
   if (CAPTCHA_SITE_KEY && !captchaToken) {
-    msg.textContent = "Pehle CAPTCHA complete kariye.";
+    msg.textContent = "Please complete the CAPTCHA first.";
     msg.classList.add("error");
     return;
   }
@@ -107,7 +107,7 @@ async function handleLogin(e) {
   const email = await resolveLoginEmail(identifier);
   if (!email) {
     await recordLoginAttempt({ email: identifier, success: false });
-    msg.textContent = "Login fail: details galat hain.";
+    msg.textContent = "Login failed: those details are incorrect.";
     msg.classList.add("error");
     return;
   }
@@ -117,7 +117,7 @@ async function handleLogin(e) {
 
   if (error) {
     await recordLoginAttempt({ email, success: false });
-    msg.textContent = "Login fail: details galat hain.";
+    msg.textContent = "Login failed: those details are incorrect.";
     msg.classList.add("error");
     return;
   }
@@ -127,7 +127,7 @@ async function handleLogin(e) {
   if (profile?.is_blocked) {
     await supabaseClient.auth.signOut();
     await recordLoginAttempt({ userId: data.user.id, email, success: false });
-    msg.textContent = "Ye account block kar diya gaya hai. Support se sampark kariye.";
+    msg.textContent = "This account has been blocked. Please contact support.";
     msg.classList.add("error");
     return;
   }
@@ -137,20 +137,6 @@ async function handleLogin(e) {
   restoreBtn();
 }
 
-async function handleForgotPasswordCustomer() {
-  const email = prompt("Apna registered email likhiye:");
-  if (!email) return;
-  const msg = document.getElementById("li-msg");
-  if (!Validate.email(email)) {
-    if (msg) { msg.textContent = "Sahi email daaliye."; msg.className = "form-msg error"; }
-    return;
-  }
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
-  if (msg) {
-    msg.textContent = error ? error.message : "Password reset link email par bhej diya.";
-    msg.className = "form-msg " + (error ? "error" : "ok");
-  }
-}
 
 function prefillReferralCode() {
   const input = document.getElementById("su-referral");
@@ -159,7 +145,7 @@ function prefillReferralCode() {
   if (ref) {
     input.value = ref;
     const hint = document.getElementById("referral-hint");
-    if (hint) hint.textContent = "Referral code apply ho gaya.";
+    if (hint) hint.textContent = "Referral code applied.";
   }
 }
 
@@ -167,6 +153,5 @@ document.addEventListener("DOMContentLoaded", () => {
   prefillReferralCode();
   document.getElementById("signup-form")?.addEventListener("submit", handleSignup);
   document.getElementById("login-form")?.addEventListener("submit", handleLogin);
-  document.getElementById("forgot-password-link")?.addEventListener("click", (e) => { e.preventDefault(); handleForgotPasswordCustomer(); });
   loadCaptcha("captcha-box");
 });

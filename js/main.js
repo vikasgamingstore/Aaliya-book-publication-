@@ -47,10 +47,9 @@ function applyCompanySettings(data) {
   document.querySelectorAll("[data-support-timing]").forEach(el => {
     if (data.whatsapp_support_timing) el.textContent = "Support timing: " + data.whatsapp_support_timing;
   });
-  document.querySelectorAll("[data-bank-account-name]").forEach(el => el.textContent = data.bank_account_name || "—");
-  document.querySelectorAll("[data-bank-name]").forEach(el => el.textContent = data.bank_name || "—");
-  document.querySelectorAll("[data-bank-account-number]").forEach(el => el.textContent = data.bank_account_number || "—");
-  document.querySelectorAll("[data-bank-ifsc]").forEach(el => el.textContent = data.bank_ifsc || "—");
+
+
+
 
   const waNumber = (data.whatsapp_number || "").replace(/[^0-9]/g, "");
   const waMessage = data.whatsapp_support_message || data.whatsapp_welcome_message || "Hi, I have a query about a handwriting project.";
@@ -122,7 +121,7 @@ function showAnnouncementPopup(s) {
             ${s.upi_id ? `<br><strong>Official UPI:</strong> ${s.upi_id}` : ""}
           </div>` : ""}
         ${s.popup_button_text ? `<a href="${s.popup_button_link || "#"}" class="btn btn-brass btn-block" data-popup-ok>${s.popup_button_text}</a>` : ""}
-        <button class="popup-dismiss">Band kariye</button>
+        <button class="popup-dismiss">Close</button>
       </div>
     </div>`;
 

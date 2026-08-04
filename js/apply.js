@@ -31,10 +31,6 @@ async function guardApply() {
     if (profile.mobile) f.mobile.value = profile.mobile;
     if (profile.address) f.address.value = profile.address;
     if (profile.courier_address) f.courier_address.value = profile.courier_address;
-    if (profile.bank_account_name) f.bank_account_name.value = profile.bank_account_name;
-    if (profile.bank_account_number) f.bank_account_number.value = profile.bank_account_number;
-    if (profile.bank_ifsc) f.bank_ifsc.value = profile.bank_ifsc;
-    if (profile.bank_name) f.bank_name.value = profile.bank_name;
   }
   f_email(session.user.email);
 }
@@ -80,10 +76,10 @@ async function handleApplySubmit(e) {
   const f = e.target;
   const msg = document.getElementById("apply-msg");
   msg.textContent = ""; msg.className = "form-msg";
-  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Submit ho raha hai...") : () => {};
+  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(f, "Submitting...") : () => {};
 
   if (!selectedProjectId) {
-    msg.textContent = "Pehle ek project chuniye.";
+    msg.textContent = "Please choose a project first.";
     msg.classList.add("error");
     restoreBtn();
     return;
@@ -91,14 +87,10 @@ async function handleApplySubmit(e) {
 
   if (typeof runValidations === "function") {
     const validationError = runValidations([
-      [Validate.notEmpty(f.full_name.value), "Apna poora naam likhiye."],
-      [Validate.mobile(f.mobile.value), "Sahi 10-digit mobile number daaliye."],
-      [Validate.notEmpty(f.address.value), "Apna address bhariye."],
-      [Validate.notEmpty(f.courier_address.value), "Courier address bhariye."],
-      [Validate.notEmpty(f.bank_account_name.value), "Bank account holder ka naam bhariye."],
-      [Validate.notEmpty(f.bank_name.value), "Bank ka naam bhariye."],
-      [Validate.accountNumber(f.bank_account_number.value), "Bank account number sahi nahi lag raha."],
-      [Validate.ifsc(f.bank_ifsc.value), "IFSC code sahi format mein nahi hai (jaise SBIN0001234)."],
+      [Validate.notEmpty(f.full_name.value), "Please enter your full name."],
+      [Validate.mobile(f.mobile.value), "Please enter a valid 10-digit mobile number."],
+      [Validate.notEmpty(f.address.value), "Please enter your address."],
+      [Validate.notEmpty(f.courier_address.value), "Please enter your courier address."],
     ]);
     if (validationError) {
       msg.textContent = validationError;
@@ -118,10 +110,6 @@ async function handleApplySubmit(e) {
     mobile: f.mobile.value.trim(),
     address: f.address.value.trim(),
     courier_address: f.courier_address.value.trim(),
-    bank_account_name: f.bank_account_name.value.trim(),
-    bank_account_number: f.bank_account_number.value.trim(),
-    bank_ifsc: f.bank_ifsc.value.trim(),
-    bank_name: f.bank_name.value.trim(),
   });
 
   // Create registration
@@ -137,7 +125,7 @@ async function handleApplySubmit(e) {
     return;
   }
 
-  msg.textContent = "Application submit ho gaya! Ab registration fee pay kariye.";
+  msg.textContent = "Application submitted! Now please pay the registration fee.";
   msg.classList.add("ok");
   setTimeout(() => (window.location.href = "payment.html?reg=" + newReg.id), 1200);
 }

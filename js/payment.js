@@ -70,7 +70,7 @@ async function renderDynamicQr() {
   if (amountBox) amountBox.textContent = "₹" + fee.toLocaleString("en-IN");
 
   const { data: cs } = await supabaseClient.from("company_settings")
-    .select("upi_id, company_name, upi_qr_url").eq("id", 1).single();
+    .select("upi_id, company_name").eq("id", 1).single();
 
   const holder = document.getElementById("dynamic-qr");
   const payBtn = document.getElementById("upi-pay-btn");
@@ -79,9 +79,7 @@ async function renderDynamicQr() {
 
   if (!cs?.upi_id) {
     // UPI ID set nahi hai — admin ki uploaded static QR dikha dete hain
-    holder.innerHTML = cs?.upi_qr_url
-      ? `<img src="${cs.upi_qr_url}" alt="UPI QR" style="width:190px;height:190px;object-fit:contain">`
-      : '<p class="field-hint">UPI details abhi set nahi hui. WhatsApp par sampark kariye.</p>';
+    holder.innerHTML = '<p class="field-hint">UPI details are not set up yet. Please contact us on WhatsApp.</p>';
     if (payBtn) payBtn.style.display = "none";
     return;
   }
@@ -100,8 +98,6 @@ async function renderDynamicQr() {
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.M,
     });
-  } else if (cs.upi_qr_url) {
-    holder.innerHTML = `<img src="${cs.upi_qr_url}" alt="UPI QR" style="width:190px;height:190px;object-fit:contain">`;
   }
 }
 
@@ -111,7 +107,7 @@ async function handlePaymentSubmit(e) {
   const file = document.getElementById("pay-screenshot").files[0];
   const msg = document.getElementById("payment-msg");
   msg.textContent = ""; msg.className = "form-msg";
-  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(e.target, "Submit ho raha hai...") : () => {};
+  const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(e.target, "Submitting...") : () => {};
 
   if (!paymentRegistration) return;
 
@@ -124,7 +120,7 @@ async function handlePaymentSubmit(e) {
     const safeName = file.name.replace(/[^\w\-. ()]/g, "_");
     const path = `${session.user.id}/${paymentRegistration.id}/payment_screenshot/${Date.now()}_${safeName}`;
     const { error: uploadError } = await supabaseClient.storage.from("customer-uploads").upload(path, file);
-    if (uploadError) { msg.textContent = "Screenshot upload fail: " + uploadError.message; msg.classList.add("error"); restoreBtn(); return; }
+    if (uploadError) { msg.textContent = "Screenshot upload failed: " + uploadError.message; msg.classList.add("error"); restoreBtn(); return; }
     screenshotUrl = path;   // private path; admins view it through a signed URL
 
     await supabaseClient.from("documents").insert({
@@ -145,7 +141,7 @@ async function handlePaymentSubmit(e) {
 
   if (error) { msg.textContent = error.message; msg.classList.add("error"); restoreBtn(); return; }
 
-  msg.textContent = "Payment confirmation submit ho gaya! Admin verify karega 24 ghante ke andar.";
+  msg.textContent = "Payment confirmation submitted! Our admin will verify it within 24 hours.";
   msg.classList.add("ok");
   document.getElementById("payment-form").style.display = "none";
 }
