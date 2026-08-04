@@ -1223,3 +1223,125 @@ footer .social-btn { background: transparent !important; }
 .social-btn svg { fill: #fff !important; position: relative; z-index: 2; }
 .social-btn span { z-index: 2; }
 .social-btn:hover { transform: translateY(-5px) scale(1.07); box-shadow: 0 10px 22px rgba(16,24,40,.28) !important; }
+
+/* ============================================================
+   SOCIAL ICONS — chhote, halke, saaf spacing
+   ============================================================ */
+.socials {
+  display: flex !important; align-items: center;
+  gap: 14px !important; flex-wrap: wrap; margin-top: 18px !important;
+}
+.social-btn {
+  width: 38px !important; height: 38px !important;
+  border-radius: 11px !important;
+  box-shadow: 0 2px 6px rgba(16,24,40,.14) !important;
+  transition: transform .28s var(--t), box-shadow .28s var(--t), filter .28s ease;
+  filter: saturate(.92);
+}
+.social-btn svg { width: 17px !important; height: 17px !important; }
+.social-btn:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 8px 18px rgba(16,24,40,.24) !important;
+  filter: saturate(1.1) brightness(1.05);
+}
+.social-btn span { display: none !important; }
+
+/* ============================================================
+   PROJECT CARDS — premium hover, lighting, animation
+   ============================================================ */
+.plans-grid { gap: 24px; }
+
+.plan-card {
+  position: relative;
+  border-radius: 22px !important;
+  padding: 28px 24px 24px !important;
+  background: #fff;
+  border: 1px solid rgba(18,40,76,.08) !important;
+  overflow: hidden;
+  transition: transform .45s var(--t), box-shadow .45s var(--t), border-color .35s ease;
+  isolation: isolate;
+}
+
+/* top gradient bar — hover par chaudi ho jaati hai */
+.plan-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: 4px; z-index: 3;
+  background: linear-gradient(90deg, var(--brand-2), var(--gold), var(--accent));
+  background-size: 200% 100%;
+  transition: height .4s var(--t), background-position .8s ease;
+}
+.plan-card:hover::before { height: 7px; background-position: 100% 0; }
+
+/* lighting sweep — hover par roshni guzarti hai */
+.plan-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, rgba(212,160,52,.16) 48%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform .95s var(--t);
+}
+.plan-card:hover::after { transform: translateX(120%); }
+
+.plan-card > * { position: relative; z-index: 2; }
+
+.plan-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(212,160,52,.55) !important;
+  box-shadow: 0 22px 44px -14px rgba(18,40,76,.28), 0 0 0 1px rgba(212,160,52,.14);
+}
+
+.plan-card h3 {
+  font-size: 1.16rem !important; font-weight: 700; letter-spacing: -.02em;
+  margin-bottom: 8px; transition: color .3s ease;
+}
+.plan-card:hover h3 { color: var(--brand-2); }
+.plan-card .desc { font-size: .89rem; color: var(--text-muted); line-height: 1.6; }
+
+/* meta grid */
+.plan-meta {
+  background: linear-gradient(160deg, #F7F9FC, #EEF3FA);
+  border: 1px solid rgba(18,40,76,.07);
+  border-radius: 14px; padding: 14px 16px; margin: 16px 0 18px;
+  transition: background .35s ease, border-color .35s ease;
+}
+.plan-card:hover .plan-meta {
+  background: linear-gradient(160deg, #FFFCF4, #FBF3E0);
+  border-color: rgba(212,160,52,.3);
+}
+.plan-meta div { padding: 5px 0; }
+.plan-meta span {
+  font-size: .66rem; text-transform: uppercase; letter-spacing: .07em;
+  color: var(--text-muted); font-weight: 600;
+}
+.plan-meta strong {
+  font-size: .97rem; font-weight: 600; color: var(--brand);
+  transition: transform .3s var(--t);
+}
+.plan-card:hover .plan-meta strong { transform: translateX(2px); }
+
+/* CTA button */
+.plan-card .btn-block {
+  border-radius: 12px !important;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  transition: all .35s var(--t);
+}
+.plan-card:hover .btn-block {
+  background: linear-gradient(135deg, var(--gold), var(--gold-soft));
+  color: var(--brand);
+  box-shadow: 0 8px 20px rgba(212,160,52,.4);
+}
+
+/* project image */
+.plan-card img {
+  border-radius: 14px !important; transition: transform .55s var(--t);
+}
+.plan-card:hover img { transform: scale(1.04); }
+
+/* halka floating shine on the whole grid card entry */
+@keyframes cardIn { from { opacity:0; transform: translateY(22px) scale(.98);} to { opacity:1; transform:none;} }
+.plan-card { animation: cardIn .6s var(--t) both; }
+
+@media (max-width: 780px) {
+  .plan-card { padding: 22px 18px 20px !important; }
+  .plan-card:hover { transform: translateY(-5px); }
+  .socials { gap: 12px !important; }
+}
