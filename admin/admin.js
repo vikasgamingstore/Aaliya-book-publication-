@@ -34,7 +34,8 @@ async function handleAdminLogin(e) {
 async function handleForgotPassword() {
   const email = prompt("Enter your admin email:");
   if (!email) return;
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+  const redirectTo = new URL("reset-password.html", window.location.origin + window.location.pathname.replace(/admin\/.*$/, "")).href;
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo });
   const msg = document.getElementById("ad-msg");
   if (msg) {
     msg.textContent = error ? error.message : "Password reset link email par bhej diya.";
@@ -45,7 +46,8 @@ async function handleForgotPassword() {
 async function handleAdminPasswordReset() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   const msg = document.getElementById("reset-msg");
-  const { error } = await supabaseClient.auth.resetPasswordForEmail(session.user.email);
+  const redirectTo2 = new URL("reset-password.html", window.location.origin + window.location.pathname.replace(/admin\/.*$/, "")).href;
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(session.user.email, { redirectTo: redirectTo2 });
   msg.textContent = error ? error.message : `Reset link ${session.user.email} par bhej diya.`;
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
@@ -270,7 +272,7 @@ async function handlePopupImage(e) {
   const file = e.target.files[0];
   const msg = document.getElementById("popup-msg");
   if (!file) return;
-  msg.textContent = "Image ready ho rahi hai..."; msg.className = "form-msg";
+  msg.textContent = "Preparing image..."; msg.className = "form-msg";
   try {
     const uri = await compressImage(file, 620, 0.8);
     const f = document.getElementById("popup-form");
@@ -351,7 +353,7 @@ async function toggleProject(id, newState) {
   loadProjectsTable();
 }
 async function deleteProject(id) {
-  if (!confirm("Ye project delete karna hai?")) return;
+  if (!confirm("Delete this project?")) return;
   await supabaseClient.from("projects").delete().eq("id", id);
   loadProjectsTable();
 }
@@ -429,7 +431,7 @@ async function openRegDetail(id) {
       <div><span>Expected Amount</span><strong style="font-size:1.1rem;color:var(--green-ok)">₹${proj.registration_fee ?? "—"}</strong></div>
       <div><span>UTR / Reference</span><strong>${r.registration_utr || "—"}</strong></div>
     </div>
-    <p class="field-hint">Screenshot mein amount <strong>₹${proj.registration_fee ?? "—"}</strong> exactly. If it is more or less, reject it and add a remark.</p>
+    <p class="field-hint">The screenshot must show <strong>₹${proj.registration_fee ?? "—"}</strong> exactly. If it is more or less, reject it and add a remark.</p>
     ${r.payment_screenshot_url ? `<p><a href="#" onclick="openSecureFile(event, '${r.payment_screenshot_url}')">View Payment Screenshot</a></p>` : `<p class="field-hint">The customer has not uploaded a screenshot yet.</p>`}
     <div class="form-grid">
       <div class="field">
@@ -827,7 +829,7 @@ function renderCustomersTable(list) {
 }
 
 async function toggleBlockCustomer(id, block) {
-  if (!confirm(block ? "Is customer ka account block karna hai?" : "Is customer ka account unblock karna hai?")) return;
+  if (!confirm(block ? "Block this customer's account?" : "Unblock this customer's account?")) return;
   await supabaseClient.from("profiles").update({ is_blocked: block }).eq("id", id);
   logActivity(block ? "Customer blocked" : "Customer unblocked", id);
   loadCustomersTable();
@@ -967,7 +969,7 @@ async function toggleTestimonial(id, state) {
   loadTestimonialsTable();
 }
 async function deleteTestimonial(id) {
-  if (!confirm("Ye review delete karna hai?")) return;
+  if (!confirm("Delete this review?")) return;
   await supabaseClient.from("testimonials").delete().eq("id", id);
   loadTestimonialsTable();
 }
@@ -1009,7 +1011,7 @@ async function toggleFaq(id, state) {
   loadFaqsTable();
 }
 async function deleteFaq(id) {
-  if (!confirm("Ye FAQ delete karna hai?")) return;
+  if (!confirm("Delete this FAQ?")) return;
   await supabaseClient.from("faq_items").delete().eq("id", id);
   loadFaqsTable();
 }
@@ -1071,7 +1073,7 @@ async function loadLoginHistory() {
 async function createBackup() {
   const msg = document.getElementById("backup-msg");
   const note = document.getElementById("backup-note").value.trim();
-  msg.textContent = "Backup ban raha hai..."; msg.className = "form-msg";
+  msg.textContent = "Creating backup..."; msg.className = "form-msg";
 
   const tables = ["profiles", "projects", "registrations", "documents", "testimonials",
                   "faq_items", "site_content", "company_settings", "notifications", "support_messages"];
@@ -1242,7 +1244,7 @@ async function loadNotificationsTable() {
 // ---------- Automatic reminders ----------
 async function sendDueReminders() {
   const msg = document.getElementById("reminders-msg");
-  msg.textContent = "Reminders bhej rahe hain..."; msg.className = "form-msg";
+  msg.textContent = "Sending reminders..."; msg.className = "form-msg";
   const { data, error } = await supabaseClient.rpc("send_due_reminders");
   if (error) {
     msg.textContent = error.message;
