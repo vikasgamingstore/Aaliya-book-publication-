@@ -41,32 +41,52 @@ async function handleSignup(e) {
       msg.classList.add("error"); enable(); return;
     }
 
-    const signUpOptions = captchaToken ? { captchaToken } : {};
-    const { data, error: signUpError } = await supabaseClient.auth.signUp({ email, password, options: signUpOptions });
-    if (signUpError) { msg.textContent = signUpError.message; msg.classList.add("error"); enable(); return; }
-
-    let referrerId = null;
+    // Referral code -> referrer id (signup se pehle)
+    let referrerId = "";
     if (referralCode) {
       try {
         const { data: refId } = await supabaseClient.rpc("get_referrer_by_code", { code_input: referralCode });
-        referrerId = refId || null;
+        referrerId = refId || "";
       } catch (err) { console.warn("Referral lookup failed:", err.message); }
     }
 
-    let customerId = "";
-    if (data.user) {
-      const { data: profileRow } = await supabaseClient.from("profiles").insert({
-        id: data.user.id,
+    // Profile ki details metadata mein bhejte hain — database trigger inse profile bana deta hai
+    const options = {
+      data: {
         full_name: name,
         mobile: mobile,
-        address: address || null,
-        courier_address: courierAddress || address || null,
+        address: address || "",
+        courier_address: courierAddress || address || "",
         referred_by: referrerId,
-      }).select("customer_id").single();
-      customerId = profileRow?.customer_id || "";
+      },
+    };
+    if (captchaToken) options.captchaToken = captchaToken;
+
+    const { data, error: signUpError } = await supabaseClient.auth.signUp({ email, password, options });
+    if (signUpError) {
+      msg.textContent = signUpError.message;
+      msg.classList.add("error"); enable(); return;
     }
 
-    msg.textContent = `Registration successful! Aapka Customer ID: ${customerId || "generate ho raha hai"}. Redirecting...`;
+    // Email confirmation on ho to session nahi milta
+    if (!data.session) {
+      msg.innerHTML = "Account created. Please open your email and click the confirmation link, then log in.";
+      msg.classList.add("ok");
+      enable();
+      setTimeout(() => (window.location.href = "login.html"), 4000);
+      return;
+    }
+
+    let customerId = "";
+    try {
+      const { data: profileRow } = await supabaseClient
+        .from("profiles").select("customer_id").eq("id", data.user.id).single();
+      customerId = profileRow?.customer_id || "";
+    } catch (err) { /* trigger thodi der le sakta hai */ }
+
+    msg.textContent = customerId
+      ? `Registration successful! Your Customer ID: ${customerId}. Redirecting...`
+      : "Registration successful! Redirecting...";
     msg.classList.add("ok");
     setTimeout(() => (window.location.href = "dashboard.html"), 1600);
   } catch (err) {

@@ -43,7 +43,34 @@ async function guardAndLoad() {
   if (!session) { window.location.href = "login.html"; return; }
   currentUser = session.user;
 
-  const { data: profile } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).single();
+  // Profile trigger se banti hai — kabhi-kabhi ek pal ki der lag sakti hai
+  let profile = null;
+  for (let i = 0; i < 3; i++) {
+    const { data } = await supabaseClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+    if (data) { profile = data; break; }
+    await new Promise(r => setTimeout(r, 600));
+  }
+
+  // Agar phir bhi na mile to khud bana dete hain (login loop se bachne ke liye)
+  if (!profile) {
+    const meta = currentUser.user_metadata || {};
+    const { data: created } = await supabaseClient.from("profiles").insert({
+      id: currentUser.id,
+      full_name: meta.full_name || "",
+      mobile: meta.mobile || "",
+      address: meta.address || null,
+      courier_address: meta.courier_address || null,
+    }).select("*").single();
+    profile = created || null;
+  }
+
+  if (profile?.is_blocked) {
+    await supabaseClient.auth.signOut();
+    alert("This account has been blocked. Please contact support.");
+    window.location.href = "login.html";
+    return;
+  }
+
   currentProfile = profile;
 
   const name = profile?.full_name || currentUser.email;
@@ -96,7 +123,7 @@ async function loadRegistrations() {
   renderPaymentsSection(regs || []);
 
   if (error || !regs || regs.length === 0) {
-    wrap.innerHTML = '<div class="empty-state">You have no project registration yet. <a href="index.html#projects">Project select kariye</a> and apply.</div>';
+    wrap.innerHTML = '<div class="empty-state">You have no project registration yet. <a href="index.html#projects">Select a project</a> and apply.</div>';
     return;
   }
 
@@ -120,7 +147,7 @@ function renderStatusCards(regs) {
 
   const active = regs.find(r => !["completed", "cancelled"].includes(r.project_status)) || regs[0];
   if (!active) {
-    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">You have no active project yet. <a href="index.html#projects">Naor project chuniye</a>.</div>`;
+    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">You have no active project yet. <a href="index.html#projects">Choose a project</a>.</div>`;
     return;
   }
 
@@ -255,7 +282,7 @@ function renderRegistrationCard(r) {
       <button type="submit" class="btn btn-primary btn-sm" style="grid-column:1/-1">Save Progress</button>
     </form>
     ${r.quality_status === "need_correction" ? `<div class="form-msg error"><strong>Correction Requested:</strong> ${r.correction_message || r.quality_note || "Some pages need correction — contact us on WhatsApp for details."}</div>` : ""}
-    ${r.quality_status === "rejected" ? `<p class="form-msg error">Quality check mein reject hua: ${r.quality_note || "Contact the admin on WhatsApp."}</p>` : ""}
+    ${r.quality_status === "rejected" ? `<p class="form-msg error">Rejected in quality check: ${r.quality_note || "Contact the admin on WhatsApp."}</p>` : ""}
 
     <div class="fieldset-title">Payment</div>
     <div class="info-grid" style="margin-bottom:10px">
@@ -489,7 +516,7 @@ async function loadNotifications() {
     preview.innerHTML = `
       <h3>Recent Updates ${unread.length ? `<span class="status-badge status-pending">${unread.length} new</span>` : ""}</h3>
       ${data.slice(0, 4).map(renderItem).join("")}
-      <a href="#notifications" class="btn btn-outline btn-sm" style="margin-top:12px" onclick="switchAppTab('notifications')">Saare notifications for details</a>`;
+      <a href="#notifications" class="btn btn-outline btn-sm" style="margin-top:12px" onclick="switchAppTab('notifications')">View all notifications</a>`;
   }
 }
 
@@ -689,16 +716,16 @@ function renderActionHint(regs) {
   let hint = null;
 
   if (!regs.length) {
-    hint = { title: "Choose your first project", text: "Browse the available projects and apply for whichever suits you.", btn: "Projects Dekhiye", link: "index.html#projects" };
+    hint = { title: "Choose your first project", text: "Browse the available projects and apply for whichever suits you.", btn: "View Projects", link: "index.html#projects" };
   } else if (active) {
     if (["pending", "rejected"].includes(active.registration_payment_status)) {
-      hint = { title: "Registration fee pending hai", text: "Pay and submit your UTR and screenshot so your registration can move forward.", btn: "Pay Now", link: `payment.html?reg=${active.id}` };
+      hint = { title: "Registration fee pending", text: "Pay and submit your UTR and screenshot so your registration can move forward.", btn: "Pay Now", link: `payment.html?reg=${active.id}` };
     } else if (active.registration_payment_status === "under_verification") {
-      hint = { title: "Payment verification chal rahi hai", text: "Our admin will verify within 24 hours. You will get a notification once it is done." };
+      hint = { title: "Payment verification in progress", text: "Our admin will verify within 24 hours. You will get a notification once it is done." };
     } else if (active.courier_out_status === "delivered" && !active.delivery_confirmed_by_customer) {
-      hint = { title: "Parcel arrived? Confirm it", text: 'Project tab par "Confirm Parcel Received" dabaiye — tabhi aapka project aur deadline shuru hoga.' };
+      hint = { title: "Parcel arrived? Confirm it", text: 'Tap "Confirm Parcel Received" in the Project tab — only then does your project and deadline start.' };
     } else if (active.project_status === "in_progress" && active.deadline) {
-      hint = { title: `Deadline: ${fmtDate(active.deadline)}`, text: `${daysRemaining(active.deadline)} — apna progress dashboard par update karte rahiye.` };
+      hint = { title: `Deadline: ${fmtDate(active.deadline)}`, text: `${daysRemaining(active.deadline)} — keep updating your progress in the dashboard.` };
     } else if (active.quality_status === "need_correction") {
       hint = { title: "Correction needed", text: active.correction_message || "The admin has requested some corrections — see the Project tab for details." };
     }
