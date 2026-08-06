@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://aaliyabookpublication.com/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
-  <url><loc>https://aaliyabookpublication.com/about.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://aaliyabookpublication.com/signup.html</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://aaliyabookpublication.com/login.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://aaliyabookpublication.com/help.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.aaliyabookpublication.com/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://www.aaliyabookpublication.com/about.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.aaliyabookpublication.com/signup.html</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.aaliyabookpublication.com/login.html</loc><priority>0.5</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://www.aaliyabookpublication.com/help.html</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
 </urlset>

@@ -5,4 +5,4 @@ Disallow: /dashboard.html
 Disallow: /payment.html
 Disallow: /reset-password.html
 
-Sitemap: https://aaliyabookpublication.com/sitemap.xml
+Sitemap: https://www.aaliyabookpublication.com/sitemap.xml
