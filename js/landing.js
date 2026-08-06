@@ -24,7 +24,7 @@ async function loadHomeProjects() {
         <div><span>Registration Fee</span><strong>₹${p.registration_fee}</strong></div>
         <div><span>Advance (${p.advance_percent || 50}%)</span><strong>₹${p.advance_payment}</strong></div>
       </div>
-      <a href="apply.html?project=${p.id}" class="btn btn-primary btn-block">Apply Now</a>
+      <a href="#" class="btn btn-primary btn-block" onclick="startApply(event, '${p.id}')">Apply Now</a>
     </article>
   `).join("");
 }
@@ -36,7 +36,7 @@ async function loadTestimonials() {
 
   const grid = document.getElementById("testimonials-grid");
   if (error || !data || data.length === 0) {
-    grid.innerHTML = '<div class="empty-state">Reviews jald hi orhan add kiye jayenge.</div>';
+    grid.innerHTML = '<div class="empty-state">Reviews will be added soon.</div>';
     return;
   }
   grid.innerHTML = data.map(t => `
@@ -56,7 +56,7 @@ async function loadFAQ() {
 
   const list = document.getElementById("faq-list");
   if (error || !data || data.length === 0) {
-    list.innerHTML = '<p>FAQs jald hi add kiye jayenge.</p>';
+    list.innerHTML = '<p>FAQs will be added soon.</p>';
     return;
   }
 
@@ -221,3 +221,18 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("enquiry-form")?.addEventListener("submit", handleEnquirySubmit);
   document.getElementById("newsletter-form")?.addEventListener("submit", handleNewsletterSubscribe);
 });
+
+
+// ---------- Apply flow: pehle login/signup, phir apply ----------
+async function startApply(e, projectId) {
+  e.preventDefault();
+  sessionStorage.setItem("abp-pending-project", projectId);
+
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (session) {
+    window.location.href = "apply.html?project=" + projectId;
+  } else {
+    // Account hai to login, nahi hai to signup — dono ek hi page se
+    window.location.href = "login.html?next=apply&project=" + projectId;
+  }
+}

@@ -44,7 +44,7 @@ async function loadProjectsIntoSelect() {
   const { data: projects } = await supabaseClient.from("projects").select("*").eq("is_active", true).order("created_at", { ascending: false });
   allProjects = projects || [];
   const select = document.getElementById("apply-project");
-  select.innerHTML = '<option value="">-- Project chuniye --</option>';
+  select.innerHTML = '<option value="">-- Choose a project --</option>';
   allProjects.forEach(p => {
     const opt = document.createElement("option");
     opt.value = p.id;
@@ -127,6 +127,7 @@ async function handleApplySubmit(e) {
 
   msg.textContent = "Application submitted! Now please pay the registration fee.";
   msg.classList.add("ok");
+  sessionStorage.removeItem("abp-pending-project");
   setTimeout(() => (window.location.href = "payment.html?reg=" + newReg.id), 1200);
 }
 
