@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Customer Login | Aaliya Book Publication</title>
 <meta name="description" content="Login to your Aaliya Book Publication account to track your handwriting project, courier delivery, payments and invoices.">
-<meta name="theme-color" content="#1B2430">
+<meta name="theme-color" content="#12284C">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/favicon-64.png">
@@ -28,13 +28,19 @@
   <h2>Customer Login</h2>
   <form id="login-form">
     <div class="field"><label for="li-email">Mobile Number or Email</label><input type="text" id="li-email" required></div>
-    <div class="field"><label for="li-password">Password</label><input type="password" id="li-password" required></div>
+    <div class="field"><label for="li-password">Password</label><div class="pw-wrap">
+        <input type="password" id="li-password" required autocomplete="current-password">
+        <button type="button" class="pw-toggle" data-toggle="li-password" aria-label="Show password">Show</button>
+      </div></div>
     <div id="captcha-box" style="margin-bottom:14px"></div>
     <button type="submit" class="btn btn-primary btn-block">Login</button>
     <div id="li-msg" class="form-msg"></div>
   </form>
   <div class="form-alt"><span class="field-hint">Forgot your password? Contact the admin — they will set a new one for you.</span></div>
-  <div class="form-alt">New here? <a href="signup.html">Register</a></div>
+  <div class="form-alt" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
+      <p style="margin:0 0 10px;color:var(--text-muted);font-size:.9rem">Don't have an account yet?</p>
+      <a href="signup.html" class="btn btn-outline btn-block">Create New Account</a>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

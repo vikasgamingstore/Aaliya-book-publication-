@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Customer Registration — Apply for Handwriting Work From Home | Aaliya Book Publication</title>
 <meta name="description" content="Register with Aaliya Book Publication to apply for handwriting work from home projects across India. Quick online registration with secure account setup.">
-<meta name="theme-color" content="#1B2430">
+<meta name="theme-color" content="#12284C">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="icon" href="icons/favicon-64.png">
@@ -24,26 +24,44 @@
   </a>
 </div></nav>
 
-<div class="form-wrap wide">
-  <h2>Customer Registration</h2>
+<div class="form-wrap">
+  <h2>Create Your Account</h2>
   <form id="signup-form">
-    <div class="fieldset-title">Account</div>
-    <div class="form-grid">
-      <div class="field"><label for="su-name">Full Name</label><input type="text" id="su-name" required></div>
-      <div class="field"><label for="su-mobile">Mobile Number</label><input type="tel" id="su-mobile" required></div>
-    </div>
-    <div class="form-grid">
-      <div class="field"><label for="su-email">Email</label><input type="email" id="su-email" required></div>
-      <div class="field"><label for="su-password">Password</label><input type="password" id="su-password" minlength="6" required></div>
-    </div>
-
-    <div class="fieldset-title">Address</div>
-    <div class="field"><label for="su-address">Complete Address</label><textarea id="su-address" rows="2"></textarea></div>
-    <div class="field"><label for="su-courier-address">Courier Address (if different)</label><textarea id="su-courier-address" rows="2"></textarea></div>
-
-    <div class="fieldset-title">Referral (optional)</div>
     <div class="field">
-      <label for="su-referral">Referral Code</label>
+      <label for="su-name">Full Name</label>
+      <input type="text" id="su-name" required autocomplete="name">
+    </div>
+
+    <div class="field">
+      <label for="su-mobile">Mobile Number</label>
+      <input type="tel" id="su-mobile" required inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit mobile number">
+    </div>
+
+    <div class="field">
+      <label for="su-email">Email Address</label>
+      <input type="email" id="su-email" required autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label for="su-password">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="su-password" required autocomplete="new-password" placeholder="At least 8 characters">
+        <button type="button" class="pw-toggle" data-toggle="su-password" aria-label="Show password">Show</button>
+      </div>
+      <p class="field-hint">Use at least 8 characters with both letters and numbers.</p>
+    </div>
+
+    <div class="field">
+      <label for="su-password2">Confirm Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="su-password2" required autocomplete="new-password" placeholder="Type the same password again">
+        <button type="button" class="pw-toggle" data-toggle="su-password2" aria-label="Show password">Show</button>
+      </div>
+      <p class="field-hint" id="pw-match-hint"></p>
+    </div>
+
+    <div class="field">
+      <label for="su-referral">Referral Code (optional)</label>
       <input type="text" id="su-referral" placeholder="Enter a referral code if someone referred you">
       <p class="field-hint" id="referral-hint"></p>
     </div>
