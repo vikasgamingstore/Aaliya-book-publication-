@@ -64,7 +64,7 @@ async function handleStaffCreate(e) {
   e.preventDefault();
   const f = e.target;
   const msg = document.getElementById("staff-msg");
-  msg.textContent = "Staff account bana rahe hain..."; msg.className = "form-msg";
+  msg.textContent = "Creating staff account..."; msg.className = "form-msg";
 
   const perms = {};
   PERM_KEYS.forEach(k => { perms[k] = f[k].checked; });
@@ -81,7 +81,7 @@ async function handleStaffCreate(e) {
     return;
   }
 
-  msg.textContent = "Staff account created.";
+  msg.textContent = "स्टाफ अकाउंट बन गया।";
   msg.className = "form-msg ok";
   f.reset();
   applyRoleDefaultPerms();
@@ -179,7 +179,7 @@ async function saveStaffEdit(id) {
   PERM_KEYS.forEach(k => { updates["perm_" + k] = document.getElementById("edit-" + k).checked; });
 
   const { error } = await supabaseClient.from("profiles").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes saved.";
+  msg.textContent = error ? error.message : "बदलाव सेव हो गए।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) {
     if (typeof logActivity === "function") logActivity("Staff updated", `${id} → ${updates.admin_role}`);
@@ -195,7 +195,7 @@ async function toggleStaffStatus(id, newStatus) {
 }
 
 async function removeStaff(id) {
-  if (!confirm("Is staff member ka admin access hataana hai? (Unka customer account bana rahega.)")) return;
+  if (!confirm("Remove this staff member's admin access? (Their customer account stays.)")) return;
   const updates = { is_admin: false, admin_role: null, staff_status: "inactive" };
   PERM_KEYS.forEach(k => { updates["perm_" + k] = false; });
   await supabaseClient.from("profiles").update(updates).eq("id", id);
@@ -274,7 +274,7 @@ async function handleTaskCreate(e) {
     due_date: f.due_date.value || null,
   });
 
-  msg.textContent = error ? error.message : "Task assigned — the staff member has been notified.";
+  msg.textContent = error ? error.message : "टास्क असाइन हो गया — स्टाफ को नोटिफिकेशन चला गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) {
     f.reset();

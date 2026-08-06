@@ -21,7 +21,7 @@ async function handleAdminLogin(e) {
   const { data: profile } = await supabaseClient.from("profiles").select("is_admin, is_blocked").eq("id", data.user.id).single();
   if (!profile?.is_admin || profile?.is_blocked) {
     await recordLoginAttempt({ userId: data.user.id, email, success: false, isAdmin: true });
-    msg.textContent = "This account is not an admin account.";
+    msg.textContent = "यह अकाउंट एडमिन नहीं है।";
     msg.classList.add("error");
     await supabaseClient.auth.signOut();
     return;
@@ -190,7 +190,7 @@ async function handleProfileSave(e) {
   fields.forEach(k => { if (f[k]) updates[k] = f[k].value.trim() || null; });
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Company profile saved.";
+  msg.textContent = error ? error.message : "कंपनी प्रोफ़ाइल सेव हो गई।";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -203,7 +203,7 @@ async function handleSettingsSave(e) {
   fields.forEach(k => { if (f[k]) updates[k] = f[k].value.trim() || null; });
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Settings saved — they appear on the website immediately.";
+  msg.textContent = error ? error.message : "सेटिंग्स सेव हो गईं — वेबसाइट पर तुरंत दिखेंगी।";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -263,7 +263,7 @@ async function handlePopupSave(e) {
   updates.popup_show_once = f.popup_show_once.checked;
 
   const { error } = await supabaseClient.from("company_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Popup saved — it appears on the website immediately.";
+  msg.textContent = error ? error.message : "पॉपअप सेव हो गया — वेबसाइट पर तुरंत दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("Popup updated", updates.popup_title || "");
 }
@@ -290,14 +290,14 @@ async function handlePopupImage(e) {
 
 // ---------- Admin: customer ka password badlein ----------
 async function adminChangePassword(userId, name) {
-  const pw = prompt(`${name || "Customer"} — enter a new password (at least 8 characters):`);
+  const pw = prompt(`${name || "Customer"} — नया पासवर्ड डालिए (कम से कम 8 अक्षर):`);
   if (pw === null) return;
-  if (pw.trim().length < 8) { alert("Password must be at least 8 characters."); return; }
+  if (pw.trim().length < 8) { alert("पासवर्ड कम से कम 8 अक्षरों का होना चाहिए।"); return; }
 
   const { data, error } = await supabaseClient.rpc("admin_set_password", {
     target_user: userId, new_password: pw.trim(),
   });
-  if (error) { alert("Password was not changed: " + error.message); return; }
+  if (error) { alert("पासवर्ड नहीं बदला: " + error.message); return; }
   alert(`Password has been changed.\nLogin email: ${data}\nNew password: ${pw.trim()}\n\nPlease share these details with the customer.`);
   if (typeof logActivity === "function") logActivity("Customer password changed", name || userId);
 }
@@ -343,7 +343,7 @@ async function handleProjectCreate(e) {
     instructions: f.instructions.value.trim(),
     image_url: f.image_url.value.trim() || null,
   });
-  msg.textContent = error ? error.message : "Project added.";
+  msg.textContent = error ? error.message : "प्रोजेक्ट जुड़ गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadProjectsTable(); loadOverviewStats(); logActivity("Project added", f.project_name.value.trim()); }
 }
@@ -364,7 +364,7 @@ let allRegistrationsCache = [];
 async function loadRegistrationsTable() {
   const { data: regs } = await supabaseClient
     .from("registrations")
-    .select("*, profiles(full_name, mobile, address, courier_address, bank_account_name, bank_account_number, bank_ifsc, bank_name), projects(project_name, duration_days, registration_fee, advance_payment, final_payment)")
+    .select("*, profiles(full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url), projects(project_name, duration_days, registration_fee, advance_payment, final_payment)")
     .order("created_at", { ascending: false });
 
   allRegistrationsCache = regs || [];
@@ -381,7 +381,7 @@ function renderRegistrationsTable(regs) {
       <td><span class="status-badge status-${r.status}">${r.status}</span></td>
       <td><span class="status-badge status-${r.project_status}">${r.project_status.replace(/_/g," ")}</span></td>
       <td>${r.deadline || "—"}</td>
-      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">Manage</button></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">मैनेज</button></td>
     </tr>`).join("");
 }
 
@@ -399,7 +399,7 @@ function filterRegistrationsTable() {
 async function openRegDetail(id) {
   const { data: r } = await supabaseClient
     .from("registrations")
-    .select("*, profiles(id, full_name, mobile, address, courier_address, bank_account_name, bank_account_number, bank_ifsc, bank_name), projects(project_name, duration_days)")
+    .select("*, profiles(id, full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url), projects(project_name, duration_days)")
     .eq("id", id).single();
   if (!r) return;
   const cust = r.profiles || {};
@@ -412,8 +412,13 @@ async function openRegDetail(id) {
       <div><span>Mobile</span><strong>${cust.mobile || "—"}</strong></div>
       <div><span>Address</span><strong>${cust.address || "—"}</strong></div>
       <div><span>Courier Address</span><strong>${cust.courier_address || "—"}</strong></div>
-      <div><span>Bank</span><strong>${cust.bank_name || "—"} / ${cust.bank_account_number || "—"} / ${cust.bank_ifsc || "—"}</strong></div>
+      <div><span>Payout</span><strong>${cust.payout_method === "upi_qr"
+        ? (cust.payout_qr_url ? `<a href="${cust.payout_qr_url}" target="_blank">View payout QR</a>` : "QR not uploaded")
+        : (cust.payout_upi_id || "Not provided yet")}</strong></div>
       <div><span>Registration UTR</span><strong>${r.registration_utr || "—"}</strong></div>
+    </div>
+    <div style="margin:-6px 0 16px">
+      <button class="btn btn-outline btn-sm" onclick="adminChangePassword('${r.customer_id}', '${(cust.full_name || '').replace(/'/g, '')}')">कस्टमर का पासवर्ड रीसेट करें</button>
     </div>
 
     <div class="fieldset-title">1. Registration Approval</div>
@@ -615,7 +620,7 @@ async function saveRegDetail(id) {
   if (updates.final_status === "approved") updates.final_approved_at = new Date().toISOString();
 
   const { error } = await supabaseClient.from("registrations").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes saved.";
+  msg.textContent = error ? error.message : "बदलाव सेव हो गए।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { logActivity("Registration updated", `${updates.status} / ${updates.project_status}`); loadRegistrationsTable(); loadOverviewStats(); loadInvoicesTable(); loadPaymentsTab(); loadCourierTab(); loadProjectHistory(); }
 }
@@ -639,7 +644,7 @@ async function loadCourierTab() {
       <td>${r.courier_company_name || "—"}</td>
       <td>${r.courier_out_tracking || "—"}</td>
       <td><span class="status-badge status-${r.courier_out_status}">${r.courier_out_status.replace(/_/g," ")}</span></td>
-      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">Manage</button></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">मैनेज</button></td>
     </tr>`).join("") : `<tr><td colspan="7">No outgoing parcels.</td></tr>`;
 
   // Delivered
@@ -660,7 +665,7 @@ async function loadCourierTab() {
       <td>${r.projects?.project_name || "—"}</td>
       <td><span class="status-badge status-${r.pickup_status}">${r.pickup_status.replace(/_/g," ")}</span></td>
       <td>${r.pickup_tracking || "—"}</td>
-      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">Manage</button></td>
+      <td><button class="btn btn-outline btn-sm" onclick="openRegDetail('${r.id}')">मैनेज</button></td>
     </tr>`).join("") : `<tr><td colspan="5">No active pickup requests.</td></tr>`;
 
   // Returned / received
@@ -717,7 +722,7 @@ async function loadPaymentQueue() {
       <td>${r.projects?.project_name || "—"}</td>
       <td><strong>₹${r.projects?.registration_fee || 0}</strong><br><small style="color:var(--text-muted)">expected</small></td>
       <td>${r.registration_utr || "—"}</td>
-      <td>${r.payment_screenshot_url ? `<a href="#" onclick="openSecureFile(event, '${r.payment_screenshot_url}')">View</a>` : "—"}</td>
+      <td>${r.payment_screenshot_url ? `<a href="#" onclick="openSecureFile(event, '${r.payment_screenshot_url}')">देखें</a>` : "—"}</td>
       <td><span class="status-badge status-${r.registration_payment_status}">${r.registration_payment_status.replace(/_/g," ")}</span></td>
       <td>
         <button class="btn btn-outline btn-sm" onclick="quickPaymentAction('${r.id}','approved')">Approve</button>
@@ -820,10 +825,11 @@ function renderCustomersTable(list) {
       <td>${c.full_name || "—"}<br><small>${c.customer_id || ""}</small></td>
       <td>${c.mobile || "—"}</td>
       <td>${(c.address || "—").slice(0, 40)}</td>
-      <td>${c.reg_count} <button class="btn btn-outline btn-sm" onclick="viewCustomer('${c.id}')" style="margin-left:8px">View</button></td>
+      <td>${c.reg_count} <button class="btn btn-outline btn-sm" onclick="viewCustomer('${c.id}')" style="margin-left:8px">देखें</button></td>
       <td>
-        <span class="status-badge ${c.is_blocked ? 'status-rejected' : 'status-approved'}">${c.is_blocked ? "Blocked" : "Active"}</span>
-        <button class="btn btn-outline btn-sm" onclick="toggleBlockCustomer('${c.id}', ${!c.is_blocked})" style="margin-left:6px">${c.is_blocked ? "Unblock" : "Block"}</button>
+        <span class="status-badge ${c.is_blocked ? 'status-rejected' : 'status-approved'}">${c.is_blocked ? "ब्लॉक" : "एक्टिव"}</span>
+        <button class="btn btn-outline btn-sm" onclick="toggleBlockCustomer('${c.id}', ${!c.is_blocked})" style="margin-left:6px">${c.is_blocked ? "अनब्लॉक" : "ब्लॉक"}</button>
+        <button class="btn btn-outline btn-sm" onclick="adminChangePassword('${c.id}', '${(c.full_name || '').replace(/'/g, '')}')" style="margin-left:6px">पासवर्ड रीसेट</button>
       </td>
     </tr>`).join("");
 }
@@ -855,7 +861,7 @@ async function viewCustomer(id) {
       <div><span>Mobile</span><strong>${c.mobile || "—"}</strong></div>
       <div><span>Address</span><strong>${c.address || "—"}</strong></div>
       <div><span>Courier Address</span><strong>${c.courier_address || "—"}</strong></div>
-      <div><span>Bank</span><strong>${c.bank_name || "—"} / ${c.bank_account_number || "—"}</strong></div>
+      <div><span>Payout UPI</span><strong>${c.payout_upi_id || (c.payout_qr_url ? "QR uploaded" : "—")}</strong></div>
     </div>
     <div class="fieldset-title">Registrations</div>
     <div class="table-wrap">
@@ -923,7 +929,7 @@ async function handleSeoSave(e) {
     seo_keywords: f.seo_keywords.value.trim(),
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "SEO settings saved.";
+  msg.textContent = error ? error.message : "SEO सेटिंग्स सेव हो गईं।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) logActivity("SEO settings updated", f.seo_title.value.trim());
 }
@@ -959,7 +965,7 @@ async function handleTestimonialCreate(e) {
     rating: parseInt(f.rating.value, 10),
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Review added.";
+  msg.textContent = error ? error.message : "रिव्यू जुड़ गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadTestimonialsTable(); logActivity("Review added", f.customer_name.value); }
 }
@@ -1001,7 +1007,7 @@ async function handleFaqCreate(e) {
     answer: f.answer.value.trim(),
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "FAQ added.";
+  msg.textContent = error ? error.message : "FAQ जुड़ गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadFaqsTable(); }
 }
@@ -1198,7 +1204,7 @@ async function handleContentSave(e) {
   const keys = ["homepage_hero_text", "about_us", "work_process", "faq", "terms_conditions", "privacy_policy", "refund_policy", "contact_page", "data_protection_policy"];
   const rows = keys.map(k => ({ content_key: k, content_value: f[k].value, updated_at: new Date().toISOString() }));
   const { error } = await supabaseClient.from("site_content").upsert(rows);
-  msg.textContent = error ? error.message : "Content saved — it appears on the website immediately.";
+  msg.textContent = error ? error.message : "कंटेंट सेव हो गया — वेबसाइट पर तुरंत दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 

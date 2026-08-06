@@ -243,9 +243,9 @@ async function runImport() {
   const type = document.getElementById("import-type").value;
   const msg = document.getElementById("import-msg");
   const fileName = document.getElementById("import-file").files[0]?.name || "import.csv";
-  msg.textContent = "Import chal raha hai..."; msg.className = "form-msg";
+  msg.textContent = "Import in progress..."; msg.className = "form-msg";
 
-  if (!importRows.length) { msg.textContent = "Pehle CSV file chuniye."; msg.className = "form-msg error"; return; }
+  if (!importRows.length) { msg.textContent = "Please choose a CSV file first."; msg.className = "form-msg error"; return; }
   if (!confirm(`${importRows.length} rows import karni hain?`)) { msg.textContent = ""; return; }
 
   const rpc = type === "projects" ? "import_projects" : "import_customer_updates";
@@ -329,13 +329,13 @@ async function handleBackupSettingsSave(e) {
     backup_frequency: f.backup_frequency.value,
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "Backup settings saved.";
+  msg.textContent = error ? error.message : "बैकअप सेटिंग्स सेव हो गईं।";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
 async function createFullBackup() {
   const msg = document.getElementById("backup-settings-msg");
-  msg.textContent = "Backup ban raha hai..."; msg.className = "form-msg";
+  msg.textContent = "Creating backup..."; msg.className = "form-msg";
 
   const tables = ["profiles", "projects", "registrations", "documents", "notifications",
     "enquiries", "support_tickets", "ticket_replies", "communication_log", "testimonials",

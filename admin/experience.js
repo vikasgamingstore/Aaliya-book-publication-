@@ -48,7 +48,7 @@ async function handleLanguageCreate(e) {
     display_order: expLanguages.length + 1,
   });
   msg.textContent = error
-    ? (error.code === "23505" ? "Ye language code pehle se hai." : error.message)
+    ? (error.code === "23505" ? "This language code already exists." : error.message)
     : "Language added — now fill in its translations.";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadLanguagesAdmin(); }
@@ -59,7 +59,7 @@ async function toggleLanguage(code, state) {
   loadLanguagesAdmin();
 }
 async function deleteLanguage(code) {
-  if (!confirm("Ye language aur iske saare translations delete karne hain?")) return;
+  if (!confirm("Delete this language and all of its translations?")) return;
   await supabaseClient.from("languages").delete().eq("code", code);
   loadLanguagesAdmin();
 }
@@ -102,11 +102,11 @@ async function saveTranslation(id) {
     .update({ value, updated_at: new Date().toISOString() }).eq("id", id);
   if (error) { alert(error.message); return; }
   if (typeof logActivity === "function") logActivity("Translation updated", id);
-  alert("Saved.");
+  alert("सेव हो गया।");
 }
 
 async function deleteTranslation(id) {
-  if (!confirm("Ye translation delete karni hai?")) return;
+  if (!confirm("Delete this translation?")) return;
   await supabaseClient.from("translations").delete().eq("id", id);
   loadTranslationsAdmin();
 }
@@ -124,8 +124,8 @@ async function handleTranslationCreate(e) {
     category: f.category.value,
   });
   msg.textContent = error
-    ? (error.code === "23505" ? "Is key ka translation is language mein pehle se hai." : error.message)
-    : "Translation added.";
+    ? (error.code === "23505" ? "A translation for this key already exists in this language." : error.message)
+    : "ट्रांसलेशन जुड़ गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadTranslationsAdmin(); }
 }
@@ -145,7 +145,7 @@ async function handleChatSettingsSave(e) {
   const { error } = await supabaseClient.from("company_settings")
     .update({ chat_welcome_message: e.target.chat_welcome_message.value.trim(), updated_at: new Date().toISOString() })
     .eq("id", 1);
-  msg.textContent = error ? error.message : "Welcome message saved.";
+  msg.textContent = error ? error.message : "वेलकम मैसेज सेव हो गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
 }
 
@@ -179,7 +179,7 @@ async function handleChatFaqCreate(e) {
     keywords: f.keywords.value.trim() || null,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Q&A added — it will appear in the chat assistant.";
+  msg.textContent = error ? error.message : "सवाल-जवाब जुड़ गया — चैट असिस्टेंट में दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadChatFaqsAdmin(); }
 }
@@ -189,7 +189,7 @@ async function toggleChatFaq(id, state) {
   loadChatFaqsAdmin();
 }
 async function deleteChatFaq(id) {
-  if (!confirm("Ye Q&A delete karna hai?")) return;
+  if (!confirm("Delete this Q&A?")) return;
   await supabaseClient.from("chat_faqs").delete().eq("id", id);
   loadChatFaqsAdmin();
 }
@@ -226,7 +226,7 @@ async function handleHelpArticleCreate(e) {
     content: f.content.value,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Article added — it will appear in the Help Center.";
+  msg.textContent = error ? error.message : "आर्टिकल जुड़ गया — हेल्प सेंटर में दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadHelpArticlesAdmin(); }
 }
@@ -236,7 +236,7 @@ async function toggleHelpArticle(id, state) {
   loadHelpArticlesAdmin();
 }
 async function deleteHelpArticle(id) {
-  if (!confirm("Ye article delete karna hai?")) return;
+  if (!confirm("Delete this article?")) return;
   await supabaseClient.from("help_articles").delete().eq("id", id);
   loadHelpArticlesAdmin();
 }
@@ -269,13 +269,13 @@ async function handleOnboardingCreate(e) {
     title: f.title.value.trim(),
     description: f.description.value.trim(),
   });
-  msg.textContent = error ? error.message : "Step added.";
+  msg.textContent = error ? error.message : "स्टेप जुड़ गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadOnboardingAdmin(); }
 }
 
 async function deleteOnboardingStep(id) {
-  if (!confirm("Ye step delete karna hai?")) return;
+  if (!confirm("Delete this step?")) return;
   await supabaseClient.from("onboarding_steps").delete().eq("id", id);
   loadOnboardingAdmin();
 }

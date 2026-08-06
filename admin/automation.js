@@ -34,14 +34,14 @@ async function handleAutomationSave(e) {
   updates.reminder_days_before = parseInt(f.reminder_days_before.value || 3, 10);
 
   const { error } = await supabaseClient.from("automation_settings").update(updates).eq("id", 1);
-  msg.textContent = error ? error.message : "Automation settings saved.";
+  msg.textContent = error ? error.message : "ऑटोमेशन सेटिंग्स सेव हो गईं।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("Automation settings updated", "");
 }
 
 async function runRemindersNow() {
   const msg = document.getElementById("automation-msg");
-  msg.textContent = "Reminders chal rahe hain..."; msg.className = "form-msg";
+  msg.textContent = "Running reminders..."; msg.className = "form-msg";
 
   const { data, error } = await supabaseClient.rpc("send_due_reminders");
   msg.textContent = error ? error.message : `${data ?? 0} reminders bhej diye gaye.`;

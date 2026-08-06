@@ -74,7 +74,7 @@ async function handleBannerCreate(e) {
     end_date: f.end_date.value || null,
     display_order: parseInt(f.display_order.value || 0, 10),
   });
-  msg.textContent = error ? error.message : "Banner added — it will appear on the homepage.";
+  msg.textContent = error ? error.message : "बैनर जुड़ गया — होमपेज पर दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadBanners(); loadMarketingStats(); if (typeof logActivity === "function") logActivity("Banner added", f.title.value); }
 }
@@ -84,7 +84,7 @@ async function toggleBanner(id, state) {
   loadBanners(); loadMarketingStats();
 }
 async function deleteBanner(id) {
-  if (!confirm("Ye banner delete karna hai?")) return;
+  if (!confirm("Delete this banner?")) return;
   await supabaseClient.from("banners").delete().eq("id", id);
   loadBanners(); loadMarketingStats();
 }
@@ -127,8 +127,8 @@ async function handleCouponCreate(e) {
     usage_limit: f.usage_limit.value ? parseInt(f.usage_limit.value, 10) : null,
   });
   msg.textContent = error
-    ? (error.code === "23505" ? "Ye coupon code pehle se hai." : error.message)
-    : "Coupon created.";
+    ? (error.code === "23505" ? "This coupon code already exists." : error.message)
+    : "कूपन बन गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadCoupons(); loadMarketingStats(); if (typeof logActivity === "function") logActivity("Coupon created", f.code.value); }
 }
@@ -138,7 +138,7 @@ async function toggleCoupon(id, state) {
   loadCoupons();
 }
 async function deleteCoupon(id) {
-  if (!confirm("Ye coupon delete karna hai?")) return;
+  if (!confirm("Delete this coupon?")) return;
   await supabaseClient.from("coupons").delete().eq("id", id);
   loadCoupons(); loadMarketingStats();
 }
@@ -218,7 +218,7 @@ async function handleRewardGrant(e) {
     amount: parseFloat(f.amount.value || 0),
     expiry_date: f.expiry_date.value || null,
   });
-  msg.textContent = error ? error.message : "Reward granted — it appears in the customer's dashboard.";
+  msg.textContent = error ? error.message : "रिवॉर्ड दे दिया गया — कस्टमर के डैशबोर्ड पर दिखेगा।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); if (typeof logActivity === "function") logActivity("Reward granted", f.title.value); }
 }
@@ -260,7 +260,7 @@ async function handleCampaignCreate(e) {
     end_date: f.end_date.value || null,
     created_by: session?.user?.id,
   });
-  msg.textContent = error ? error.message : "Campaign saved. Use 'Send Now' to send it.";
+  msg.textContent = error ? error.message : "कैम्पेन सेव हो गया। भेजने के लिए 'Send Now' दबाइए।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { f.reset(); loadCampaigns(); }
 }
@@ -275,7 +275,7 @@ async function sendCampaign(id) {
 }
 
 async function deleteCampaign(id) {
-  if (!confirm("Ye campaign delete karna hai?")) return;
+  if (!confirm("Delete this campaign?")) return;
   await supabaseClient.from("campaigns").delete().eq("id", id);
   loadCampaigns();
 }

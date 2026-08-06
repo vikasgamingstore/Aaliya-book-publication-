@@ -33,29 +33,29 @@
   <div id="global-search-results" class="search-results" style="display:none"></div>
 
   <div class="admin-tabs">
-    <div class="admin-tab active" data-tab="overview">Overview</div>
-    <div class="admin-tab" data-tab="datamanager">Data Manager</div>
-    <div class="admin-tab" data-tab="reports">Reports &amp; Analytics</div>
-    <div class="admin-tab" data-tab="bi">Business Intelligence</div>
-    <div class="admin-tab" data-tab="projects">Projects</div>
-    <div class="admin-tab" data-tab="registrations">Registrations</div>
-    <div class="admin-tab" data-tab="payments">Payments</div>
-    <div class="admin-tab" data-tab="courier">Courier</div>
-    <div class="admin-tab" data-tab="customers">Customers</div>
-    <div class="admin-tab" data-tab="invoices">Invoices</div>
-    <div class="admin-tab" data-tab="settings">Settings</div>
-    <div class="admin-tab" data-tab="popup">Popup Notice</div>
-    <div class="admin-tab" data-tab="content">Website Content</div>
-    <div class="admin-tab" data-tab="landing">Landing Page</div>
-    <div class="admin-tab" data-tab="notifications">Notifications</div>
-    <div class="admin-tab" data-tab="crm">Support CRM</div>
-    <div class="admin-tab" data-tab="marketing">Marketing</div>
-    <div class="admin-tab" data-tab="experience">Experience</div>
-    <div class="admin-tab" data-tab="roles">Staff &amp; Team</div>
-    <div class="admin-tab" data-tab="tasks">Tasks</div>
-    <div class="admin-tab" data-tab="automation">Automation</div>
-    <div class="admin-tab" data-tab="activity">Activity Log</div>
-    <div class="admin-tab" data-tab="security">Security &amp; Backup</div>
+    <div class="admin-tab active" data-tab="overview">ओवरव्यू</div>
+    <div class="admin-tab" data-tab="datamanager">डेटा मैनेजर</div>
+    <div class="admin-tab" data-tab="reports">रिपोर्ट्स और एनालिटिक्स</div>
+    <div class="admin-tab" data-tab="bi">बिज़नेस इंटेलिजेंस</div>
+    <div class="admin-tab" data-tab="projects">प्रोजेक्ट्स</div>
+    <div class="admin-tab" data-tab="registrations">रजिस्ट्रेशन</div>
+    <div class="admin-tab" data-tab="payments">पेमेंट</div>
+    <div class="admin-tab" data-tab="courier">कूरियर</div>
+    <div class="admin-tab" data-tab="customers">कस्टमर</div>
+    <div class="admin-tab" data-tab="invoices">इनवॉइस</div>
+    <div class="admin-tab" data-tab="settings">सेटिंग्स</div>
+    <div class="admin-tab" data-tab="popup">पॉपअप नोटिस</div>
+    <div class="admin-tab" data-tab="content">वेबसाइट कंटेंट</div>
+    <div class="admin-tab" data-tab="landing">लैंडिंग पेज</div>
+    <div class="admin-tab" data-tab="notifications">नोटिफिकेशन</div>
+    <div class="admin-tab" data-tab="crm">सपोर्ट CRM</div>
+    <div class="admin-tab" data-tab="marketing">मार्केटिंग</div>
+    <div class="admin-tab" data-tab="experience">कस्टमर एक्सपीरियंस</div>
+    <div class="admin-tab" data-tab="roles">स्टाफ और टीम</div>
+    <div class="admin-tab" data-tab="tasks">टास्क</div>
+    <div class="admin-tab" data-tab="automation">ऑटोमेशन</div>
+    <div class="admin-tab" data-tab="activity">एक्टिविटी लॉग</div>
+    <div class="admin-tab" data-tab="security">सिक्योरिटी और बैकअप</div>
   </div>
 
   <!-- OVERVIEW -->
@@ -72,11 +72,11 @@
       <div class="field" style="margin-bottom:0;min-width:170px">
         <label>Module</label>
         <select id="dm-module">
-          <option value="customers">Customers</option>
+          <option value="customers">कस्टमर</option>
           <option value="projects" selected>Projects / Registrations</option>
-          <option value="payments">Payments</option>
-          <option value="courier">Courier</option>
-          <option value="invoices">Invoices</option>
+          <option value="payments">पेमेंट</option>
+          <option value="courier">कूरियर</option>
+          <option value="invoices">इनवॉइस</option>
         </select>
       </div>
       <div class="field" style="margin-bottom:0;min-width:170px">
@@ -101,7 +101,7 @@
       <div class="bulk-bar" id="dm-bulk-bar" style="display:none">
         <strong><span id="dm-selected-count">0</span> selected</strong>
         <select id="dm-bulk-action">
-          <option value="">Bulk action chuniye...</option>
+          <option value="">Choose a bulk action...</option>
           <option value="notify">Send Notification</option>
           <option value="status">Update Status</option>
           <option value="assign">Assign Staff Task</option>
@@ -131,7 +131,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Business Report</h3>
+        <h3>बिज़नेस रिपोर्ट</h3>
         <div class="export-bar">
           <button class="filter-pill" data-bi-period="daily">Today</button>
           <button class="filter-pill" data-bi-period="weekly">This Week</button>
@@ -164,38 +164,38 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Project Performance</h3>
+        <h3>प्रोजेक्ट परफ़ॉर्मेंस</h3>
         <div class="export-bar">
           <button class="btn btn-outline btn-sm" onclick="exportBiTable('project-performance')">CSV</button>
         </div>
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Project</th><th>Pages</th><th>Registrations</th><th>Completed</th><th>In Progress</th><th>Completion Rate</th><th>Avg Days</th></tr></thead>
+          <thead><tr><th>प्रोजेक्ट</th><th>पेज</th><th>रजिस्ट्रेशन</th><th>Completed</th><th>In Progress</th><th>Completion Rate</th><th>Avg Days</th></tr></thead>
           <tbody id="bi-project-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Database Snapshot</h3>
+      <h3>डेटाबेस स्नैपशॉट</h3>
       <p class="field-hint">How many records each module holds — at a glance.</p>
       <div class="stats-grid" id="bi-snapshot"></div>
     </div>
 
     <div class="card">
-      <h3>Data Integrity Check</h3>
+      <h3>डेटा इंटीग्रिटी जाँच</h3>
       <p class="field-hint">Incomplete or wrongly linked records — these should be fixed.</p>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Issue</th><th>Count</th><th>Status</th></tr></thead>
+          <thead><tr><th>Issue</th><th>Count</th><th>स्थिति</th></tr></thead>
           <tbody id="bi-integrity-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Bulk Data Import</h3>
+      <h3>बल्क डेटा इम्पोर्ट</h3>
       <p class="field-hint">Upload a CSV file. The first row must contain the column headers.</p>
       <div class="form-grid">
         <div class="field">
@@ -215,14 +215,14 @@
       <div class="fieldset-title">Import History</div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Date</th><th>Type</th><th>File</th><th>Success</th><th>Failed</th></tr></thead>
+          <thead><tr><th>तारीख</th><th>Type</th><th>File</th><th>Success</th><th>Failed</th></tr></thead>
           <tbody id="import-history-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Backup Settings</h3>
+      <h3>बैकअप सेटिंग्स</h3>
       <form id="backup-settings-form">
         <div class="form-grid">
           <div class="field">
@@ -301,7 +301,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer ID</th><th>Name</th><th>Mobile</th><th>Registered On</th><th>Projects</th><th>Status</th></tr></thead>
+          <thead><tr><th>Customer ID</th><th>नाम</th><th>मोबाइल</th><th>Registered On</th><th>प्रोजेक्ट्स</th><th>स्थिति</th></tr></thead>
           <tbody id="report-customers-body"></tbody>
         </table>
       </div>
@@ -319,7 +319,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Project</th><th>Customer</th><th>Start Date</th><th>Deadline</th><th>Progress</th><th>Status</th></tr></thead>
+          <thead><tr><th>प्रोजेक्ट</th><th>कस्टमर</th><th>Start Date</th><th>Deadline</th><th>Progress</th><th>स्थिति</th></tr></thead>
           <tbody id="report-projects-body"></tbody>
         </table>
       </div>
@@ -337,7 +337,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Date</th><th>Customer</th><th>Project</th><th>Type</th><th>Amount</th><th>Status</th></tr></thead>
+          <thead><tr><th>तारीख</th><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Type</th><th>राशि</th><th>स्थिति</th></tr></thead>
           <tbody id="report-payments-body"></tbody>
         </table>
       </div>
@@ -355,7 +355,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Tracking No.</th><th>Dispatch Date</th><th>Delivery Status</th><th>Return Pickup</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>Tracking No.</th><th>Dispatch Date</th><th>Delivery Status</th><th>Return Pickup</th></tr></thead>
           <tbody id="report-courier-body"></tbody>
         </table>
       </div>
@@ -374,7 +374,7 @@
       <div id="quality-summary" style="margin-bottom:16px"></div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Pages Done</th><th>Handwriting</th><th>Quality Status</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Pages Done</th><th>Handwriting</th><th>Quality Status</th></tr></thead>
           <tbody id="report-quality-body"></tbody>
         </table>
       </div>
@@ -388,13 +388,13 @@
       <h3>Add Project</h3>
       <form id="project-form">
         <div class="form-grid">
-          <div class="field"><label>Project Name</label><input type="text" name="project_name" required></div>
+          <div class="field"><label>प्रोजेक्ट का नाम</label><input type="text" name="project_name" required></div>
           <div class="field"><label>Number of A4 Pages</label><input type="number" name="num_pages" required></div>
         </div>
-        <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <div class="field"><label>विवरण</label><textarea name="description" rows="2"></textarea></div>
         <div class="form-grid">
-          <div class="field"><label>Duration (days)</label><input type="number" name="duration_days" required></div>
-          <div class="field"><label>Registration Fee (₹)</label><input type="number" name="registration_fee" step="0.01"></div>
+          <div class="field"><label>अवधि (दिन)</label><input type="number" name="duration_days" required></div>
+          <div class="field"><label>रजिस्ट्रेशन फीस (₹)</label><input type="number" name="registration_fee" step="0.01"></div>
         </div>
         <div class="form-grid">
           <div class="field"><label>Total Project Value — customer's total earning (₹)</label><input type="number" name="project_value" step="0.01" required></div>
@@ -411,7 +411,7 @@
       <h3>All Projects</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Image</th><th>Name</th><th>Pages</th><th>Duration</th><th>Reg. Fee</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Image</th><th>नाम</th><th>पेज</th><th>अवधि</th><th>Reg. Fee</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="projects-body"></tbody>
         </table>
       </div>
@@ -445,7 +445,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Registration</th><th>Project Status</th><th>Deadline</th><th>Action</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>रजिस्ट्रेशन</th><th>प्रोजेक्ट स्थिति</th><th>Deadline</th><th>एक्शन</th></tr></thead>
           <tbody id="registrations-body"></tbody>
         </table>
       </div>
@@ -456,7 +456,7 @@
       <h3>Project History (Completed)</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Pages Completed</th><th>Handwriting Quality</th><th>Quality Status</th><th>Final Payment</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Pages Completed</th><th>Handwriting Quality</th><th>Quality Status</th><th>Final Payment</th></tr></thead>
           <tbody id="project-history-body"></tbody>
         </table>
       </div>
@@ -468,10 +468,10 @@
     <div class="stats-grid" id="payment-stats-grid"></div>
 
     <div class="card">
-      <h3>Payment Verification Queue</h3>
+      <h3>पेमेंट वेरिफिकेशन कतार</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Amount</th><th>UTR</th><th>Screenshot</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>राशि</th><th>UTR</th><th>Screenshot</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="payment-queue-body"></tbody>
         </table>
       </div>
@@ -481,7 +481,7 @@
       <h3>Project-wise Payment Report</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Project</th><th>Registrations</th><th>Reg. Fee Collected</th><th>Advance Paid</th><th>Final Paid</th></tr></thead>
+          <thead><tr><th>प्रोजेक्ट</th><th>रजिस्ट्रेशन</th><th>Reg. Fee Collected</th><th>Advance Paid</th><th>Final Paid</th></tr></thead>
           <tbody id="project-payment-report-body"></tbody>
         </table>
       </div>
@@ -491,7 +491,7 @@
       <h3>Customer Payment History</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Reg. Fee</th><th>Advance</th><th>Final</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Reg. Fee</th><th>Advance</th><th>Final</th></tr></thead>
           <tbody id="customer-payment-history-body"></tbody>
         </table>
       </div>
@@ -504,7 +504,7 @@
       <h3>Outgoing Parcels (Not Yet Delivered)</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Items</th><th>Courier</th><th>Tracking</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Items</th><th>कूरियर</th><th>Tracking</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="courier-outgoing-body"></tbody>
         </table>
       </div>
@@ -513,7 +513,7 @@
       <h3>Delivered Parcels</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Delivered</th><th>Customer Confirmed?</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Delivered</th><th>Customer Confirmed?</th></tr></thead>
           <tbody id="courier-delivered-body"></tbody>
         </table>
       </div>
@@ -522,7 +522,7 @@
       <h3>Pickup Requests</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Pickup Status</th><th>Return Tracking</th><th>Action</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Pickup Status</th><th>Return Tracking</th><th>एक्शन</th></tr></thead>
           <tbody id="courier-pickup-body"></tbody>
         </table>
       </div>
@@ -531,7 +531,7 @@
       <h3>Returned / Received Projects</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Project</th><th>Return Courier</th><th>Received Date</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>प्रोजेक्ट</th><th>Return Courier</th><th>Received Date</th></tr></thead>
           <tbody id="courier-returned-body"></tbody>
         </table>
       </div>
@@ -545,7 +545,7 @@
       <div class="field"><input type="text" id="customer-search" placeholder="Search by name, mobile or email..."></div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Mobile</th><th>Address</th><th>Registrations</th><th>Account</th></tr></thead>
+          <thead><tr><th>नाम</th><th>मोबाइल</th><th>Address</th><th>रजिस्ट्रेशन</th><th>Account</th></tr></thead>
           <tbody id="customers-body"></tbody>
         </table>
       </div>
@@ -559,7 +559,7 @@
       <h3>Invoice History</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Invoice No.</th><th>Registration ID</th><th>Customer</th><th>Project</th><th>Amount</th><th>Action</th></tr></thead>
+          <thead><tr><th>Invoice No.</th><th>Registration ID</th><th>कस्टमर</th><th>प्रोजेक्ट</th><th>राशि</th><th>एक्शन</th></tr></thead>
           <tbody id="invoices-body"></tbody>
         </table>
       </div>
@@ -570,7 +570,7 @@
   <!-- SETTINGS -->
   <section class="admin-panel-section" id="tab-settings">
     <div class="card">
-      <h3>Company Profile</h3>
+      <h3>कंपनी प्रोफ़ाइल</h3>
       <form id="profile-form">
         <div class="form-grid">
           <div class="field"><label>Company Name</label><input type="text" name="company_name"></div>
@@ -615,12 +615,12 @@
         <div class="field"><label>Payment Instructions (shown to customers)</label><textarea name="payment_instructions" rows="2"></textarea></div>
 
         <div class="fieldset-title">Contact</div>
-        <div class="field"><label>Address</label><textarea name="address" rows="2"></textarea></div>
+        <div class="field"><label>पता</label><textarea name="address" rows="2"></textarea></div>
         <div class="form-grid">
-          <div class="field"><label>WhatsApp Number</label><input type="text" name="whatsapp_number" placeholder="91XXXXXXXXXX"></div>
+          <div class="field"><label>व्हाट्सएप नंबर</label><input type="text" name="whatsapp_number" placeholder="91XXXXXXXXXX"></div>
           <div class="field"><label>Support Phone Number</label><input type="text" name="phone_number"></div>
         </div>
-        <div class="field"><label>Email</label><input type="email" name="email"></div>
+        <div class="field"><label>ईमेल</label><input type="email" name="email"></div>
 
         <div class="fieldset-title">WhatsApp Messages</div>
         <div class="field"><label>Welcome Message (click-to-chat first message)</label><textarea name="whatsapp_welcome_message" rows="2"></textarea></div>
@@ -647,7 +647,7 @@
 
   <section class="admin-panel-section" id="tab-popup">
     <div class="card">
-      <h3>Website Popup / Warning Notice</h3>
+      <h3>वेबसाइट पॉपअप / चेतावनी नोटिस</h3>
       <p class="field-hint">This popup appears as soon as a customer opens the site. Use it for a fraud warning, an important notice or an offer. Customers can close it.</p>
       <form id="popup-form">
         <div class="field">
@@ -664,8 +664,8 @@
           </div>
           <div class="field"><label>Badge (upar ka chhota text)</label><input type="text" name="popup_badge" placeholder="IMPORTANT NOTICE"></div>
         </div>
-        <div class="field"><label>Title</label><input type="text" name="popup_title" placeholder="Fraud Se Savdhan Rahiye"></div>
-        <div class="field"><label>Message</label><textarea name="popup_message" rows="3" placeholder="Hamare naam par ho rahe fraud ki jaankari yahan likhiye. Har nayi line naye point ki tarah dikhegi."></textarea></div>
+        <div class="field"><label>शीर्षक</label><input type="text" name="popup_title" placeholder="Fraud Se Savdhan Rahiye"></div>
+        <div class="field"><label>संदेश</label><textarea name="popup_message" rows="3" placeholder="Hamare naam par ho rahe fraud ki jaankari yahan likhiye. Har nayi line naye point ki tarah dikhegi."></textarea></div>
         <div class="form-grid">
           <div class="field"><label>Button Text</label><input type="text" name="popup_button_text" placeholder="Samajh Gaya"></div>
           <div class="field"><label>Button Link</label><input type="text" name="popup_button_link" placeholder="# (sirf band karne ke liye)"></div>
@@ -687,7 +687,7 @@
 
   <section class="admin-panel-section" id="tab-content">
     <div class="card">
-      <h3>Website Content</h3>
+      <h3>वेबसाइट कंटेंट</h3>
       <form id="content-form">
         <div class="field"><label>Homepage Hero Text</label><textarea name="homepage_hero_text" rows="2"></textarea></div>
         <div class="field"><label>About Us</label><textarea name="about_us" rows="3"></textarea></div>
@@ -710,7 +710,7 @@
       <h3>SEO Settings</h3>
       <form id="seo-form">
         <div class="field"><label>Page Title (shown in search results)</label><input type="text" name="seo_title"></div>
-        <div class="field"><label>Meta Description (150-160 characters best hai)</label><textarea name="seo_description" rows="3"></textarea></div>
+        <div class="field"><label>Meta Description (150-160 characters works best)</label><textarea name="seo_description" rows="3"></textarea></div>
         <div class="field"><label>Keywords (comma se separate)</label><textarea name="seo_keywords" rows="2"></textarea></div>
         <button type="submit" class="btn btn-primary">Save SEO Settings</button>
         <div id="seo-msg" class="form-msg"></div>
@@ -725,7 +725,7 @@
           <div class="field"><label>Location (city/state)</label><input type="text" name="location"></div>
         </div>
         <div class="form-grid">
-          <div class="field"><label>Project Name</label><input type="text" name="project_name"></div>
+          <div class="field"><label>प्रोजेक्ट का नाम</label><input type="text" name="project_name"></div>
           <div class="field">
             <label>Rating</label>
             <select name="rating">
@@ -746,7 +746,7 @@
       <h3>All Reviews</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Review</th><th>Rating</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>नाम</th><th>Review</th><th>Rating</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="testimonials-body"></tbody>
         </table>
       </div>
@@ -767,7 +767,7 @@
       <h3>All FAQs</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Question</th><th>Answer</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Question</th><th>Answer</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="faqs-body"></tbody>
         </table>
       </div>
@@ -777,10 +777,10 @@
   <section class="admin-panel-section" id="tab-security">
     <div class="card">
       <h3>Security Alerts</h3>
-      <p class="field-hint">5 se zyada failed login attempts (15 minute mein) hone par alert automatically banta hai.</p>
+      <p class="field-hint">An alert is created automatically after more than 5 failed login attempts within 15 minutes.</p>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Type</th><th>Severity</th><th>Message</th><th>When</th><th>Action</th></tr></thead>
+          <thead><tr><th>Type</th><th>Severity</th><th>Message</th><th>When</th><th>एक्शन</th></tr></thead>
           <tbody id="security-alerts-body"></tbody>
         </table>
       </div>
@@ -790,7 +790,7 @@
       <h3>Login History</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Email</th><th>Result</th><th>Type</th><th>Device</th><th>When</th></tr></thead>
+          <thead><tr><th>ईमेल</th><th>Result</th><th>Type</th><th>Device</th><th>When</th></tr></thead>
           <tbody id="login-history-body"></tbody>
         </table>
       </div>
@@ -826,10 +826,10 @@
   <section class="admin-panel-section" id="tab-notifications">
     <div class="card">
       <h3>Automatic Reminders</h3>
-      <p class="field-hint">Deadline reminders, pending payment reminders aur overdue submission reminders — jinko aaj bhejni hain, sabko ek saath bhejiye.</p>
+      <p class="field-hint">Deadline reminders, pending payment reminders and overdue submission reminders — send everything that is due today in one go.</p>
       <button class="btn btn-primary" id="send-reminders-btn">Send Due Reminders Now</button>
       <div id="reminders-msg" class="form-msg"></div>
-      <p class="field-hint" style="margin-top:12px">Roz automatic chalane ke liye Supabase Dashboard → Database → Cron Jobs mein <code>select public.send_due_reminders();</code> to schedule it.</p>
+      <p class="field-hint" style="margin-top:12px">To run this automatically every day, in Supabase Dashboard → Database → Cron Jobs <code>select public.send_due_reminders();</code> to schedule it.</p>
     </div>
 
     <div class="card">
@@ -862,7 +862,7 @@
             <option value="general">General Update</option>
           </select>
         </div>
-        <div class="field"><label>Message</label><textarea name="message" rows="3" required></textarea></div>
+        <div class="field"><label>संदेश</label><textarea name="message" rows="3" required></textarea></div>
         <button type="submit" class="btn btn-primary">Send Notification</button>
         <div id="notify-msg" class="form-msg"></div>
       </form>
@@ -871,7 +871,7 @@
       <h3>Sent Notifications</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Type</th><th>Message</th><th>Sent</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>Type</th><th>Message</th><th>Sent</th></tr></thead>
           <tbody id="notifications-body"></tbody>
         </table>
       </div>
@@ -882,7 +882,7 @@
   <section class="admin-panel-section" id="tab-experience">
 
     <div class="card">
-      <h3>Languages</h3>
+      <h3>भाषाएँ</h3>
       <p class="field-hint">Languages available on the website. If you add a new language, you must also fill in its translations.</p>
       <form id="language-form" class="form-grid">
         <div class="field"><label>Language Code</label><input type="text" name="code" placeholder="mr" maxlength="5" required></div>
@@ -892,7 +892,7 @@
       <div id="language-msg" class="form-msg"></div>
       <div class="table-wrap" style="margin-top:14px">
         <table class="data-table">
-          <thead><tr><th>Code</th><th>Name</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Code</th><th>नाम</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="languages-body"></tbody>
         </table>
       </div>
@@ -900,7 +900,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Translation Management</h3>
+        <h3>ट्रांसलेशन मैनेजमेंट</h3>
         <div class="export-bar">
           <select id="translation-lang" style="padding:7px 12px;font-size:0.85rem"></select>
           <select id="translation-category" style="padding:7px 12px;font-size:0.85rem">
@@ -917,7 +917,7 @@
       <p class="field-hint">Change the website text here — no code changes needed. It appears on the site as soon as you save.</p>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Key</th><th>Category</th><th>Text</th><th>Action</th></tr></thead>
+          <thead><tr><th>Key</th><th>Category</th><th>Text</th><th>एक्शन</th></tr></thead>
           <tbody id="translations-body"></tbody>
         </table>
       </div>
@@ -944,7 +944,7 @@
     </div>
 
     <div class="card">
-      <h3>Chat Assistant</h3>
+      <h3>चैट असिस्टेंट</h3>
       <form id="chat-settings-form">
         <div class="field"><label>Welcome Message</label><textarea name="chat_welcome_message" rows="2"></textarea></div>
         <button type="submit" class="btn btn-primary btn-sm">Save Welcome Message</button>
@@ -965,14 +965,14 @@
 
       <div class="table-wrap" style="margin-top:16px">
         <table class="data-table">
-          <thead><tr><th>Question</th><th>Keywords</th><th>Asked</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Question</th><th>Keywords</th><th>Asked</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="chat-faqs-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Help Center Articles</h3>
+      <h3>हेल्प सेंटर आर्टिकल</h3>
       <form id="help-article-form">
         <div class="form-grid">
           <div class="field">
@@ -988,34 +988,34 @@
           </div>
           <div class="field"><label>Display Order</label><input type="number" name="display_order" value="0"></div>
         </div>
-        <div class="field"><label>Title</label><input type="text" name="title" required></div>
+        <div class="field"><label>शीर्षक</label><input type="text" name="title" required></div>
         <div class="field"><label>Content</label><textarea name="content" rows="5" required></textarea></div>
         <button type="submit" class="btn btn-primary">Add Article</button>
         <div id="help-article-msg" class="form-msg"></div>
       </form>
       <div class="table-wrap" style="margin-top:16px">
         <table class="data-table">
-          <thead><tr><th>Category</th><th>Title</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Category</th><th>Title</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="help-articles-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Onboarding Steps</h3>
-      <p class="field-hint">Naye customers ko dashboard par ye step-by-step guide dikhti hai.</p>
+      <h3>ऑनबोर्डिंग स्टेप्स</h3>
+      <p class="field-hint">New customers see this step-by-step guide in their dashboard.</p>
       <form id="onboarding-form">
         <div class="form-grid">
           <div class="field"><label>Step Number</label><input type="number" name="step_number" required></div>
-          <div class="field"><label>Title</label><input type="text" name="title" required></div>
+          <div class="field"><label>शीर्षक</label><input type="text" name="title" required></div>
         </div>
-        <div class="field"><label>Description</label><textarea name="description" rows="2" required></textarea></div>
+        <div class="field"><label>विवरण</label><textarea name="description" rows="2" required></textarea></div>
         <button type="submit" class="btn btn-primary">Add Step</button>
         <div id="onboarding-msg" class="form-msg"></div>
       </form>
       <div class="table-wrap" style="margin-top:16px">
         <table class="data-table">
-          <thead><tr><th>#</th><th>Title</th><th>Description</th><th>Action</th></tr></thead>
+          <thead><tr><th>#</th><th>Title</th><th>Description</th><th>एक्शन</th></tr></thead>
           <tbody id="onboarding-body"></tbody>
         </table>
       </div>
@@ -1023,7 +1023,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Customer Feedback</h3>
+        <h3>कस्टमर फीडबैक</h3>
         <div class="export-bar">
           <button class="filter-pill active" data-fb-filter="pending">Pending</button>
           <button class="filter-pill" data-fb-filter="approved">Approved</button>
@@ -1031,10 +1031,10 @@
           <button class="filter-pill" data-fb-filter="all">All</button>
         </div>
       </div>
-      <p class="field-hint">Approve karne par feedback apne aap homepage ke reviews section mein publish ho jaata hai.</p>
+      <p class="field-hint">Approving feedback automatically publishes it in the reviews section on the homepage.</p>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Customer</th><th>Rating</th><th>Review</th><th>Suggestions</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>कस्टमर</th><th>Rating</th><th>Review</th><th>Suggestions</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="feedback-body"></tbody>
         </table>
       </div>
@@ -1046,13 +1046,13 @@
     <div class="stats-grid" id="marketing-stats"></div>
 
     <div class="card">
-      <h3>Promotional Banners</h3>
+      <h3>प्रमोशनल बैनर</h3>
       <form id="banner-form">
         <div class="form-grid">
-          <div class="field"><label>Title</label><input type="text" name="title" required></div>
+          <div class="field"><label>शीर्षक</label><input type="text" name="title" required></div>
           <div class="field"><label>Badge Text</label><input type="text" name="badge_text" placeholder="FESTIVAL OFFER"></div>
         </div>
-        <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <div class="field"><label>विवरण</label><textarea name="description" rows="2"></textarea></div>
         <div class="form-grid">
           <div class="field"><label>Discount (shown large)</label><input type="text" name="discount_text" placeholder="50%"></div>
           <div class="field"><label>Coupon Code (optional)</label><input type="text" name="coupon_code" placeholder="DIWALI50"></div>
@@ -1074,14 +1074,14 @@
       </form>
       <div class="table-wrap" style="margin-top:18px">
         <table class="data-table">
-          <thead><tr><th>Title</th><th>Offer</th><th>Runs</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Title</th><th>Offer</th><th>Runs</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="banners-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Coupons &amp; Discounts</h3>
+      <h3>कूपन और डिस्काउंट</h3>
       <form id="coupon-form">
         <div class="form-grid">
           <div class="field"><label>Coupon Code</label><input type="text" name="code" required placeholder="WELCOME50"></div>
@@ -1101,13 +1101,13 @@
           <div class="field"><label>Expiry Date</label><input type="date" name="expiry_date"></div>
           <div class="field"><label>Usage Limit (blank = unlimited)</label><input type="number" name="usage_limit"></div>
         </div>
-        <div class="field"><label>Description</label><input type="text" name="description"></div>
+        <div class="field"><label>विवरण</label><input type="text" name="description"></div>
         <button type="submit" class="btn btn-primary">Create Coupon</button>
         <div id="coupon-admin-msg" class="form-msg"></div>
       </form>
       <div class="table-wrap" style="margin-top:18px">
         <table class="data-table">
-          <thead><tr><th>Code</th><th>Discount</th><th>Min Amount</th><th>Used</th><th>Expiry</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Code</th><th>Discount</th><th>Min Amount</th><th>Used</th><th>Expiry</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="coupons-body"></tbody>
         </table>
       </div>
@@ -1115,7 +1115,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Referral Program</h3>
+        <h3>रेफरल प्रोग्राम</h3>
         <div class="export-bar">
           <button class="filter-pill active" data-ref-filter="all">All</button>
           <button class="filter-pill" data-ref-filter="pending">Pending</button>
@@ -1125,14 +1125,14 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Referrer</th><th>Referred Customer</th><th>Date</th><th>Status</th><th>Reward</th><th>Action</th></tr></thead>
+          <thead><tr><th>Referrer</th><th>Referred Customer</th><th>तारीख</th><th>स्थिति</th><th>Reward</th><th>एक्शन</th></tr></thead>
           <tbody id="referrals-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Grant Reward</h3>
+      <h3>रिवॉर्ड दीजिए</h3>
       <form id="reward-form">
         <div class="form-grid">
           <div class="field">
@@ -1149,10 +1149,10 @@
           </div>
         </div>
         <div class="form-grid">
-          <div class="field"><label>Title</label><input type="text" name="title" required></div>
+          <div class="field"><label>शीर्षक</label><input type="text" name="title" required></div>
           <div class="field"><label>Amount (₹)</label><input type="number" name="amount" step="0.01" value="0"></div>
         </div>
-        <div class="field"><label>Description</label><input type="text" name="description"></div>
+        <div class="field"><label>विवरण</label><input type="text" name="description"></div>
         <div class="field" style="max-width:220px"><label>Expiry Date</label><input type="date" name="expiry_date"></div>
         <button type="submit" class="btn btn-primary">Grant Reward</button>
         <div id="reward-msg" class="form-msg"></div>
@@ -1160,7 +1160,7 @@
     </div>
 
     <div class="card">
-      <h3>Campaigns</h3>
+      <h3>कैम्पेन</h3>
       <form id="campaign-form">
         <div class="form-grid">
           <div class="field"><label>Campaign Name</label><input type="text" name="name" required></div>
@@ -1179,26 +1179,26 @@
           <div class="field"><label>End Date</label><input type="date" name="end_date"></div>
         </div>
         <div class="field"><label>Subject</label><input type="text" name="subject"></div>
-        <div class="field"><label>Message</label><textarea name="message" rows="3" required></textarea></div>
+        <div class="field"><label>संदेश</label><textarea name="message" rows="3" required></textarea></div>
         <button type="submit" class="btn btn-primary">Save Campaign</button>
         <div id="campaign-msg" class="form-msg"></div>
       </form>
       <div class="table-wrap" style="margin-top:18px">
         <table class="data-table">
-          <thead><tr><th>Campaign</th><th>Target</th><th>Status</th><th>Recipients</th><th>Action</th></tr></thead>
+          <thead><tr><th>Campaign</th><th>Target</th><th>स्थिति</th><th>Recipients</th><th>एक्शन</th></tr></thead>
           <tbody id="campaigns-body"></tbody>
         </table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Newsletter Subscribers</h3>
+      <h3>न्यूज़लेटर सब्सक्राइबर</h3>
       <div class="export-bar">
         <button class="btn btn-outline btn-sm" onclick="exportSubscribers()">Export CSV</button>
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Email</th><th>Name</th><th>Subscribed</th><th>Status</th></tr></thead>
+          <thead><tr><th>ईमेल</th><th>नाम</th><th>Subscribed</th><th>स्थिति</th></tr></thead>
           <tbody id="subscribers-body"></tbody>
         </table>
       </div>
@@ -1210,10 +1210,10 @@
     <div class="stats-grid" id="crm-stats"></div>
 
     <div class="card">
-      <h3>WhatsApp Settings</h3>
+      <h3>व्हाट्सएप सेटिंग्स</h3>
       <form id="whatsapp-settings-form">
         <div class="form-grid">
-          <div class="field"><label>WhatsApp Number</label><input type="text" name="whatsapp_number" placeholder="91XXXXXXXXXX"></div>
+          <div class="field"><label>व्हाट्सएप नंबर</label><input type="text" name="whatsapp_number" placeholder="91XXXXXXXXXX"></div>
           <div class="field"><label>Support Timing</label><input type="text" name="whatsapp_support_timing" placeholder="Mon–Sat, 10:00 AM – 7:00 PM"></div>
         </div>
         <div class="field"><label>Welcome Message (click-to-chat default)</label><textarea name="whatsapp_welcome_message" rows="2"></textarea></div>
@@ -1225,7 +1225,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Enquiries</h3>
+        <h3>पूछताछ (Enquiries)</h3>
         <div class="export-bar">
           <button class="filter-pill active" data-enq-filter="all">All</button>
           <button class="filter-pill" data-enq-filter="pending_followup">Pending Follow-up</button>
@@ -1238,7 +1238,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Enquiry ID</th><th>Name</th><th>Mobile</th><th>Project</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Enquiry ID</th><th>नाम</th><th>मोबाइल</th><th>प्रोजेक्ट</th><th>तारीख</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="enquiries-body"></tbody>
         </table>
       </div>
@@ -1247,7 +1247,7 @@
 
     <div class="card">
       <div class="report-head">
-        <h3>Support Tickets</h3>
+        <h3>सपोर्ट टिकट</h3>
         <div class="export-bar">
           <button class="filter-pill active" data-ticket-filter="all">All</button>
           <button class="filter-pill" data-ticket-filter="open">Open</button>
@@ -1258,7 +1258,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Ticket</th><th>Customer</th><th>Category</th><th>Subject</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Ticket</th><th>कस्टमर</th><th>Category</th><th>Subject</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="tickets-admin-body"></tbody>
         </table>
       </div>
@@ -1266,7 +1266,7 @@
     <div class="card" id="ticket-detail-box" style="display:none"></div>
 
     <div class="card">
-      <h3>Customer Segmentation</h3>
+      <h3>कस्टमर सेगमेंट</h3>
       <div class="export-bar" style="margin-bottom:14px">
         <button class="filter-pill" data-segment="new_enquiries">New Enquiries</button>
         <button class="filter-pill" data-segment="registered">Registered Customers</button>
@@ -1276,8 +1276,8 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Mobile</th><th>Detail</th></tr></thead>
-          <tbody id="segment-body"><tr><td colspan="3">Upar ek segment chuniye.</td></tr></tbody>
+          <thead><tr><th>नाम</th><th>मोबाइल</th><th>Detail</th></tr></thead>
+          <tbody id="segment-body"><tr><td colspan="3">Choose a segment above.</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -1326,7 +1326,7 @@
       <h3>All Staff Members</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Name</th><th>Mobile</th><th>Role</th><th>Status</th><th>Permissions</th><th>Action</th></tr></thead>
+          <thead><tr><th>नाम</th><th>मोबाइल</th><th>Role</th><th>स्थिति</th><th>Permissions</th><th>एक्शन</th></tr></thead>
           <tbody id="staff-body"></tbody>
         </table>
       </div>
@@ -1387,7 +1387,7 @@
             <select name="registration_id" id="task-registration"><option value="">— None —</option></select>
           </div>
         </div>
-        <div class="field"><label>Description</label><textarea name="description" rows="2"></textarea></div>
+        <div class="field"><label>विवरण</label><textarea name="description" rows="2"></textarea></div>
         <button type="submit" class="btn btn-primary">Assign Task</button>
         <div id="task-msg" class="form-msg"></div>
       </form>
@@ -1405,7 +1405,7 @@
       </div>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Task</th><th>Assigned To</th><th>Type</th><th>Due</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead>
+          <thead><tr><th>Task</th><th>Assigned To</th><th>Type</th><th>Due</th><th>Priority</th><th>स्थिति</th><th>एक्शन</th></tr></thead>
           <tbody id="tasks-body"></tbody>
         </table>
       </div>
@@ -1446,22 +1446,22 @@
     </div>
 
     <div class="card">
-      <h3>Workflow Automations — kya apne aap hota hai</h3>
+      <h3>Workflow Automations — what happens automatically</h3>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Jab ye hota hai</th><th>Automatically ye hota hai</th></tr></thead>
+          <thead><tr><th>Trigger</th><th>What happens automatically</th></tr></thead>
           <tbody>
-            <tr><td>Customer registration submit karta hai</td><td>Customer ID + registration record bante hain, customer ko confirmation, staff ko "review pending" alert</td></tr>
-            <tr><td>Customer payment screenshot submit karta hai</td><td>Status "Under Verification" hota hai, staff ko verification alert jaata hai</td></tr>
-            <tr><td>Admin registration approve karta hai</td><td>Registration ID + Invoice number generate, customer ko notification, project assign</td></tr>
-            <tr><td>Admin payment approve karta hai</td><td>Receipt number generate hota hai, customer ko receipt notification</td></tr>
-            <tr><td>Admin advance payment approve karta hai</td><td>Payment record update + customer ko notification (transaction ref ke saath)</td></tr>
-            <tr><td>Courier status changes</td><td>Har stage par customer ko notification; "Delivered" par project stage "Materials Sent" ho jaata hai</td></tr>
-            <tr><td>Customer project complete submit karta hai</td><td>Pickup request banti hai, staff ko alert, quality check stage shuru</td></tr>
-            <tr><td>Parcel office pahunchta hai</td><td>Project "Under Quality Check" ho jaata hai, staff ko alert</td></tr>
-            <tr><td>Quality approve hota hai</td><td>Customer ko notification, payment staff ko "final payment pending" alert</td></tr>
-            <tr><td>Final payment approve hota hai</td><td>Project apne aap "Completed" mark hota hai, customer ko confirmation</td></tr>
-            <tr><td>Deadline paas aati hai</td><td>Deadline se pehle, deadline ke din, aur overdue hone par reminders</td></tr>
+            <tr><td>Customer submits a registration</td><td>Creates the Customer ID and registration record, sends the customer a confirmation and alerts staff that a review is pending</td></tr>
+            <tr><td>Customer submits a payment screenshot</td><td>Status becomes "Under Verification" and staff get a verification alert</td></tr>
+            <tr><td>Admin approves the registration</td><td>Registration ID + Invoice number generate, customer ko notification, project assign</td></tr>
+            <tr><td>Admin approves the payment</td><td>A receipt number is generated and the customer gets a receipt notification</td></tr>
+            <tr><td>Admin approves the advance payment</td><td>Payment record update + customer ko notification (transaction ref ke saath)</td></tr>
+            <tr><td>Courier status changes</td><td>Customer is notified at every stage; on "Delivered" the project stage becomes "Materials Sent"</td></tr>
+            <tr><td>Customer submits the completed project</td><td>A pickup request is created, staff are alerted and the quality check stage begins</td></tr>
+            <tr><td>Parcel reaches the office</td><td>Project moves to "Under Quality Check" and staff are alerted</td></tr>
+            <tr><td>Quality is approved</td><td>Customer ko notification, payment staff ko "final payment pending" alert</td></tr>
+            <tr><td>Final payment is approved</td><td>Project is automatically marked "Completed" and the customer is notified</td></tr>
+            <tr><td>Deadline is approaching</td><td>Deadline se pehle, deadline ke din, aur overdue hone par reminders</td></tr>
           </tbody>
         </table>
       </div>
@@ -1475,7 +1475,7 @@
           <button class="filter-pill" data-auto-filter="registration">Registration</button>
           <button class="filter-pill" data-auto-filter="payment">Payment</button>
           <button class="filter-pill" data-auto-filter="invoice">Invoice</button>
-          <button class="filter-pill" data-auto-filter="courier">Courier</button>
+          <button class="filter-pill" data-auto-filter="courier">कूरियर</button>
           <button class="filter-pill" data-auto-filter="project">Project</button>
           <button class="filter-pill" data-auto-filter="reminder">Reminders</button>
         </div>
@@ -1491,11 +1491,11 @@
 
   <section class="admin-panel-section" id="tab-activity">
     <div class="card">
-      <h3>Activity Log</h3>
-      <p class="field-hint">Registration approvals, payment approvals aur status changes yahan record hote hain.</p>
+      <h3>एक्टिविटी लॉग</h3>
+      <p class="field-hint">Registration approvals, payment approvals and status changes are recorded here.</p>
       <div class="table-wrap">
         <table class="data-table">
-          <thead><tr><th>Admin</th><th>Action</th><th>Details</th><th>When</th></tr></thead>
+          <thead><tr><th>Admin</th><th>एक्शन</th><th>Details</th><th>When</th></tr></thead>
           <tbody id="activity-log-body"></tbody>
         </table>
       </div>

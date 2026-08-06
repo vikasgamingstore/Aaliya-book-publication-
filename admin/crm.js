@@ -69,7 +69,7 @@ async function handleWhatsappSettingsSave(e) {
     whatsapp_auto_reply: f.whatsapp_auto_reply.value.trim(),
     updated_at: new Date().toISOString(),
   }).eq("id", 1);
-  msg.textContent = error ? error.message : "WhatsApp settings saved.";
+  msg.textContent = error ? error.message : "व्हाट्सएप सेटिंग्स सेव हो गईं।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error && typeof logActivity === "function") logActivity("WhatsApp settings updated", "");
 }
@@ -190,7 +190,7 @@ async function saveEnquiryDetail(id) {
     updated_at: new Date().toISOString(),
   };
   const { error } = await supabaseClient.from("enquiries").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Changes saved.";
+  msg.textContent = error ? error.message : "बदलाव सेव हो गए।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { if (typeof logActivity === "function") logActivity("Enquiry updated", updates.status); loadEnquiries(); loadCrmStats(); }
 }
@@ -313,7 +313,7 @@ async function saveTicketDetail(id) {
     assigned_to: document.getElementById("ticket-assignee").value || null,
   };
   const { error } = await supabaseClient.from("support_tickets").update(updates).eq("id", id);
-  msg.textContent = error ? error.message : "Saved.";
+  msg.textContent = error ? error.message : "सेव हो गया।";
   msg.className = "form-msg " + (error ? "error" : "ok");
   if (!error) { if (typeof logActivity === "function") logActivity("Ticket updated", updates.status); loadTicketsAdmin(); loadCrmStats(); }
 }
@@ -348,7 +348,7 @@ async function sendTicketReplyAdmin(ticketId) {
 // ------------------------------------------------------------
 async function loadSegment(segment) {
   const tbody = document.getElementById("segment-body");
-  tbody.innerHTML = `<tr><td colspan="3">Load ho raha hai...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="3">Loading...</td></tr>`;
 
   if (segment === "new_enquiries") {
     const { data } = await supabaseClient.from("enquiries").select("*").in("status", ["pending_followup", "contacted"]).order("created_at", { ascending: false });

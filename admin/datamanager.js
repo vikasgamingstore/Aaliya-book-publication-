@@ -495,7 +495,7 @@ async function runBulkAction() {
 
   if (action === "status") {
     if (dmModule === "customers") { alert("Status update only works on the projects, payments and courier modules."); return; }
-    const field = prompt("Kaunsa field update karna hai?\n\nproject_status / registration_payment_status / advance_status / final_status / courier_out_status / pickup_status / quality_status", "project_status");
+    const field = prompt("Which field do you want to update?\n\nproject_status / registration_payment_status / advance_status / final_status / courier_out_status / pickup_status / quality_status", "project_status");
     if (!field) return;
     const value = prompt(`"${field}" ki nayi value kya rakhein?`);
     if (!value) return;
@@ -713,7 +713,7 @@ async function saveCurrentFilter() {
     filter_json: collectFilters(),
   });
 
-  alert(error ? error.message : "Filter saved.");
+  alert(error ? error.message : "फ़िल्टर सेव हो गया।");
   if (!error) loadSavedFilters();
 }
 
