@@ -17,7 +17,7 @@ async function loadPaymentPage() {
 
   let query = supabaseClient
     .from("registrations")
-    .select("*, projects(project_name, registration_fee)")
+    .select("*, projects(project_name, registration_fee, gateway_link)")
     .eq("customer_id", session.user.id);
 
   if (regId) query = query.eq("id", regId);
@@ -43,11 +43,31 @@ async function loadPaymentPage() {
     ${paymentRegistration.payment_remarks ? `<p class="form-msg error">Admin remark: ${paymentRegistration.payment_remarks}</p>` : ""}
   `;
 
+  renderGatewayButton();
   renderDynamicQr();
 
   if (paymentRegistration.registration_payment_status === "under_verification" || paymentRegistration.registration_payment_status === "approved") {
     document.getElementById("payment-form").style.display = "none";
   }
+}
+
+
+// ---------- Payment gateway link (per-project) ----------
+function renderGatewayButton() {
+  const box = document.getElementById("gateway-box");
+  const btn = document.getElementById("gateway-pay-btn");
+  const upiTitle = document.getElementById("upi-title");
+  if (!box || !btn || !paymentRegistration) return;
+
+  const link = (paymentRegistration.projects?.gateway_link || "").trim();
+  if (!/^https:\/\//i.test(link)) { box.style.display = "none"; return; }   // no valid link => UPI only
+
+  const fee = Number(paymentRegistration.projects?.registration_fee || 0);
+  const amt = document.getElementById("gateway-amount-display");
+  if (amt) amt.textContent = "\u20B9" + fee.toLocaleString("en-IN");
+  btn.href = link;
+  box.style.display = "block";
+  if (upiTitle) upiTitle.style.display = "none";   // "Or pay directly via UPI" heading is inside gateway-box
 }
 
 
