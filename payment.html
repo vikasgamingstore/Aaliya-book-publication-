@@ -41,7 +41,18 @@
       <div class="step-pill active">3. Payment</div>
     </div>
 
-    <div class="fieldset-title">Pay via UPI</div>
+    <div id="gateway-box" style="display:none">
+      <div class="fieldset-title">Pay via Payment Gateway</div>
+      <div class="pay-amount-box">
+        <div class="pay-amount-label">Registration fee</div>
+        <div class="pay-amount" id="gateway-amount-display">₹0</div>
+        <p class="field-hint">You will be taken to a secure payment page where you can pay by UPI, QR or other options.</p>
+      </div>
+      <a id="gateway-pay-btn" href="#" target="_blank" rel="noopener" class="btn btn-brass btn-block" style="margin-bottom:8px">Pay Now — Open Payment Page</a>
+      <p class="field-hint" style="margin-bottom:22px">After paying, come back to this page and submit your UTR number and screenshot below.</p>
+      <div class="fieldset-title">Or pay directly via UPI</div>
+    </div>
+    <div class="fieldset-title" id="upi-title">Pay via UPI</div>
     <div class="pay-amount-box">
       <div class="pay-amount-label">Pay this exact amount</div>
       <div class="pay-amount" id="pay-amount-display">₹0</div>
