@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth-ui.css">
 </head>
 <body>
 <nav class="navbar"><div class="container">
@@ -24,8 +25,13 @@
   </a>
 </div></nav>
 
-<div class="form-wrap">
-  <h2>Create Your Account</h2>
+<div class="auth-wrap">
+ <div class="auth-card">
+  <div class="auth-tabs">
+    <a href="login.html">Log In</a>
+    <a href="signup.html" class="active">Sign Up</a>
+  </div>
+  <h2 class="auth-sr">Create Your Account</h2>
   <form id="signup-form">
     <div class="field">
       <label for="su-name">Full Name</label>
@@ -67,10 +73,11 @@
     </div>
 
     <div id="captcha-box" style="margin-bottom:14px"></div>
-    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+    <button type="submit" class="btn btn-primary btn-block auth-submit">Create Account</button>
     <div id="su-msg" class="form-msg"></div>
   </form>
-  <div class="form-alt">Already have an account? <a href="login.html">Log in</a></div>
+  <div class="auth-links">Already have an account? <a href="login.html">Log in</a></div>
+ </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/auth-ui.css">
 </head>
 <body>
 <nav class="navbar"><div class="container">
@@ -24,23 +25,28 @@
   </a>
 </div></nav>
 
-<div class="form-wrap">
-  <h2>Customer Login</h2>
+<div class="auth-wrap">
+ <div class="auth-card">
+  <div class="auth-tabs">
+    <a href="login.html" class="active">Log In</a>
+    <a href="signup.html">Sign Up</a>
+  </div>
+  <h2 class="auth-sr">Customer Login</h2>
   <form id="login-form">
-    <div class="field"><label for="li-email">Mobile Number or Email</label><input type="text" id="li-email" required></div>
+    <div class="field"><label for="li-email">Mobile Number or Email</label><input type="text" id="li-email" placeholder="Mobile number or email" required autocomplete="username"></div>
     <div class="field"><label for="li-password">Password</label><div class="pw-wrap">
-        <input type="password" id="li-password" required autocomplete="current-password">
+        <input type="password" id="li-password" placeholder="Password" required autocomplete="current-password">
         <button type="button" class="pw-toggle" data-toggle="li-password" aria-label="Show password">Show</button>
       </div></div>
     <div id="captcha-box" style="margin-bottom:14px"></div>
-    <button type="submit" class="btn btn-primary btn-block">Login</button>
+    <button type="submit" class="btn btn-primary btn-block auth-submit">Login</button>
     <div id="li-msg" class="form-msg"></div>
   </form>
-  <div class="form-alt"><a href="forgot-password.html" style="font-weight:600">Forgot your password?</a> <span class="field-hint">Reset it with an OTP on your mobile.</span></div>
-  <div class="form-alt" style="margin-top:18px;padding-top:16px;border-top:1px solid var(--line)">
-      <p style="margin:0 0 10px;color:var(--text-muted);font-size:.9rem">Don't have an account yet?</p>
-      <a href="signup.html" class="btn btn-outline btn-block">Create New Account</a>
-    </div>
+  <div class="auth-links">
+    <a href="forgot-password.html">Forgot your password?</a>
+    <span class="auth-note">Reset it with an OTP on your mobile.</span>
+  </div>
+ </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
