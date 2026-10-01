@@ -1,0 +1,81 @@
+/* ============================================================
+   Auth UI — Login / Sign Up card with tab switch
+   Same brand colours (Royal Blue #12284C + Gold #D4A034), Poppins
+   Used by login.html and signup.html. Form ids/names are unchanged.
+   ============================================================ */
+.auth-wrap { padding: 28px 16px 48px; }
+.auth-card {
+  max-width: 460px; margin: 0 auto; background: #fff;
+  border-radius: 28px; padding: 18px 18px 26px;
+  box-shadow: 0 18px 50px rgba(18, 40, 76, .14);
+  box-sizing: border-box; overflow: hidden;
+}
+.auth-sr { position:absolute !important; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+/* Tab switch */
+.auth-tabs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  background: #eef1f7; border-radius: 22px; padding: 6px; margin-bottom: 26px;
+}
+.auth-tabs a {
+  display: block; text-align: center; padding: 15px 8px; border-radius: 18px;
+  font-weight: 600; font-size: 1rem; color: #4a5875; text-decoration: none;
+  transition: background .2s, color .2s, box-shadow .2s;
+}
+.auth-tabs a.active {
+  background: linear-gradient(135deg, #12284C, #1d3d70); color: #fff;
+  box-shadow: 0 8px 18px rgba(18, 40, 76, .28);
+}
+.auth-tabs a:not(.active):hover { color: #12284C; background: rgba(255,255,255,.7); }
+
+/* Pill inputs */
+.auth-card .field { margin-bottom: 14px; }
+.auth-card .field label { display:block; margin:0 0 7px 12px; font-size:.84rem; font-weight:600; color:#12284C; }
+.auth-card .field .field-hint { margin:7px 0 0 14px; font-size:.8rem; line-height:1.45; }
+.auth-card .field input,
+.auth-card .field select,
+.auth-card .field textarea {
+  width: 100%; box-sizing: border-box; border: 2px solid transparent;
+  background: #f1f3f8; border-radius: 999px; padding: 17px 24px;
+  font: inherit; font-size: 1rem; color: #12284C; outline: none;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.auth-card .field textarea { border-radius: 22px; }
+.auth-card .field input::placeholder,
+.auth-card .field textarea::placeholder { color: #7a869f; }
+.auth-card .field input:focus,
+.auth-card .field select:focus,
+.auth-card .field textarea:focus {
+  background: #fff; border-color: #D4A034; box-shadow: 0 0 0 4px rgba(212, 160, 52, .18);
+}
+.auth-card .pw-wrap { position: relative; }
+.auth-card .pw-wrap input { padding-right: 78px; }
+.auth-card .pw-toggle {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  border: 0; background: transparent; color: #12284C; font-weight: 600;
+  font-size: .85rem; padding: 8px 10px; border-radius: 999px; cursor: pointer;
+}
+
+/* Big pill button (brand gold) */
+.auth-card .auth-submit {
+  display: block; width: 100%; box-sizing: border-box; border: 0; cursor: pointer;
+  border-radius: 999px; padding: 18px 20px; margin-top: 6px;
+  font: inherit; font-size: 1.08rem; font-weight: 700; color: #12284C;
+  background: linear-gradient(135deg, #D4A034, #EDC060);
+  box-shadow: 0 10px 22px rgba(212, 160, 52, .35);
+  transition: transform .15s, box-shadow .15s;
+}
+.auth-card .auth-submit:active { transform: scale(.98); }
+.auth-card .auth-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+/* Links under the button */
+.auth-links { margin-top: 20px; padding-top: 16px; border-top: 1px solid #e3e8f1; }
+.auth-links a { color: #12284C; font-weight: 600; text-decoration: none; border-bottom: 2px solid #D4A034; }
+.auth-links .auth-note { display: block; margin-top: 6px; color: #6b7794; font-size: .85rem; }
+.auth-terms { margin-top: 16px; color: #6b7794; font-size: .88rem; line-height: 1.5; }
+.auth-terms a { color: #12284C; font-weight: 600; }
+
+@media (max-width: 380px) {
+  .auth-card { padding: 14px 14px 22px; border-radius: 22px; }
+  .auth-tabs a { padding: 13px 6px; font-size: .95rem; }
+}
