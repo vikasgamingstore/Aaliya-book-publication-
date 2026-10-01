@@ -43,8 +43,7 @@ async function loadPaymentPage() {
     ${paymentRegistration.payment_remarks ? `<p class="form-msg error">Admin remark: ${paymentRegistration.payment_remarks}</p>` : ""}
   `;
 
-  renderGatewayButton();
-  renderDynamicQr();
+  applyPaymentOptions();
 
   if (paymentRegistration.registration_payment_status === "under_verification" || paymentRegistration.registration_payment_status === "approved") {
     document.getElementById("payment-form").style.display = "none";
@@ -52,22 +51,40 @@ async function loadPaymentPage() {
 }
 
 
-// ---------- Payment gateway link (per-project) ----------
-function renderGatewayButton() {
-  const box = document.getElementById("gateway-box");
-  const btn = document.getElementById("gateway-pay-btn");
-  const upiTitle = document.getElementById("upi-title");
-  if (!box || !btn || !paymentRegistration) return;
+// ---------- Payment options (admin ON/OFF switches + per-project gateway link) ----------
+async function applyPaymentOptions() {
+  const gwBox = document.getElementById("gateway-box");
+  const gwBtn = document.getElementById("gateway-pay-btn");
+  const upiSection = document.getElementById("upi-section");
+  const orUpi = document.getElementById("or-upi-title");
+  const noMethod = document.getElementById("no-method-box");
+  if (!paymentRegistration) return;
+
+  const { data: cs } = await supabaseClient.from("company_settings")
+    .select("payment_gateway_enabled, payment_upi_enabled").eq("id", 1).single();
+  const gwOn  = cs?.payment_gateway_enabled !== false;
+  const upiOn = cs?.payment_upi_enabled !== false;
 
   const link = (paymentRegistration.projects?.gateway_link || "").trim();
-  if (!/^https:\/\//i.test(link)) { box.style.display = "none"; return; }   // no valid link => UPI only
+  const gwValid = gwOn && /^https:\/\//i.test(link);
+  const showUpi = upiOn;
 
-  const fee = Number(paymentRegistration.projects?.registration_fee || 0);
-  const amt = document.getElementById("gateway-amount-display");
-  if (amt) amt.textContent = "\u20B9" + fee.toLocaleString("en-IN");
-  btn.href = link;
-  box.style.display = "block";
-  if (upiTitle) upiTitle.style.display = "none";   // "Or pay directly via UPI" heading is inside gateway-box
+  if (gwBox) {
+    gwBox.style.display = gwValid ? "block" : "none";
+    if (gwValid) {
+      const fee = Number(paymentRegistration.projects?.registration_fee || 0);
+      const amt = document.getElementById("gateway-amount-display");
+      if (amt) amt.textContent = "\u20B9" + fee.toLocaleString("en-IN");
+      if (gwBtn) gwBtn.href = link;
+    }
+  }
+  const upiTitle = document.getElementById("upi-title");
+  if (upiTitle) upiTitle.style.display = gwValid ? "none" : "block";
+  if (orUpi) orUpi.style.display = (gwValid && showUpi) ? "block" : "none";
+  if (upiSection) upiSection.style.display = showUpi ? "block" : "none";
+  if (noMethod) noMethod.style.display = (!gwValid && !showUpi) ? "block" : "none";
+
+  if (showUpi) renderDynamicQr();
 }
 
 
