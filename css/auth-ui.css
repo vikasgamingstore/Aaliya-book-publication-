@@ -28,6 +28,10 @@
 }
 .auth-tabs a:not(.active):hover { color: #12284C; background: rgba(255,255,255,.7); }
 
+/* Context notice (came from "Apply Now") */
+.auth-notice { background:#fff7e0; border:1px solid #f1d58a; color:#5b4410; border-radius:16px; padding:12px 16px; margin:-8px 0 18px; font-size:.9rem; line-height:1.5; }
+.auth-notice a { color:#12284C; font-weight:700; border-bottom:2px solid #D4A034; text-decoration:none; }
+
 /* Pill inputs */
 .auth-card .field { margin-bottom: 14px; }
 .auth-card .field label { display:block; margin:0 0 7px 12px; font-size:.84rem; font-weight:600; color:#12284C; }
@@ -79,3 +83,12 @@
   .auth-card { padding: 14px 14px 22px; border-radius: 22px; }
   .auth-tabs a { padding: 13px 6px; font-size: .95rem; }
 }
+
+/* Notice shown when a customer arrives from "Apply Now" */
+.auth-notice {
+  background: #fff7e3; border: 1px solid #f0d58a; color: #12284C;
+  border-radius: 16px; padding: 12px 16px; margin: -8px 0 20px;
+  font-size: .88rem; line-height: 1.5;
+}
+.auth-notice a { color: #12284C; font-weight: 700; border-bottom: 2px solid #D4A034; text-decoration: none; }
+.auth-card .form-msg a { color: inherit; font-weight: 700; text-decoration: underline; }
