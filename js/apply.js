@@ -12,7 +12,10 @@ function getQueryParam(name) {
 async function guardApply() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) {
-    window.location.href = "login.html?next=apply.html" + window.location.search;
+    // Not logged in: a new customer clicking "Apply Now" should land on Sign Up (with a Log In option)
+    const proj = getQueryParam("project");
+    if (proj) sessionStorage.setItem("abp-pending-project", proj);
+    window.location.href = "signup.html" + (proj ? "?project=" + encodeURIComponent(proj) : "");
     return;
   }
   await loadProjectsIntoSelect();

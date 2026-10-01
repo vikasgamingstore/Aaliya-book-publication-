@@ -2,6 +2,38 @@
 // Login / Signup — with validation, anti-spam and attempt logging
 // ============================================================
 
+
+// ---------- Project context (customer came from a project's "Apply Now") ----------
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function authProject() {
+  const p = new URLSearchParams(window.location.search).get("project") || sessionStorage.getItem("abp-pending-project") || "";
+  return UUID_RE.test(p) ? p : "";
+}
+function authUrl(page) {
+  const p = authProject();
+  return page + (p ? "?project=" + encodeURIComponent(p) : "");
+}
+
+function setupAuthContext() {
+  const proj = authProject();
+  if (!proj) return;
+  sessionStorage.setItem("abp-pending-project", proj);
+  // keep the project when switching between Log In / Sign Up
+  document.querySelectorAll(".auth-tabs a, .auth-links a, .auth-notice a").forEach(link => {
+    const base = (link.getAttribute("href") || "").split("?")[0];
+    if (base === "login.html" || base === "signup.html") link.setAttribute("href", authUrl(base));
+  });
+  const notice = document.getElementById("auth-context");
+  if (notice) notice.style.display = "block";
+}
+
+// Only allow safe, same-site redirect targets from ?next=
+function safeNextPage() {
+  const next = new URLSearchParams(window.location.search).get("next") || "";
+  return /^(apply|dashboard|payment)\.html(\?[A-Za-z0-9=&%_-]*)?$/.test(next) ? next : "";
+}
+
 async function handleSignup(e) {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]');
@@ -9,7 +41,7 @@ async function handleSignup(e) {
   const msg = document.getElementById("su-msg");
   msg.textContent = ""; msg.className = "form-msg";
 
-  const enable = () => { if (btn) { btn.disabled = false; btn.textContent = btnLabel; } };
+  const enable = () => { if (btn) { btn.disabled = false; btn.textContent = btnLabel; } resetCaptchaWidget(); };
   const busy = () => { if (btn) { btn.disabled = true; btn.textContent = "Please wait..."; } };
 
   const v = id => (document.getElementById(id)?.value || "").trim();
@@ -38,7 +70,7 @@ async function handleSignup(e) {
 
   try {
     if (await mobileAlreadyRegistered(mobile)) {
-      msg.textContent = "An account already exists with this mobile number. Please log in instead.";
+      msg.innerHTML = 'An account already exists with this mobile number. <a href="' + authUrl("login.html") + '">Please log in instead</a>.';
       msg.classList.add("error"); enable(); return;
     }
 
@@ -72,7 +104,7 @@ async function handleSignup(e) {
       msg.innerHTML = "Account created. Please open your email and click the confirmation link, then log in.";
       msg.classList.add("ok");
       enable();
-      setTimeout(() => (window.location.href = "login.html"), 4000);
+      setTimeout(() => (window.location.href = authUrl("login.html")), 4000);
       return;
     }
 
@@ -105,9 +137,32 @@ async function resolveLoginEmail(identifier) {
   return data;
 }
 
+// CAPTCHA tokens are single-use: reset the widget after a failed attempt so the next try works
+function resetCaptchaWidget() {
+  try {
+    if (window.turnstile && typeof window.turnstile.reset === "function") window.turnstile.reset();
+    else if (window.hcaptcha && typeof window.hcaptcha.reset === "function") window.hcaptcha.reset();
+    else if (window.grecaptcha && typeof window.grecaptcha.reset === "function") window.grecaptcha.reset();
+  } catch (_) { /* ignore */ }
+}
+
 async function handleLogin(e) {
   e.preventDefault();
   const restoreBtn = typeof lockSubmitButton === "function" ? lockSubmitButton(e.target, "Logging in...") : () => {};
+  let ok = false;
+  try {
+    ok = await doLogin();
+  } catch (err) {
+    const msg = document.getElementById("li-msg");
+    if (msg) { msg.textContent = "Something went wrong. Please try again."; msg.className = "form-msg error"; }
+    console.error(err);
+  } finally {
+    restoreBtn();                       // button is ALWAYS re-enabled, also after wrong details
+    if (!ok) resetCaptchaWidget();
+  }
+}
+
+async function doLogin() {
   const identifier = document.getElementById("li-email").value.trim();
   const password = document.getElementById("li-password").value;
   const msg = document.getElementById("li-msg");
@@ -129,7 +184,7 @@ async function handleLogin(e) {
   const email = await resolveLoginEmail(identifier);
   if (!email) {
     await recordLoginAttempt({ email: identifier, success: false });
-    msg.textContent = "Login failed: those details are incorrect.";
+    msg.innerHTML = 'Login failed: those details are incorrect. New customer? <a href="' + authUrl("signup.html") + '">Sign Up here</a>.';
     msg.classList.add("error");
     return;
   }
@@ -139,7 +194,7 @@ async function handleLogin(e) {
 
   if (error) {
     await recordLoginAttempt({ email, success: false });
-    msg.textContent = "Login failed: those details are incorrect.";
+    msg.innerHTML = 'Login failed: those details are incorrect. New customer? <a href="' + authUrl("signup.html") + '">Sign Up here</a>.';
     msg.classList.add("error");
     return;
   }
@@ -155,10 +210,11 @@ async function handleLogin(e) {
   }
 
   await recordLoginAttempt({ userId: data.user.id, email, success: true });
-  const params = new URLSearchParams(window.location.search);
-  const nextProject = params.get("project") || sessionStorage.getItem("abp-pending-project");
-  window.location.href = nextProject ? ("apply.html?project=" + nextProject) : "dashboard.html";
-  restoreBtn();
+  const nextProject = authProject();
+  const nextPage = safeNextPage();
+  window.location.href = nextProject ? ("apply.html?project=" + encodeURIComponent(nextProject))
+                       : (nextPage || "dashboard.html");
+  return true;
 }
 
 
@@ -175,6 +231,7 @@ function prefillReferralCode() {
 
 document.addEventListener("DOMContentLoaded", () => {
   prefillReferralCode();
+  setupAuthContext();
   document.getElementById("signup-form")?.addEventListener("submit", handleSignup);
   document.getElementById("login-form")?.addEventListener("submit", handleLogin);
   loadCaptcha("captcha-box");
