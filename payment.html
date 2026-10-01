@@ -15,6 +15,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<style>
+/* Payment page — mobile fit (Android + iOS) */
+.form-wrap, .pay-box, .pay-amount-box, #gateway-box, #upi-section { max-width:100%; box-sizing:border-box; }
+.pay-box { display:block !important; }
+.pay-box > div { min-width:0; max-width:100%; }
+.qr-holder { display:block !important; width:100% !important; max-width:100% !important; box-sizing:border-box !important; text-align:center; padding:16px; margin:0 0 16px; overflow:hidden; }
+.qr-holder p, .qr-caption, .field-hint { white-space:normal !important; overflow-wrap:anywhere; word-break:break-word; }
+#dynamic-qr { display:flex; justify-content:center; max-width:100%; }
+#dynamic-qr canvas, #dynamic-qr img { max-width:100% !important; height:auto !important; }
+.upi-id { display:inline-block; max-width:100%; overflow-wrap:anywhere; word-break:break-all; }
+.pay-amount { overflow-wrap:anywhere; }
+#payment-form input[type=file] { max-width:100%; }
+#payment-project-box, .steps-bar { max-width:100%; }
+@media (max-width:420px){ .steps-bar { flex-wrap:wrap; } .step-pill { flex:1 1 100%; } }
+</style>
 </head>
 <body>
 <nav class="navbar"><div class="container">
@@ -50,8 +65,9 @@
       </div>
       <a id="gateway-pay-btn" href="#" target="_blank" rel="noopener" class="btn btn-brass btn-block" style="margin-bottom:8px">Pay Now — Open Payment Page</a>
       <p class="field-hint" style="margin-bottom:22px">After paying, come back to this page and submit your UTR number and screenshot below.</p>
-      <div class="fieldset-title">Or pay directly via UPI</div>
+      <div class="fieldset-title" id="or-upi-title">Or pay directly via UPI</div>
     </div>
+    <div id="upi-section">
     <div class="fieldset-title" id="upi-title">Pay via UPI</div>
     <div class="pay-amount-box">
       <div class="pay-amount-label">Pay this exact amount</div>
@@ -72,6 +88,10 @@
         <p class="field-hint" style="margin-top:10px" data-content="payment_instructions"></p>
       </div>
     </div>
+
+    </div>
+
+    <div id="no-method-box" class="card" style="display:none;margin:16px 0"><p class="field-hint">Online payment is temporarily unavailable. Please contact us on WhatsApp.</p></div>
 
     <div class="fieldset-title">Confirm Your Payment</div>
     <form id="payment-form">
