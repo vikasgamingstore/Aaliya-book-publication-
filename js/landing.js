@@ -167,12 +167,26 @@ async function loadPromoBanners() {
     const st = document.createElement("style");
     st.id = "promo-img-style";
     st.textContent = `
-      .promo-img-banner{background:#12284C;padding:14px 0 16px}
-      .promo-img-banner .container{display:flex;flex-direction:column;align-items:center;gap:12px}
-      .promo-img-link{display:block;width:100%;max-width:1200px;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.35);line-height:0}
+      html{scroll-behavior:smooth}
+      #projects{scroll-margin-top:80px}
+      .promo-img-banner{background:#12284C;padding:12px 0 16px}
+      .promo-img-banner .container{display:flex;flex-direction:column;align-items:center;gap:10px}
+      .promo-img-link{display:block;width:100%;max-width:880px;border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.35);line-height:0}
       .promo-img-link img{width:100%;height:auto;display:block}
-      .promo-img-banner .btn{min-width:200px;text-align:center}
-      @media(max-width:640px){.promo-img-banner{padding:10px 0 14px}.promo-img-link{border-radius:12px}}
+      .promo-timer{width:100%;max-width:880px;text-align:center}
+      .promo-timer-label{color:#D4A034;font-size:13px;font-weight:600;letter-spacing:.6px;margin-bottom:6px;text-transform:uppercase}
+      .promo-timer-row{display:flex;justify-content:center;gap:8px}
+      .promo-timer-box{background:linear-gradient(180deg,#1b3a6b,#12284C);border:1.5px solid #D4A034;border-radius:10px;min-width:62px;padding:7px 4px 5px}
+      .promo-timer-box b{display:block;color:#fff;font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+      .promo-timer-box small{display:block;color:#D4A034;font-size:10px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+      .promo-img-banner .promo-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;width:100%;max-width:320px;padding:12px 22px;font-size:16px;border-radius:999px}
+      @media(max-width:640px){
+        .promo-img-banner{padding:10px 0 14px}
+        .promo-img-link{border-radius:12px}
+        .promo-timer-box{min-width:56px}
+        .promo-timer-box b{font-size:20px}
+        .promo-img-banner .promo-cta{max-width:260px;padding:11px 18px;font-size:15px}
+      }
     `;
     document.head.appendChild(st);
   }
@@ -186,7 +200,17 @@ async function loadPromoBanners() {
         <a href="${link}" class="promo-img-link" aria-label="${b.title}">
           <img src="${b.image_url}" alt="${b.title}">
         </a>
-        <a href="${link}" class="btn btn-brass">${b.button_text || "Apply Now"}</a>
+        ${b.end_date ? `
+        <div class="promo-timer" data-end="${b.end_date}">
+          <div class="promo-timer-label">Offer ends in</div>
+          <div class="promo-timer-row">
+            <div class="promo-timer-box"><b data-t="d">00</b><small>Days</small></div>
+            <div class="promo-timer-box"><b data-t="h">00</b><small>Hours</small></div>
+            <div class="promo-timer-box"><b data-t="m">00</b><small>Min</small></div>
+            <div class="promo-timer-box"><b data-t="s">00</b><small>Sec</small></div>
+          </div>
+        </div>` : ""}
+        <a href="${link}" class="btn btn-brass promo-cta">${b.button_text || "Apply Now"}</a>
       </div>
     </div>`;
     }
@@ -205,6 +229,41 @@ async function loadPromoBanners() {
       </div>
     </div>`;
   }).join("");
+
+  startPromoTimers(wrap);
+}
+
+let promoTimerInterval = null;
+function startPromoTimers(wrap) {
+  if (promoTimerInterval) { clearInterval(promoTimerInterval); promoTimerInterval = null; }
+  const timers = wrap.querySelectorAll(".promo-timer[data-end]");
+  if (!timers.length) return;
+  const pad = n => String(n).padStart(2, "0");
+  const tick = () => {
+    let anyLive = false;
+    timers.forEach(t => {
+      // offer is valid through the end date (India time)
+      const end = new Date(t.dataset.end + "T23:59:59+05:30").getTime();
+      const left = end - Date.now();
+      if (left <= 0) {
+        const banner = t.closest(".promo-banner");
+        if (banner) banner.remove();
+        return;
+      }
+      anyLive = true;
+      const d = Math.floor(left / 86400000);
+      const h = Math.floor((left % 86400000) / 3600000);
+      const m = Math.floor((left % 3600000) / 60000);
+      const s = Math.floor((left % 60000) / 1000);
+      t.querySelector('[data-t="d"]').textContent = pad(d);
+      t.querySelector('[data-t="h"]').textContent = pad(h);
+      t.querySelector('[data-t="m"]').textContent = pad(m);
+      t.querySelector('[data-t="s"]').textContent = pad(s);
+    });
+    if (!anyLive) { clearInterval(promoTimerInterval); promoTimerInterval = null; }
+  };
+  tick();
+  promoTimerInterval = setInterval(tick, 1000);
 }
 
 async function handleNewsletterSubscribe(e) {
