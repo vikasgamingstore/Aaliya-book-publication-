@@ -191,6 +191,20 @@ async function loadPromoBanners() {
       .pp-badge{display:inline-block;background:#D4A034;color:#12284C;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 11px;border-radius:999px;margin-bottom:8px}
       .pp-title{margin:0 0 6px;font-size:21px;line-height:1.25;font-weight:700;color:#fff}
       .pp-desc{margin:0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.78)}
+      .pp-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+      .pp-tags .pp-badge{margin-bottom:0}
+      .pp-pill{display:inline-block;border:1.5px solid #D4A034;color:#D4A034;font-size:11px;font-weight:700;letter-spacing:1px;padding:2.5px 10px;border-radius:999px;background:rgba(14,32,64,.6)}
+      .pp-card.has-img:before{z-index:3}
+      .pp-card.has-img .pp-bg{position:absolute;inset:0;background:var(--pp-img) right center/auto 100% no-repeat;z-index:0}
+      .pp-card.has-img .pp-bg:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#0e2040 0%,#0e2040 38%,rgba(14,32,64,.82) 55%,rgba(14,32,64,.25) 78%,rgba(14,32,64,0) 100%)}
+      .pp-card.has-img .pp-top,.pp-card.has-img .pp-bottom{position:relative;z-index:2}
+      .pp-card.has-img .pp-main{max-width:62%}
+      .pp-card.has-img .pp-bottom{border-top-color:rgba(212,160,52,.4)}
+      @media(min-width:641px){
+        .pp-card.has-img .pp-bg{-webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 42%,#000 68%);mask-image:linear-gradient(90deg,transparent 0%,transparent 42%,#000 68%)}
+        .pp-card.has-img .pp-bottom{justify-content:flex-start;gap:28px;padding-right:36%}
+        .pp-card.has-img .pp-main{max-width:60%}
+      }
       .pp-seal{flex:0 0 auto;width:86px;height:86px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
         background:radial-gradient(circle at 30% 25%,#f1cf7a,#D4A034 60%,#b8861f);color:#12284C;box-shadow:0 0 0 4px rgba(212,160,52,.25),0 6px 16px rgba(0,0,0,.35)}
       .pp-seal b{font-size:26px;line-height:1;font-weight:800}
@@ -218,6 +232,11 @@ async function loadPromoBanners() {
         .pp-bottom .promo-timer{text-align:center}
         .pp-bottom .promo-timer-row{justify-content:center}
         .pp-bottom .promo-cta{width:100%;max-width:none}
+        .pp-card.has-img .pp-bg{inset:0 0 auto 0;height:215px;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+        .pp-card.has-img .pp-main{max-width:60%}
+        .pp-tags{flex-wrap:nowrap}
+        .pp-badge{font-size:10px;letter-spacing:.6px;padding:4px 9px}
+        .pp-pill{font-size:10px;letter-spacing:.6px;padding:2px 8px;white-space:nowrap}
       }
     `;
     document.head.appendChild(st);
@@ -225,38 +244,18 @@ async function loadPromoBanners() {
 
   wrap.innerHTML = live.map(b => {
     const link = b.button_link || "signup.html";
-    if (b.image_url) {
-      return `
-    <div class="promo-banner promo-img-banner">
-      <div class="container">
-        <a href="${link}" class="promo-img-link" aria-label="${b.title}">
-          <img src="${b.image_url}" alt="${b.title}">
-        </a>
-        ${b.end_date ? `
-        <div class="promo-timer" data-end="${b.end_date}">
-          <div class="promo-timer-label">Offer ends in</div>
-          <div class="promo-timer-row">
-            <div class="promo-timer-box"><b data-t="d">00</b><small>Days</small></div>
-            <div class="promo-timer-box"><b data-t="h">00</b><small>Hours</small></div>
-            <div class="promo-timer-box"><b data-t="m">00</b><small>Min</small></div>
-            <div class="promo-timer-box"><b data-t="s">00</b><small>Sec</small></div>
-          </div>
-        </div>` : ""}
-        <a href="${link}" class="btn btn-brass promo-cta">${b.button_text || "Apply Now"}</a>
-      </div>
-    </div>`;
-    }
     return `
     <div class="promo-pro">
       <div class="container">
-        <div class="pp-card">
+        <div class="pp-card${b.image_url ? " has-img" : ""}"${b.image_url ? ` style="--pp-img:url('${String(b.image_url).replace(/'/g, "%27")}')"` : ""}>
+          ${b.image_url ? '<div class="pp-bg"></div>' : ""}
           <div class="pp-top">
             <div class="pp-main">
-              ${b.badge_text ? `<span class="pp-badge">${b.badge_text}</span>` : ""}
+              <div class="pp-tags">${b.badge_text ? `<span class="pp-badge">${b.badge_text}</span>` : ""}${b.image_url && b.discount_text ? `<span class="pp-pill">${b.discount_text} OFF</span>` : ""}</div>
               <h3 class="pp-title">${b.title}</h3>
               ${b.description ? `<p class="pp-desc">${b.description}</p>` : ""}
             </div>
-            ${b.discount_text ? `<div class="pp-seal"><b>${b.discount_text}</b><small>OFF</small></div>` : ""}
+            ${b.discount_text && !b.image_url ? `<div class="pp-seal"><b>${b.discount_text}</b><small>OFF</small></div>` : ""}
           </div>
           <div class="pp-bottom">
             ${b.end_date ? `
