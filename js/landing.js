@@ -180,12 +180,44 @@ async function loadPromoBanners() {
       .promo-timer-box b{display:block;color:#fff;font-size:19px;line-height:1.1;font-variant-numeric:tabular-nums}
       .promo-timer-box small{display:block;color:#D4A034;font-size:9px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
       .promo-img-banner .promo-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;width:100%;max-width:260px;padding:9px 20px;font-size:15px;border-radius:999px}
+      .promo-pro,.promo-pro *{box-sizing:border-box}
+      .promo-pro{background:#0b1b36;padding:14px 0}
+      .pp-card{position:relative;max-width:880px;margin:0 auto;padding:18px 18px 16px;border-radius:16px;color:#fff;overflow:hidden;
+        background:radial-gradient(circle at 92% 12%,rgba(212,160,52,.28),transparent 42%),radial-gradient(circle at 6% 100%,rgba(212,160,52,.14),transparent 40%),linear-gradient(135deg,#0e2040 0%,#12284C 55%,#1b3a6b 100%);
+        border:1px solid rgba(212,160,52,.55);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+      .pp-card:before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#D4A034,transparent)}
+      .pp-top{display:flex;align-items:center;justify-content:space-between;gap:14px}
+      .pp-main{flex:1;min-width:0}
+      .pp-badge{display:inline-block;background:#D4A034;color:#12284C;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 11px;border-radius:999px;margin-bottom:8px}
+      .pp-title{margin:0 0 6px;font-size:21px;line-height:1.25;font-weight:700;color:#fff}
+      .pp-desc{margin:0;font-size:13px;line-height:1.5;color:rgba(255,255,255,.78)}
+      .pp-seal{flex:0 0 auto;width:86px;height:86px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+        background:radial-gradient(circle at 30% 25%,#f1cf7a,#D4A034 60%,#b8861f);color:#12284C;box-shadow:0 0 0 4px rgba(212,160,52,.25),0 6px 16px rgba(0,0,0,.35)}
+      .pp-seal b{font-size:26px;line-height:1;font-weight:800}
+      .pp-seal small{font-size:11px;font-weight:700;letter-spacing:1.5px;margin-top:2px}
+      .pp-bottom{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid rgba(212,160,52,.28);flex-wrap:wrap}
+      .pp-bottom .promo-timer{width:auto;max-width:none;text-align:left}
+      .pp-bottom .promo-timer-label{margin-bottom:5px}
+      .pp-bottom .promo-timer-row{justify-content:flex-start;gap:6px}
+      .promo-pro .promo-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;padding:10px 24px;border-radius:999px;font-size:15px;font-weight:600;line-height:1.2}
+      .pp-bottom .promo-cta{max-width:none;width:auto;white-space:nowrap}
       @media(max-width:640px){
         .promo-img-banner{padding:8px 0 12px}
         .promo-img-link{border-radius:12px}
         .promo-timer-box{min-width:50px}
         .promo-timer-box b{font-size:17px}
         .promo-img-banner .promo-cta{max-width:220px;padding:8px 16px;font-size:14px}
+        .promo-pro{padding:10px 0}
+        .pp-card{padding:14px 14px 12px;border-radius:14px}
+        .pp-title{font-size:18px}
+        .pp-desc{font-size:12px}
+        .pp-seal{width:70px;height:70px}
+        .pp-seal b{font-size:21px}
+        .pp-seal small{font-size:10px}
+        .pp-bottom{flex-direction:column;align-items:stretch;gap:10px;margin-top:12px}
+        .pp-bottom .promo-timer{text-align:center}
+        .pp-bottom .promo-timer-row{justify-content:center}
+        .pp-bottom .promo-cta{width:100%;max-width:none}
       }
     `;
     document.head.appendChild(st);
@@ -215,17 +247,31 @@ async function loadPromoBanners() {
     </div>`;
     }
     return `
-    <div class="promo-banner">
+    <div class="promo-pro">
       <div class="container">
-        <div class="promo-text">
-          ${b.badge_text ? `<span class="promo-offer">${b.badge_text}</span>` : ""}
-          <h3>${b.title}</h3>
-          ${b.description ? `<p>${b.description}</p>` : ""}
-          ${b.coupon_code ? `<span class="promo-coupon">CODE: ${b.coupon_code}</span>` : ""}
+        <div class="pp-card">
+          <div class="pp-top">
+            <div class="pp-main">
+              ${b.badge_text ? `<span class="pp-badge">${b.badge_text}</span>` : ""}
+              <h3 class="pp-title">${b.title}</h3>
+              ${b.description ? `<p class="pp-desc">${b.description}</p>` : ""}
+            </div>
+            ${b.discount_text ? `<div class="pp-seal"><b>${b.discount_text}</b><small>OFF</small></div>` : ""}
+          </div>
+          <div class="pp-bottom">
+            ${b.end_date ? `
+            <div class="promo-timer" data-end="${b.end_date}">
+              <div class="promo-timer-label">Offer ends in</div>
+              <div class="promo-timer-row">
+                <div class="promo-timer-box"><b data-t="d">00</b><small>Days</small></div>
+                <div class="promo-timer-box"><b data-t="h">00</b><small>Hours</small></div>
+                <div class="promo-timer-box"><b data-t="m">00</b><small>Min</small></div>
+                <div class="promo-timer-box"><b data-t="s">00</b><small>Sec</small></div>
+              </div>
+            </div>` : ""}
+            <a href="${link}" class="btn btn-brass promo-cta">${b.button_text || "Apply Now"}</a>
+          </div>
         </div>
-        ${b.discount_text ? `<div class="promo-discount">${b.discount_text}<small>OFF</small></div>` : ""}
-        ${b.offer_details && !b.badge_text ? `<span class="promo-offer">${b.offer_details}</span>` : ""}
-        <a href="${link}" class="btn btn-brass">${b.button_text || "Apply Now"}</a>
       </div>
     </div>`;
   }).join("");
@@ -233,7 +279,7 @@ async function loadPromoBanners() {
   startPromoTimers(wrap);
 }
 
-let promoTimerInterval = null;
+var promoTimerInterval = null;
 function startPromoTimers(wrap) {
   if (promoTimerInterval) { clearInterval(promoTimerInterval); promoTimerInterval = null; }
   const timers = wrap.querySelectorAll(".promo-timer[data-end]");
@@ -246,7 +292,7 @@ function startPromoTimers(wrap) {
       const end = new Date(t.dataset.end + "T23:59:59+05:30").getTime();
       const left = end - Date.now();
       if (left <= 0) {
-        const banner = t.closest(".promo-banner");
+        const banner = t.closest(".promo-banner, .promo-pro");
         if (banner) banner.remove();
         return;
       }
