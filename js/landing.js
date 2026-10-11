@@ -163,10 +163,36 @@ async function loadPromoBanners() {
   );
   if (live.length === 0) { wrap.innerHTML = ""; return; }
 
-  wrap.innerHTML = live.map(b => `
+  if (!document.getElementById("promo-img-style")) {
+    const st = document.createElement("style");
+    st.id = "promo-img-style";
+    st.textContent = `
+      .promo-img-banner{background:#12284C;padding:14px 0 16px}
+      .promo-img-banner .container{display:flex;flex-direction:column;align-items:center;gap:12px}
+      .promo-img-link{display:block;width:100%;max-width:1200px;border-radius:16px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.35);line-height:0}
+      .promo-img-link img{width:100%;height:auto;display:block}
+      .promo-img-banner .btn{min-width:200px;text-align:center}
+      @media(max-width:640px){.promo-img-banner{padding:10px 0 14px}.promo-img-link{border-radius:12px}}
+    `;
+    document.head.appendChild(st);
+  }
+
+  wrap.innerHTML = live.map(b => {
+    const link = b.button_link || "signup.html";
+    if (b.image_url) {
+      return `
+    <div class="promo-banner promo-img-banner">
+      <div class="container">
+        <a href="${link}" class="promo-img-link" aria-label="${b.title}">
+          <img src="${b.image_url}" alt="${b.title}">
+        </a>
+        <a href="${link}" class="btn btn-brass">${b.button_text || "Apply Now"}</a>
+      </div>
+    </div>`;
+    }
+    return `
     <div class="promo-banner">
       <div class="container">
-        ${b.image_url ? `<img src="${b.image_url}" alt="${b.title}" loading="lazy">` : ""}
         <div class="promo-text">
           ${b.badge_text ? `<span class="promo-offer">${b.badge_text}</span>` : ""}
           <h3>${b.title}</h3>
@@ -175,9 +201,10 @@ async function loadPromoBanners() {
         </div>
         ${b.discount_text ? `<div class="promo-discount">${b.discount_text}<small>OFF</small></div>` : ""}
         ${b.offer_details && !b.badge_text ? `<span class="promo-offer">${b.offer_details}</span>` : ""}
-        <a href="${b.button_link || "signup.html"}" class="btn btn-brass">${b.button_text || "Apply Now"}</a>
+        <a href="${link}" class="btn btn-brass">${b.button_text || "Apply Now"}</a>
       </div>
-    </div>`).join("");
+    </div>`;
+  }).join("");
 }
 
 async function handleNewsletterSubscribe(e) {
