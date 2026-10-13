@@ -364,7 +364,7 @@ let allRegistrationsCache = [];
 async function loadRegistrationsTable() {
   const { data: regs } = await supabaseClient
     .from("registrations")
-    .select("*, profiles(full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url), projects(project_name, duration_days, registration_fee, advance_payment, final_payment)")
+    .select("*, profiles(full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url, bank_account_name, bank_name, bank_account_number, bank_ifsc), projects(project_name, duration_days, registration_fee, advance_payment, final_payment)")
     .order("created_at", { ascending: false });
 
   allRegistrationsCache = regs || [];
@@ -399,7 +399,7 @@ function filterRegistrationsTable() {
 async function openRegDetail(id) {
   const { data: r } = await supabaseClient
     .from("registrations")
-    .select("*, profiles(id, full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url), projects(project_name, duration_days)")
+    .select("*, profiles(id, full_name, mobile, address, courier_address, payout_method, payout_upi_id, payout_qr_url, bank_account_name, bank_name, bank_account_number, bank_ifsc), projects(project_name, duration_days)")
     .eq("id", id).single();
   if (!r) return;
   const cust = r.profiles || {};
@@ -412,9 +412,7 @@ async function openRegDetail(id) {
       <div><span>Mobile</span><strong>${cust.mobile || "—"}</strong></div>
       <div><span>Address</span><strong>${cust.address || "—"}</strong></div>
       <div><span>Courier Address</span><strong>${cust.courier_address || "—"}</strong></div>
-      <div><span>Payout</span><strong>${cust.payout_method === "upi_qr"
-        ? (cust.payout_qr_url ? `<a href="${cust.payout_qr_url}" target="_blank">View payout QR</a>` : "QR not uploaded")
-        : (cust.payout_upi_id || "Not provided yet")}</strong></div>
+      <div><span>Salary Payment Details</span><strong>${payoutSummaryHtml(cust)}</strong></div>
       <div><span>Registration UTR</span><strong>${r.registration_utr || "—"}</strong></div>
     </div>
     <div style="margin:-6px 0 16px">
@@ -861,7 +859,7 @@ async function viewCustomer(id) {
       <div><span>Mobile</span><strong>${c.mobile || "—"}</strong></div>
       <div><span>Address</span><strong>${c.address || "—"}</strong></div>
       <div><span>Courier Address</span><strong>${c.courier_address || "—"}</strong></div>
-      <div><span>Payout UPI</span><strong>${c.payout_upi_id || (c.payout_qr_url ? "QR uploaded" : "—")}</strong></div>
+      <div><span>Salary Payment Details</span><strong>${payoutSummaryHtml(c)}</strong></div>
     </div>
     <div class="fieldset-title">Registrations</div>
     <div class="table-wrap">
@@ -1292,3 +1290,17 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("logout-btn")?.addEventListener("click", handleAdminLogout);
   if (document.getElementById("admin-name")) adminGuard();
 });
+
+// Shows the customer's salary payment details (bank account, UPI ID and/or QR) in the admin panel
+function payoutSummaryHtml(c) {
+  const esc = s => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const parts = [];
+  if (c.bank_account_number) {
+    parts.push(`Bank: ${esc(c.bank_account_name || "—")} · ${esc(c.bank_name || "—")}<br>A/C ${esc(c.bank_account_number)} · IFSC ${esc(c.bank_ifsc || "—")}`);
+  }
+  if (c.payout_upi_id) parts.push("UPI: " + esc(c.payout_upi_id));
+  if (c.payout_qr_url) parts.push(`<a href="${c.payout_qr_url}" target="_blank">View payout QR</a>`);
+  if (!parts.length) return "Not provided yet";
+  const pref = { bank: "Bank account", upi_id: "UPI ID", upi_qr: "UPI QR" }[c.payout_method];
+  return (pref ? `<em>Preferred: ${pref}</em><br>` : "") + parts.join("<br>");
+}
