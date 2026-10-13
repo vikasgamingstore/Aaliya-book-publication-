@@ -15,7 +15,7 @@ async function guardApply() {
     // Not logged in: a new customer clicking "Apply Now" should land on Sign Up (with a Log In option)
     const proj = getQueryParam("project");
     if (proj) sessionStorage.setItem("abp-pending-project", proj);
-    window.location.href = "signup.html" + (proj ? "?project=" + encodeURIComponent(proj) : "");
+    window.location.href = "login.html" + (proj ? "?project=" + encodeURIComponent(proj) : "");
     return;
   }
   await loadProjectsIntoSelect();
