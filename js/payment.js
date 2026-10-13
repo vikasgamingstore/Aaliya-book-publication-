@@ -27,8 +27,9 @@ async function loadPaymentPage() {
   paymentRegistration = regs && regs[0];
 
   if (!paymentRegistration) {
-    box.innerHTML = '<p>Koi pending payment nahi mila. <a href="index.html#projects">Project select kariye</a> pehle.</p>';
+    box.innerHTML = '<p>No pending payment found. <a href="dashboard.html#project">Choose a project plan</a> first.</p>';
     document.getElementById("payment-form").style.display = "none";
+    const ct = document.getElementById("confirm-title"); if (ct) ct.style.display = "none";
     return;
   }
 
@@ -46,7 +47,9 @@ async function loadPaymentPage() {
   applyPaymentOptions();
 
   if (paymentRegistration.registration_payment_status === "under_verification" || paymentRegistration.registration_payment_status === "approved") {
-    document.getElementById("payment-form").style.display = "none";
+    // already submitted: nothing more to do here, so open the profile (Home shows the verification status)
+    window.location.replace("dashboard.html#home");
+    return;
   }
 }
 
@@ -178,9 +181,11 @@ async function handlePaymentSubmit(e) {
 
   if (error) { msg.textContent = error.message; msg.classList.add("error"); restoreBtn(); return; }
 
-  msg.textContent = "Payment confirmation submitted! Our admin will verify it within 24 hours.";
+  msg.textContent = "Payment confirmation submitted! Opening your profile...";
   msg.classList.add("ok");
   document.getElementById("payment-form").style.display = "none";
+  const t = document.getElementById("confirm-title"); if (t) t.style.display = "none";
+  setTimeout(() => window.location.replace("dashboard.html#home"), 1200);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
