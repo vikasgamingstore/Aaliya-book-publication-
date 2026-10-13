@@ -16,6 +16,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<style>
+  .seg-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#eef1f7;border-radius:16px;padding:5px;margin-bottom:18px}
+  .seg-tab{border:0;background:transparent;border-radius:12px;padding:12px 8px;font:inherit;font-weight:600;color:#4a5875;cursor:pointer}
+  .seg-tab.active{background:#12284C;color:#fff;box-shadow:0 6px 14px rgba(18,40,76,.25)}
+  .plan-card.plan-selected{border:2px solid #D4A034;box-shadow:0 0 0 4px rgba(212,160,52,.18)}
+  .plan-chip{display:inline-block;background:#fff7e0;border:1px solid #f1d58a;color:#5b4410;border-radius:999px;padding:3px 10px;font-size:.78rem;font-weight:600;margin-bottom:8px}
+  .notice-box{background:#fff7e0;border:1px solid #f1d58a;color:#5b4410;border-radius:14px;padding:12px 14px;margin-bottom:14px;font-size:.92rem;line-height:1.5}
+  .notice-box.err{background:#fdecec;border-color:#f2b8b5;color:#8a1f17}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .btn-danger-outline{border:2px solid #b42318;color:#b42318;background:#fff}
+  .lock-note{font-size:.8rem;color:#6b7794;margin-top:4px}
+  .check-row{display:flex;align-items:center;gap:8px;font-size:.9rem;margin:2px 0 12px}
+</style>
 </head>
 <body class="has-bottom-nav">
 
@@ -26,7 +39,7 @@
     <span data-company-name>Aaliya Book Publication</span>
   </a>
   <div class="nav-links">
-    <a href="index.html#projects">Apply for New Project</a>
+    <a href="#project" id="nav-apply">Apply for New Project</a>
     <a href="#" id="logout-btn">Logout</a>
     
   </div>
@@ -46,22 +59,76 @@
     </div>
 
     <div id="action-hint-wrap"></div>
+    <div id="payout-reminder-wrap"></div>
     <div class="app-cards" id="app-status-cards"></div>
     <div id="onboarding-wrap"></div>
-
-    <div class="card" id="home-notifications-preview"></div>
   </div>
 
-  <!-- ========== MY PROJECT ========== -->
+  <!-- ========== PROJECTS (plans + status) ========== -->
   <div class="app-section" id="app-project">
-    <h2 class="section-title" style="font-size:1.6rem">My Project</h2>
-    <div id="feedback-wrap"></div>
-    <div id="registrations-wrap"></div>
+    <div class="seg-tabs" role="tablist">
+      <button type="button" class="seg-tab active" data-seg="plans">Project Plans</button>
+      <button type="button" class="seg-tab" data-seg="status">Project Status</button>
+    </div>
+
+    <div id="seg-plans">
+      <h2 class="section-title" style="font-size:1.6rem">Project Plans</h2>
+      <p class="section-sub mt-0">Choose a plan and tap Apply. You will go straight to the registration fee payment.</p>
+      <div id="plans-notice"></div>
+      <div class="plans-grid" id="plans-grid"><div class="empty-state">Loading plans...</div></div>
+    </div>
+
+    <div id="seg-status" style="display:none">
+      <h2 class="section-title" style="font-size:1.6rem">Project Status</h2>
+      <div id="feedback-wrap"></div>
+      <div id="registrations-wrap"></div>
+    </div>
   </div>
 
-  <!-- ========== PAYMENTS ========== -->
+  <!-- ========== SALARY PAYMENT ========== -->
   <div class="app-section" id="app-payments">
-    <h2 class="section-title" style="font-size:1.6rem">Payments</h2>
+    <h2 class="section-title" style="font-size:1.6rem">Salary Payment</h2>
+    <p class="section-sub mt-0">Tell us where to send your 50% advance and your final 50% payment. You can add, change, replace or delete these details any time.</p>
+    <div class="card">
+      <form id="payout-form">
+        <div class="field">
+          <label>Receive my salary by</label>
+          <select name="payout_method" id="payout-method">
+            <option value="bank">Bank Account</option>
+            <option value="upi_id">UPI ID</option>
+            <option value="upi_qr">UPI QR Code</option>
+          </select>
+        </div>
+
+        <div class="fieldset-title">Bank Account</div>
+        <div class="form-grid">
+          <div class="field"><label>Account Holder Name</label><input type="text" name="bank_account_name" placeholder="Name as in bank"></div>
+          <div class="field"><label>Bank Name</label><input type="text" name="bank_name" placeholder="e.g. State Bank of India"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field"><label>Account Number</label><input type="text" name="bank_account_number" inputmode="numeric" autocomplete="off" placeholder="Account number"></div>
+          <div class="field"><label>IFSC Code</label><input type="text" name="bank_ifsc" autocapitalize="characters" autocomplete="off" placeholder="e.g. SBIN0001234"></div>
+        </div>
+
+        <div class="fieldset-title">UPI</div>
+        <div class="field"><label>UPI ID</label><input type="text" name="payout_upi_id" placeholder="e.g. 9876543210@ybl"></div>
+        <div class="field">
+          <label>UPI QR Code</label>
+          <input type="file" id="payout-qr-file" accept="image/*">
+          <img id="payout-qr-preview" alt="" style="display:none;width:150px;border-radius:12px;margin-top:10px">
+          <input type="hidden" name="payout_qr_url">
+          <div><button type="button" class="btn btn-outline btn-sm" id="payout-qr-remove" style="display:none;margin-top:8px">Remove QR</button></div>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">Save Details</button>
+          <button type="button" class="btn btn-danger-outline btn-sm" id="payout-clear">Delete All Details</button>
+        </div>
+        <div id="payout-msg" class="form-msg"></div>
+      </form>
+    </div>
+
+    <h3 style="margin:22px 0 10px">My Salary Status</h3>
     <div id="payments-wrap"></div>
   </div>
 
@@ -80,6 +147,21 @@
     <h2 class="section-title" style="font-size:1.6rem">Profile</h2>
     <div class="card" id="profile-details"></div>
 
+    <div class="card" id="address-card">
+      <h3>My Address</h3>
+      <p class="section-sub mt-0">You can update, replace or delete your address any time. A parcel that has already been dispatched will not change.</p>
+      <form id="address-form">
+        <div class="field"><label>Address</label><textarea name="address" rows="2" placeholder="House no, street, city, state, PIN"></textarea></div>
+        <label class="check-row"><input type="checkbox" id="addr-same"> Courier address is the same as my address</label>
+        <div class="field"><label>Courier Address (where we deliver your materials)</label><textarea name="courier_address" rows="2" placeholder="House no, street, city, state, PIN"></textarea></div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">Save Address</button>
+          <button type="button" class="btn btn-danger-outline btn-sm" id="addr-delete">Delete Address</button>
+        </div>
+        <div id="address-msg" class="form-msg"></div>
+      </form>
+    </div>
+
     <div class="card">
       <h3>Support &amp; Help</h3>
       <p class="section-sub mt-0">Chat with us instantly on WhatsApp, or send an enquiry using the form below.</p>
@@ -94,44 +176,6 @@
 
     <div id="referral-wrap"></div>
     <div class="card" id="rewards-card"></div>
-
-    <div class="card">
-      <h3>Where To Send Your Payment</h3>
-      <p class="section-sub mt-0">Your 50% advance and final payment will be sent here. Give us either a UPI ID or a QR code, whichever is easier.</p>
-      <form id="payout-form">
-        <div class="field">
-          <label>How would you like to be paid?</label>
-          <select name="payout_method" id="payout-method">
-            <option value="upi_id">By UPI ID</option>
-            <option value="upi_qr">By QR code</option>
-          </select>
-        </div>
-        <div class="field" id="payout-upi-field">
-          <label>Your UPI ID</label>
-          <input type="text" name="payout_upi_id" placeholder="e.g. 9876543210@ybl">
-        </div>
-        <div class="field" id="payout-qr-field" style="display:none">
-          <label>Upload your UPI QR</label>
-          <input type="file" id="payout-qr-file" accept="image/*">
-          <img id="payout-qr-preview" alt="" style="display:none;width:150px;border-radius:12px;margin-top:10px">
-          <input type="hidden" name="payout_qr_url">
-        </div>
-        <button type="submit" class="btn btn-primary">Save Payment Details</button>
-        <div id="payout-msg" class="form-msg"></div>
-      </form>
-    </div>
-
-    <div class="card">
-      <h3>Change Password</h3>
-      <form id="password-form">
-        <div class="form-grid">
-          <div class="field"><label>New Password</label><input type="password" name="pw1" required></div>
-          <div class="field"><label>Confirm Password</label><input type="password" name="pw2" required></div>
-        </div>
-        <button type="submit" class="btn btn-outline">Update Password</button>
-        <div id="password-msg" class="form-msg"></div>
-      </form>
-    </div>
 
     <div class="card">
       <h3>Support Tickets</h3>
