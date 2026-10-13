@@ -92,3 +92,26 @@
 }
 .auth-notice a { color: #12284C; font-weight: 700; border-bottom: 2px solid #D4A034; text-decoration: none; }
 .auth-card .form-msg a { color: inherit; font-weight: 700; text-decoration: underline; }
+
+/* Simple headings + clear "other option" button */
+.auth-title { margin:4px 4px 6px; font-size:1.55rem; line-height:1.25; color:#12284C; font-weight:700; }
+.auth-sub { margin:0 4px 22px; color:#6b7794; font-size:.96rem; line-height:1.5; }
+.auth-forgot { text-align:right; margin:-4px 6px 16px; }
+.auth-forgot a { color:#12284C; font-weight:600; font-size:.9rem; text-decoration:none; border-bottom:2px solid #D4A034; }
+.auth-other { margin-top:22px; padding-top:18px; border-top:1px solid #e3e8f1; text-align:center; color:#6b7794; font-size:.95rem; }
+.auth-other span { display:block; margin-bottom:10px; }
+.auth-other-btn { display:block; box-sizing:border-box; width:100%; padding:15px 18px; border-radius:999px; border:2px solid #12284C; color:#12284C; font-weight:700; text-decoration:none; background:#fff; }
+.auth-other-btn:active { background:#eef1f7; }
+.auth-ref { margin:2px 4px 16px; }
+.auth-ref summary { cursor:pointer; color:#12284C; font-weight:600; font-size:.92rem; padding:6px 0; }
+
+/* ===== One-page mobile OTP login (login.html) ===== */
+.otp-card { padding-top: 0; }
+.otp-hero { margin: 0 -18px 22px; padding: 26px 22px; background: linear-gradient(135deg, #12284C, #1d3d70); color: #fff; display: flex; align-items: center; gap: 14px; border-radius: 28px 28px 0 0; }
+.otp-hero-badge { width: 58px; height: 58px; border-radius: 50%; background: #D4A034; color: #12284C; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem; flex: 0 0 auto; }
+.otp-hero-text { font-size: 1.02rem; font-weight: 600; line-height: 1.35; }
+.otp-pe { display: flex; justify-content: center; margin: 8px 0 14px; min-height: 56px; }
+.otp-terms { text-align: center; color: #6b7794; font-size: .85rem; margin: 6px 0 0; }
+.otp-change { margin-left: 8px; color: #12284C; font-weight: 700; border-bottom: 2px solid #D4A034; text-decoration: none; }
+#otp-msg { margin-top: 16px; }
+@media (max-width: 380px) { .otp-hero { margin: 0 -14px 20px; padding: 22px 16px; } }
