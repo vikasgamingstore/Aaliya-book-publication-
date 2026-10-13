@@ -22,7 +22,7 @@
   }
   function afterLoginUrl() {
     const p = pendingProject();
-    return p ? "apply.html?project=" + encodeURIComponent(p) : "dashboard.html";
+    return p ? "dashboard.html#project" : "dashboard.html";
   }
 
   function showStep(id) {
@@ -50,7 +50,7 @@
     if (error || !s || !s.session) throw new Error("Could not sign you in. Please try again.");
     sessionStorage.removeItem("abp-pending-ref");
     showStep("otp-step-done");
-    $("otp-done-text").textContent = pendingProject() ? "Opening your project application..." : "Opening your profile...";
+    $("otp-done-text").textContent = pendingProject() ? "Opening your profile..." : "Opening your profile...";
     msg("");
     setTimeout(() => { window.location.href = afterLoginUrl(); }, 700);
   }

@@ -243,7 +243,7 @@ async function loadPromoBanners() {
   }
 
   wrap.innerHTML = live.map(b => {
-    const link = b.button_link || "signup.html";
+    const link = b.button_link || "#projects";
     return `
     <div class="promo-pro">
       <div class="container">
@@ -354,16 +354,30 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ---------- Apply flow: pehle login/signup, phir apply ----------
+// ---------- Apply flow: mobile OTP login (new or old customer), then the plan is applied from the profile ----------
 async function startApply(e, projectId) {
   e.preventDefault();
   sessionStorage.setItem("abp-pending-project", projectId);
 
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
-    window.location.href = "apply.html?project=" + projectId;
+    // already logged in: open the Projects tab of the profile with this plan highlighted
+    window.location.href = "dashboard.html#project";
   } else {
-    // Account hai to login, nahi hai to signup — dono ek hi page se
-    window.location.href = "login.html?next=apply&project=" + projectId;
+    // new and old customers both use the same page: mobile number -> OTP
+    window.location.href = "login.html?project=" + encodeURIComponent(projectId);
   }
 }
+
+// Menu: logged-in customers see "My Profile" instead of Login / Create New Account
+async function updateNavForSession() {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) return;
+    const login = document.getElementById("nav-login");
+    const create = document.getElementById("nav-create");
+    if (login) { login.textContent = "My Profile"; login.href = "dashboard.html"; }
+    if (create) create.style.display = "none";
+  } catch (_) { /* ignore */ }
+}
+document.addEventListener("DOMContentLoaded", updateNavForSession);

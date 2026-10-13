@@ -83,10 +83,13 @@ async function guardAndLoad() {
   loadMyTickets();
   loadReferralSection();
   loadRewards();
+  loadAddressForm();
   loadPayoutForm();
   loadOnboarding();
-  loadRegistrations();
+  await loadRegistrations();
+  loadProjectPlans();
   loadNotifications();
+  openRequestedTab();
 }
 
 function renderProfileDetails() {
@@ -99,13 +102,8 @@ function renderProfileDetails() {
       <div><span>Name</span><strong>${p.full_name || "—"}</strong></div>
       <div><span>Customer ID</span><strong>${p.customer_id || "—"}</strong></div>
       <div><span>Mobile</span><strong>${p.mobile || "—"}</strong></div>
-      <div><span>Email</span><strong>${currentUser.email}</strong></div>
-      <div><span>Address</span><strong>${p.address || "—"}</strong></div>
-      <div><span>Courier Address</span><strong>${p.courier_address || "—"}</strong></div>
-      <div><span>Bank</span><strong>${p.bank_name || "—"}</strong></div>
-      <div><span>Account</span><strong>${p.bank_account_number ? "••••" + String(p.bank_account_number).slice(-4) : "—"}</strong></div>
     </div>
-    <p class="field-hint" style="margin-top:12px">Contact support to change these details.</p>`;
+    <p class="lock-note">Name, Customer ID and mobile number cannot be changed. Contact support if something is wrong.</p>`;
 }
 
 async function loadRegistrations() {
@@ -117,19 +115,23 @@ async function loadRegistrations() {
 
   const wrap = document.getElementById("registrations-wrap");
   registrationsCache = regs || [];
-  renderStatusCards(regs || []);
+  renderStatusCards(regs || []);          // Home: same as before (pending fee, verification, courier, progress ...)
   renderActionHint(regs || []);
-  loadFeedbackSection(regs || []);
-  renderPaymentsSection(regs || []);
+  renderPayoutReminder(regs || []);
 
-  if (error || !regs || regs.length === 0) {
-    wrap.innerHTML = '<div class="empty-state">You have no project registration yet. <a href="index.html#projects">Select a project</a> and apply.</div>';
+  // Project Status tab: only projects whose registration fee has been approved by the admin
+  const approvedRegs = (regs || []).filter(r => r.registration_payment_status === "approved");
+  loadFeedbackSection(approvedRegs);
+  renderPaymentsSection(approvedRegs);
+
+  if (error || approvedRegs.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">Your project will appear here once the admin approves your registration fee. You can follow the payment status on the Home tab.</div>';
     return;
   }
 
-  wrap.innerHTML = regs.map(r => renderRegistrationCard(r)).join("");
+  wrap.innerHTML = approvedRegs.map(r => renderRegistrationCard(r)).join("");
 
-  regs.forEach(r => {
+  approvedRegs.forEach(r => {
     document.getElementById(`confirm-delivery-btn-${r.id}`)?.addEventListener("click", () => confirmDelivery(r));
     document.getElementById(`progress-btn-${r.id}`)?.addEventListener("click", () => toggleProgressForm(r.id));
     document.getElementById(`progress-form-${r.id}`)?.addEventListener("submit", (e) => saveProgress(e, r.id));
@@ -147,7 +149,7 @@ function renderStatusCards(regs) {
 
   const active = regs.find(r => !["completed", "cancelled"].includes(r.project_status)) || regs[0];
   if (!active) {
-    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">You have no active project yet. <a href="index.html#projects">Choose a project</a>.</div>`;
+    box.innerHTML = `<div class="empty-state" style="grid-column:1/-1">You have no active project yet. <a href="#project">Choose a project</a>.</div>`;
     return;
   }
 
@@ -189,36 +191,29 @@ function renderStatusCards(regs) {
     </div>`;
 }
 
-// ---------- Payments tab ----------
+// ---------- Salary Payment tab: status of advance / final salary (registration fee is NOT shown here) ----------
 function renderPaymentsSection(regs) {
   const box = document.getElementById("payments-wrap");
   if (!box) return;
   if (!regs || regs.length === 0) {
-    box.innerHTML = '<div class="empty-state">No payment records yet.</div>';
+    box.innerHTML = '<div class="empty-state">Your salary status will appear here once your project is approved.</div>';
     return;
   }
-
   box.innerHTML = regs.map(r => {
     const p = r.projects || {};
     return `
     <div class="card">
       <h3>${p.project_name || "Project"}</h3>
       <div class="info-grid" style="margin-bottom:12px">
-        <div><span>Registration Fee</span><strong class="status-badge status-${r.registration_payment_status || 'pending'}">${(r.registration_payment_status || 'pending').replace(/_/g," ")} — ${fmtMoney(p.registration_fee)}</strong></div>
         <div><span>Advance (50%)</span><strong class="status-badge status-${r.advance_status}">${r.advance_status} — ${fmtMoney(p.advance_payment)}</strong></div>
         <div><span>Final (50%)</span><strong class="status-badge status-${r.final_status}">${r.final_status} — ${fmtMoney(p.final_payment)}</strong></div>
       </div>
-      ${(r.registration_payment_status === 'pending' || r.registration_payment_status === 'rejected')
-        ? `<a href="payment.html?reg=${r.id}" class="btn btn-brass btn-sm">Pay Registration Fee</a>` : ""}
-      ${r.registration_number ? `<button class="btn btn-outline btn-sm" onclick="downloadInvoiceById('${r.id}')">Download Invoice</button>` : ""}
-      <div class="fieldset-title" style="margin-top:16px">Payment History</div>
       <ul style="font-size:0.86rem;color:var(--text-muted);padding-left:18px;margin:0">
-        ${r.registration_payment_status === 'approved' ? `<li>Registration fee approved ${fmtDate(r.registration_payment_date)} — UTR: ${r.registration_utr || "—"}${r.receipt_number ? " · Receipt: " + r.receipt_number : ""}</li>` : ""}
-        ${r.registration_payment_status === 'under_verification' ? `<li>Registration fee submitted, under verification</li>` : ""}
-        ${r.advance_status === 'approved' ? `<li>Advance payment approved ${fmtDate(r.advance_approved_at)}${r.advance_utr ? " — Ref: " + r.advance_utr : ""}</li>` : ""}
-        ${r.final_status === 'approved' ? `<li>Final payment approved ${fmtDate(r.final_approved_at)}${r.final_utr ? " — Ref: " + r.final_utr : ""}</li>` : ""}
-        ${(!r.registration_payment_status || r.registration_payment_status === 'pending') && r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>No payments recorded yet</li>` : ""}
+        ${r.advance_status === 'approved' ? `<li>Advance payment sent ${fmtDate(r.advance_approved_at)}${r.advance_utr ? " — Ref: " + r.advance_utr : ""}</li>` : ""}
+        ${r.final_status === 'approved' ? `<li>Final payment sent ${fmtDate(r.final_approved_at)}${r.final_utr ? " — Ref: " + r.final_utr : ""}</li>` : ""}
+        ${r.advance_status !== 'approved' && r.final_status !== 'approved' ? `<li>No salary payment sent yet</li>` : ""}
       </ul>
+      ${r.registration_number ? `<button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="downloadInvoiceById('${r.id}')">Download Invoice</button>` : ""}
     </div>`;
   }).join("");
 }
@@ -579,7 +574,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("payout-form")?.addEventListener("submit", handlePayoutSave);
   document.getElementById("payout-method")?.addEventListener("change", togglePayoutFields);
   document.getElementById("payout-qr-file")?.addEventListener("change", handlePayoutQrUpload);
-  document.getElementById("password-form")?.addEventListener("submit", handlePasswordChange);
+  document.getElementById("payout-clear")?.addEventListener("click", handlePayoutClear);
+  document.getElementById("payout-qr-remove")?.addEventListener("click", removePayoutQr);
+  document.getElementById("address-form")?.addEventListener("submit", handleAddressSave);
+  document.getElementById("addr-delete")?.addEventListener("click", handleAddressDelete);
+  document.getElementById("addr-same")?.addEventListener("change", syncCourierAddress);
+  document.querySelector("#address-form [name=address]")?.addEventListener("input", syncCourierAddress);
+  document.querySelectorAll(".seg-tab").forEach(b => b.addEventListener("click", () => switchSegment(b.dataset.seg)));
+  window.addEventListener("hashchange", openRequestedTab);
   document.getElementById("logout-btn")?.addEventListener("click", handleLogout);
   document.getElementById("logout-btn-2")?.addEventListener("click", handleLogout);
   document.getElementById("logout-all-btn")?.addEventListener("click", handleLogoutAllDevices);
@@ -716,7 +718,7 @@ function renderActionHint(regs) {
   let hint = null;
 
   if (!regs.length) {
-    hint = { title: "Choose your first project", text: "Browse the available projects and apply for whichever suits you.", btn: "View Projects", link: "index.html#projects" };
+    hint = { title: "Choose your first project", text: "Browse the available projects and apply for whichever suits you.", btn: "View Project Plans", link: "#project" };
   } else if (active) {
     if (["pending", "rejected"].includes(active.registration_payment_status)) {
       hint = { title: "Registration fee pending", text: "Pay and submit your UTR and screenshot so your registration can move forward.", btn: "Pay Now", link: `payment.html?reg=${active.id}` };
@@ -836,24 +838,32 @@ function compressToDataUri(file, maxSize, quality) {
   });
 }
 
-function togglePayoutFields() {
-  const method = document.getElementById("payout-method")?.value;
-  const idField = document.getElementById("payout-upi-field");
-  const qrField = document.getElementById("payout-qr-field");
-  if (!idField || !qrField) return;
-  idField.style.display = method === "upi_id" ? "block" : "none";
-  qrField.style.display = method === "upi_qr" ? "block" : "none";
+function togglePayoutFields() { /* all payout sections are always visible now */ }
+
+function hasPayoutDetails(p) {
+  return !!(p && (p.bank_account_number || p.payout_upi_id || p.payout_qr_url));
 }
 
 function loadPayoutForm() {
   const f = document.getElementById("payout-form");
   if (!f || !currentProfile) return;
-  f.payout_method.value = currentProfile.payout_method || "upi_id";
-  f.payout_upi_id.value = currentProfile.payout_upi_id || "";
-  f.payout_qr_url.value = currentProfile.payout_qr_url || "";
+  const p = currentProfile;
+  f.payout_method.value = ["bank", "upi_id", "upi_qr"].includes(p.payout_method) ? p.payout_method
+    : (p.bank_account_number ? "bank" : p.payout_qr_url && !p.payout_upi_id ? "upi_qr" : "upi_id");
+  f.bank_account_name.value = p.bank_account_name || "";
+  f.bank_name.value = p.bank_name || "";
+  f.bank_account_number.value = p.bank_account_number || "";
+  f.bank_ifsc.value = p.bank_ifsc || "";
+  f.payout_upi_id.value = p.payout_upi_id || "";
+  f.payout_qr_url.value = p.payout_qr_url || "";
+  showPayoutQr(p.payout_qr_url);
+}
+
+function showPayoutQr(uri) {
   const prev = document.getElementById("payout-qr-preview");
-  if (prev && currentProfile.payout_qr_url) { prev.src = currentProfile.payout_qr_url; prev.style.display = "block"; }
-  togglePayoutFields();
+  const rm = document.getElementById("payout-qr-remove");
+  if (prev) { if (uri) { prev.src = uri; prev.style.display = "block"; } else { prev.removeAttribute("src"); prev.style.display = "none"; } }
+  if (rm) rm.style.display = uri ? "inline-block" : "none";
 }
 
 async function handlePayoutQrUpload(e) {
@@ -864,36 +874,212 @@ async function handlePayoutQrUpload(e) {
   try {
     const uri = await compressToDataUri(file, 420, 0.82);
     document.getElementById("payout-form").payout_qr_url.value = uri;
-    const prev = document.getElementById("payout-qr-preview");
-    if (prev) { prev.src = uri; prev.style.display = "block"; }
-    msg.textContent = "QR added — now tap Save."; msg.className = "form-msg ok";
+    showPayoutQr(uri);
+    msg.textContent = "QR added — now tap Save Details."; msg.className = "form-msg ok";
   } catch (err) {
     msg.textContent = err.message; msg.className = "form-msg error";
   }
+}
+
+function removePayoutQr() {
+  const f = document.getElementById("payout-form");
+  f.payout_qr_url.value = "";
+  const file = document.getElementById("payout-qr-file"); if (file) file.value = "";
+  showPayoutQr("");
+  const msg = document.getElementById("payout-msg");
+  msg.textContent = "QR removed — tap Save Details to confirm."; msg.className = "form-msg ok";
 }
 
 async function handlePayoutSave(e) {
   e.preventDefault();
   const f = e.target;
   const msg = document.getElementById("payout-msg");
-  const method = f.payout_method.value;
+  const fail = t => { msg.textContent = t; msg.className = "form-msg error"; };
 
-  if (method === "upi_id" && !f.payout_upi_id.value.trim()) {
-    msg.textContent = "Please enter your UPI ID."; msg.className = "form-msg error"; return;
+  const method = f.payout_method.value;
+  const holder = f.bank_account_name.value.trim();
+  const bank = f.bank_name.value.trim();
+  const acc = f.bank_account_number.value.replace(/\s/g, "");
+  const ifsc = f.bank_ifsc.value.trim().toUpperCase();
+  const upi = f.payout_upi_id.value.trim();
+  const qr = f.payout_qr_url.value;
+
+  const anyBank = holder || bank || acc || ifsc;
+  if (anyBank) {
+    if (!holder || !bank || !acc || !ifsc) return fail("Please fill all four bank fields (holder name, bank name, account number, IFSC) or leave them all empty.");
+    if (!/^\d{9,18}$/.test(acc)) return fail("Account number must be 9 to 18 digits.");
+    if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifsc)) return fail("Please enter a valid IFSC code (like SBIN0001234).");
   }
-  if (method === "upi_qr" && !f.payout_qr_url.value) {
-    msg.textContent = "Please upload your QR code."; msg.className = "form-msg error"; return;
-  }
+  if (upi && !/^[\w.\-]{2,}@[A-Za-z]{2,}$/.test(upi)) return fail("Please enter a valid UPI ID (like name@bank).");
+
+  if (method === "bank" && !anyBank) return fail("You selected Bank Account — please fill your bank details.");
+  if (method === "upi_id" && !upi) return fail("You selected UPI ID — please enter your UPI ID.");
+  if (method === "upi_qr" && !qr) return fail("You selected UPI QR — please upload your QR code.");
 
   const updates = {
     payout_method: method,
-    payout_upi_id: f.payout_upi_id.value.trim() || null,
-    payout_qr_url: f.payout_qr_url.value || null,
+    bank_account_name: holder || null, bank_name: bank || null,
+    bank_account_number: acc || null, bank_ifsc: ifsc || null,
+    payout_upi_id: upi || null, payout_qr_url: qr || null,
   };
   const { error } = await supabaseClient.from("profiles").update(updates).eq("id", currentUser.id);
-  msg.textContent = error ? error.message : "Payment details saved.";
+  msg.textContent = error ? error.message : "Salary payment details saved.";
   msg.className = "form-msg " + (error ? "error" : "ok");
-  if (!error) Object.assign(currentProfile, updates);
+  if (!error) { Object.assign(currentProfile, updates); renderPayoutReminder(registrationsCache); }
+}
+
+async function handlePayoutClear() {
+  if (!confirm("Delete all your salary payment details? You can add them again any time.")) return;
+  const msg = document.getElementById("payout-msg");
+  const updates = { payout_method: null, bank_account_name: null, bank_name: null, bank_account_number: null, bank_ifsc: null, payout_upi_id: null, payout_qr_url: null };
+  const { error } = await supabaseClient.from("profiles").update(updates).eq("id", currentUser.id);
+  msg.textContent = error ? error.message : "All salary payment details deleted.";
+  msg.className = "form-msg " + (error ? "error" : "ok");
+  if (!error) { Object.assign(currentProfile, updates); loadPayoutForm(); renderPayoutReminder(registrationsCache); }
+}
+
+// Home reminder: the 50% advance cannot be sent without payout details
+function renderPayoutReminder(regs) {
+  const wrap = document.getElementById("payout-reminder-wrap");
+  if (!wrap) return;
+  const hasActive = (regs || []).some(r => !["completed", "cancelled"].includes(r.project_status));
+  if (!hasActive || hasPayoutDetails(currentProfile)) { wrap.innerHTML = ""; return; }
+  wrap.innerHTML = `
+    <div class="action-hint">
+      <div class="hint-text"><strong>Add your salary payment details</strong><span>We need your bank account or UPI to send your 50% advance and final payment.</span></div>
+      <a href="#payments" class="btn btn-brass btn-sm">Add Now</a>
+    </div>`;
+}
+
+// ---------- Address (edit / replace / delete any time) ----------
+function loadAddressForm() {
+  const f = document.getElementById("address-form");
+  if (!f || !currentProfile) return;
+  f.address.value = currentProfile.address || "";
+  f.courier_address.value = currentProfile.courier_address || "";
+  const same = document.getElementById("addr-same");
+  if (same) same.checked = !!currentProfile.address && currentProfile.address === currentProfile.courier_address;
+  syncCourierAddress();
+}
+
+function syncCourierAddress() {
+  const f = document.getElementById("address-form");
+  const same = document.getElementById("addr-same");
+  if (!f || !same) return;
+  if (same.checked) f.courier_address.value = f.address.value;
+  f.courier_address.readOnly = same.checked;
+}
+
+async function handleAddressSave(e) {
+  e.preventDefault();
+  const f = e.target;
+  const msg = document.getElementById("address-msg");
+  const address = f.address.value.trim();
+  const courier = (document.getElementById("addr-same")?.checked ? address : f.courier_address.value.trim());
+  if (address.length < 10 || courier.length < 10) {
+    msg.textContent = "Please enter the complete address (house no, street, city, state, PIN)."; msg.className = "form-msg error"; return;
+  }
+  const { error } = await supabaseClient.from("profiles").update({ address, courier_address: courier }).eq("id", currentUser.id);
+  if (error) { msg.textContent = error.message; msg.className = "form-msg error"; return; }
+  currentProfile.address = address; currentProfile.courier_address = courier;
+  msg.className = "form-msg ok";
+  const pending = sessionStorage.getItem("abp-pending-project");
+  msg.innerHTML = "Address saved." + (pending ? ' <a href="#project" style="font-weight:700">Continue to Project Plans →</a>' : "");
+}
+
+async function handleAddressDelete() {
+  if (!confirm("Delete your saved address? You will need to add it again before applying for a project.")) return;
+  const msg = document.getElementById("address-msg");
+  const { error } = await supabaseClient.from("profiles").update({ address: null, courier_address: null }).eq("id", currentUser.id);
+  msg.textContent = error ? error.message : "Address deleted.";
+  msg.className = "form-msg " + (error ? "error" : "ok");
+  if (!error) { currentProfile.address = null; currentProfile.courier_address = null; loadAddressForm(); }
+}
+
+// ---------- Project Plans (same plans as the landing page) + Apply ----------
+async function loadProjectPlans() {
+  const grid = document.getElementById("plans-grid");
+  if (!grid) return;
+  const { data: projects } = await supabaseClient
+    .from("projects").select("*").eq("is_active", true).order("created_at", { ascending: false });
+  if (!projects || projects.length === 0) {
+    grid.innerHTML = '<div class="empty-state">No plans are available right now. Please check again soon.</div>';
+    return;
+  }
+  const selectedId = sessionStorage.getItem("abp-pending-project");
+  const notice = document.getElementById("plans-notice");
+  const chosen = projects.find(p => p.id === selectedId);
+  if (notice && chosen) notice.innerHTML = `<div class="notice-box">You selected <strong>${chosen.project_name}</strong>. Tap <strong>Apply</strong> to continue to the registration fee payment.</div>`;
+
+  grid.innerHTML = projects.map(p => {
+    const mine = registrationsCache.find(r => r.project_id === p.id && !["completed", "cancelled"].includes(r.project_status));
+    const label = mine
+      ? (["pending", "rejected"].includes(mine.registration_payment_status) ? "Pay Registration Fee" : "Already Applied")
+      : "Apply";
+    return `
+    <article class="plan-card${p.id === selectedId ? " plan-selected" : ""}" id="plan-${p.id}">
+      ${p.id === selectedId ? '<span class="plan-chip">Your selected plan</span>' : ""}
+      <h3>${p.project_name}</h3>
+      <p class="desc">${p.description || ""}</p>
+      <div class="plan-meta">
+        <div><span>Pages</span><strong>${p.num_pages} A4</strong></div>
+        <div><span>Duration</span><strong>${p.duration_days} days</strong></div>
+        <div><span>Registration Fee</span><strong>₹${p.registration_fee}</strong></div>
+        <div><span>Advance (${p.advance_percent || 50}%)</span><strong>₹${p.advance_payment}</strong></div>
+      </div>
+      <button type="button" class="btn btn-primary btn-block" ${label === "Already Applied" ? "disabled" : ""} onclick="applyToProject('${p.id}', this)">${label}</button>
+    </article>`;
+  }).join("");
+
+  if (chosen) setTimeout(() => document.getElementById("plan-" + chosen.id)?.scrollIntoView({ behavior: "smooth", block: "center" }), 400);
+}
+
+async function applyToProject(projectId, btn) {
+  const notice = document.getElementById("plans-notice");
+  const show = (t, err) => { if (notice) notice.innerHTML = `<div class="notice-box${err ? " err" : ""}">${t}</div>`; window.scrollTo({ top: 0, behavior: "smooth" }); };
+
+  // The address is needed to courier the materials
+  if (!currentProfile?.address || !currentProfile?.courier_address) {
+    sessionStorage.setItem("abp-pending-project", projectId);
+    switchAppTab("profile");
+    const msg = document.getElementById("address-msg");
+    if (msg) { msg.textContent = "Please add your address first, then go back to Project Plans and tap Apply."; msg.className = "form-msg error"; }
+    setTimeout(() => document.getElementById("address-card")?.scrollIntoView({ behavior: "smooth" }), 300);
+    return;
+  }
+
+  const existing = registrationsCache.find(r => r.project_id === projectId && !["completed", "cancelled"].includes(r.project_status));
+  if (existing) {
+    if (["pending", "rejected"].includes(existing.registration_payment_status)) { window.location.href = "payment.html?reg=" + existing.id; return; }
+    show("You have already applied for this plan. Follow it in Project Status.", false); return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = "Please wait..."; }
+  const { data: newReg, error } = await supabaseClient.from("registrations")
+    .insert({ customer_id: currentUser.id, project_id: projectId }).select("id").single();
+  if (error) {
+    if (btn) { btn.disabled = false; btn.textContent = "Apply"; }
+    show(error.message, true); return;
+  }
+  sessionStorage.removeItem("abp-pending-project");
+  window.location.href = "payment.html?reg=" + newReg.id;     // straight to the registration fee payment (gateway / UPI + UTR)
+}
+
+// ---------- Project tab: Plans <-> Status switch ----------
+function switchSegment(seg) {
+  document.getElementById("seg-plans").style.display = seg === "plans" ? "block" : "none";
+  document.getElementById("seg-status").style.display = seg === "status" ? "block" : "none";
+  document.querySelectorAll(".seg-tab").forEach(b => b.classList.toggle("active", b.dataset.seg === seg));
+}
+
+// Open the tab asked for in the link (#project, #payments ...). With a selected plan, show Project Plans.
+function openRequestedTab() {
+  const hash = (window.location.hash || "").replace("#", "");
+  const tabs = ["home", "project", "payments", "notifications", "profile"];
+  if (tabs.includes(hash)) {
+    switchAppTab(hash);
+    if (hash === "project") switchSegment("plans");
+  }
 }
 
 // ---------- Password change ----------
